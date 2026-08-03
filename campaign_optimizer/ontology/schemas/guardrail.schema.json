@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://campaign-optimizer.local/schemas/guardrail.schema.json",
+  "title": "Review-only Guardrail Card",
+  "description": "对小模型最终方案进行评价的硬边界；只产出CONFLICT或警告，不修改或自动执行方案。",
+  "type": "object",
+  "required": [
+    "guardrail_id", "name", "status", "scope", "applies_to_plan_actions",
+    "condition", "on_violation", "message", "known_limitations"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "guardrail_id": { "type": "string", "pattern": "^G[0-9]+$" },
+    "name": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["ACTIVE", "RETIRED"] },
+    "scope": { "enum": ["ad_group", "campaign", "account", "platform"] },
+    "applies_to_plan_actions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "enum": ["increase_budget", "decrease_budget", "keep_budget"] }
+    },
+    "condition": {
+      "type": ["object", "null"],
+      "required": ["concept", "op", "against"],
+      "additionalProperties": false,
+      "properties": {
+        "concept": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "op": { "enum": [">", ">=", "<", "<=", "==", "!="] },
+        "against": { "const": "plan_item.recommended_budget" }
+      }
+    },
+    "on_violation": { "type": ["string", "null"], "enum": ["CONFLICT", "WARN_ONLY", null] },
+    "message": { "type": "string", "minLength": 1 },
+    "known_limitations": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "ACTIVE" } } },
+      "then": {
+        "properties": {
+          "applies_to_plan_actions": { "minItems": 1 },
+          "condition": { "type": "object" },
+          "on_violation": { "enum": ["CONFLICT", "WARN_ONLY"] }
+        }
+      },
+      "else": {
+        "properties": {
+          "applies_to_plan_actions": { "maxItems": 0 },
+          "condition": { "type": "null" },
+          "on_violation": { "type": "null" }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "concept_id": "acos",
+  "name_cn": "广告成本占销售比",
+  "name_en": "ACoS",
+  "layer": "L5",
+  "tier": "derived",
+  "caliber": "platform",
+  "definition": "广告成本占销售收入的比例，是衡量投放效率的反向指标，客户配置页用于设置 ACoS 目标。",
+  "formula": "spend / revenue",
+  "unit": "ratio",
+  "source": "平台数据计算",
+  "source_field": null,
+  "value_type": "number",
+  "value_range": [0, null],
+  "baseline": { "type": "account_mean", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "daily",
+    "entity": "campaign",
+    "aggregation": "recompute",
+    "requires_full_batch": false
+  },
+  "dimensions": ["campaign"],
+  "related_concepts": [
+    { "target": "spend", "relation": "depends_on", "strength": "strong" },
+    { "target": "revenue", "relation": "depends_on", "strength": "strong" },
+    { "target": "roas", "relation": "inverse", "strength": "strong" }
+  ]
+}

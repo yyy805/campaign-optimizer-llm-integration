@@ -1,0 +1,28 @@
+{
+  "concept_id": "clicks",
+  "name_cn": "点击数",
+  "name_en": "Clicks",
+  "layer": "L3",
+  "tier": "base",
+  "caliber": "platform",
+  "definition": "广告被点击的次数，来自平台报表中的 clicks 字段，是计算 CTR、CVR 和其他转化率指标的基础数据。",
+  "formula": null,
+  "unit": "count",
+  "source": "Amazon Ads spend report / 平台广告点击数据",
+  "source_field": "clicks",
+  "value_type": "number",
+  "value_range": [0, null],
+  "baseline": { "type": "account_mean", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "daily",
+    "entity": "campaign",
+    "aggregation": "sum",
+    "requires_full_batch": false
+  },
+  "dimensions": ["campaign"],
+  "related_concepts": [
+    { "target": "ctr", "relation": "input_to", "strength": "strong" },
+    { "target": "cvr", "relation": "input_to", "strength": "strong" }
+  ]
+}

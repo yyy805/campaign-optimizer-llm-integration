@@ -1,0 +1,13 @@
+{
+  "guardrail_id": "G1",
+  "name": "出价不能超过广告组上限",
+  "status": "RETIRED",
+  "scope": "ad_group",
+  "applies_to_plan_actions": [],
+  "condition": null,
+  "on_violation": null,
+  "message": "当前最终方案契约没有出价字段，本护栏暂不参与审核。",
+  "known_limitations": [
+    "只有最终方案公开new_bid及其广告组实体后，才能恢复为review-only护栏。"
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://campaign-optimizer.local/schemas/llm_request.schema.json",
+  "title": "LLM Workflow Request",
+  "description": "Python后端生成的百炼调用请求；用户不能直接填写白名单和版本。",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "request_id",
+    "mode",
+    "question",
+    "context_id",
+    "allowed_intents",
+    "expected_versions",
+    "chat_history"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "request_id": {
+      "type": "string",
+      "pattern": "^request_[A-Za-z0-9_-]+$"
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["initial_render", "chat"]
+    },
+    "question": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "context_id": {
+      "type": "string",
+      "pattern": "^context_[A-Za-z0-9_-]+$"
+    },
+    "allowed_intents": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 7,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "EXPLAIN_PLAN",
+          "EXPLAIN_REVIEW",
+          "EXPLAIN_RULE",
+          "FORBIDDEN_MODEL_INTERNAL",
+          "UNSUPPORTED_WHAT_IF",
+          "OUT_OF_SCOPE",
+          "SYSTEM_FALLBACK"
+        ]
+      }
+    },
+    "expected_versions": {
+      "type": "object",
+      "required": [
+        "workflow_version",
+        "prompt_version",
+        "knowledge_base_version"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "workflow_version": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "prompt_version": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "knowledge_base_version": { "type": "string", "minLength": 1, "maxLength": 64 }
+      }
+    },
+    "chat_history": {
+      "type": "array",
+      "maxItems": 10,
+      "items": { "$ref": "#/definitions/message" }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "mode": { "const": "initial_render" } },
+        "required": ["mode"]
+      },
+      "then": {
+        "properties": {
+          "allowed_intents": {
+            "const": ["EXPLAIN_REVIEW"]
+          },
+          "chat_history": { "maxItems": 0 }
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "message": {
+      "type": "object",
+      "required": ["role", "content"],
+      "additionalProperties": false,
+      "properties": {
+        "role": { "type": "string", "enum": ["user", "assistant"] },
+        "content": { "type": "string", "minLength": 1, "maxLength": 2000 }
+      }
+    }
+  }
+}

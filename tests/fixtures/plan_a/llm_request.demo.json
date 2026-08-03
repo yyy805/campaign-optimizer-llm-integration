@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "request_id": "request_demo_001",
+  "mode": "initial_render",
+  "question": "请解释本次推荐方案和本体评价。",
+  "context_id": "context_demo_001",
+  "allowed_intents": ["EXPLAIN_REVIEW"],
+  "expected_versions": {
+    "workflow_version": "not-published",
+    "prompt_version": "draft-1.0",
+    "knowledge_base_version": "not-published"
+  },
+  "chat_history": []
+}

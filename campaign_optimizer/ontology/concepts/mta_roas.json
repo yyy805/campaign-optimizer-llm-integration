@@ -1,0 +1,28 @@
+{
+  "concept_id": "mta_roas",
+  "name_cn": "MTA口径ROAS",
+  "name_en": "MTA ROAS",
+  "layer": "L5",
+  "tier": "mta",
+  "caliber": "mta",
+  "definition": "MTA 归因口径下的广告投产比，直接复用归因结果表自带的 roas 列，不在本项目内重新计算，用于对照平台口径 ROAS 做双口径分析。与平台口径 roas 是两张不同的卡，禁止混用。",
+  "formula": null,
+  "unit": "ratio",
+  "source": "MTA 归因结果表",
+  "source_field": "roas（直接复用归因结果表自带的 roas 列，不在本项目内重新计算）",
+  "value_type": "number",
+  "value_range": [0, null],
+  "baseline": { "type": "account_mean", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "snapshot",
+    "entity": "touchpoint",
+    "aggregation": "none",
+    "requires_full_batch": false
+  },
+  "dimensions": ["touchpoint", "attribution_model"],
+  "related_concepts": [
+    { "target": "roas", "relation": "comparable_alt_caliber", "strength": "strong" },
+    { "target": "attributed_revenue", "relation": "depends_on", "strength": "strong" }
+  ]
+}

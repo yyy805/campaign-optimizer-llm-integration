@@ -1,0 +1,38 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+.venv-system/
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+
+# Test, coverage, logs, and local databases
+.pytest_cache/
+.coverage
+htmlcov/
+*.log
+*.sqlite3
+*.db
+
+# Local AI/BMAD/IDE material; curated results belong in docs/
+.agents/
+.claude/
+.codex/
+.github/agents/
+_bmad/
+_bmad-output/
+design-artifacts/
+*.code-workspace
+*.zip
+BMAD操作指南*.md
+apply-patch-test.txt
+/main.py

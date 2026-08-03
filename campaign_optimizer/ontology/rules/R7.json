@@ -1,0 +1,39 @@
+{
+  "rule_id": "R7",
+  "name": "预测ROAS下滑审核（已退役）",
+  "evaluation_grain": { "time": "snapshot", "entity": "campaign" },
+  "attribution_model": null,
+  "trigger_condition": { "all": [] },
+  "diagnosis": "当前 MTA 快照不包含 campaign 级时间序列预测输出，不能审核未来 ROAS 下滑趋势；相关方案条目返回未覆盖，不得使用 mock 预测字段形成决定性评价。",
+  "match_inputs": [],
+  "reference_action": { "type": "no_action", "param": {} },
+  "confidence_model": {
+    "source": ["unsupported_forecast_dependency"],
+    "thresholds": { "high": 0.8, "minimum_usable": 0.6 }
+  },
+  "review_policy": {
+    "mode": "review_only",
+    "supported_plan_actions": [],
+    "conflicting_plan_actions": [],
+    "otherwise": "NOT_APPLICABLE"
+  },
+  "confidence": 0.58,
+  "risk_level": "MEDIUM",
+  "evidence_type": "model_based",
+  "validation_count": 0,
+  "rejection_count": 0,
+  "version_history": [
+    { "version": "0.1-skeleton", "date": "2026-07-17", "author": "human_expert", "change": "预测数据为 mock 占位的骨架版本。" },
+    { "version": "0.2-skeleton", "date": "2026-07-20", "author": "human_expert", "change": "改为审核预测模型直接输出的成型预警，但真实预测合同仍缺失。" },
+    { "version": "1.1-demo", "date": "2026-08-03", "author": "ontology_team", "change": "退出活跃 Demo 规则；年度 MTA 快照不能证明未来趋势。" },
+    { "version": "1.2-review-only", "date": "2026-08-03", "author": "ontology_team", "change": "明确退役规则只能形成 UNVERIFIED，不能生成、支持或反对最终方案。" },
+    { "version": "1.3-contract-hardening", "date": "2026-08-03", "author": "ontology_team", "change": "将参考动作字段迁移为不可执行的reference_action，规则继续保持RETIRED。" }
+  ],
+  "causal_annotation": "相关性证据，非因果证明",
+  "status": "RETIRED",
+  "known_limitations": [
+    "缺少 campaign 级时间序列预测输出，不能执行未来 ROAS 趋势判断。",
+    "接入真实预测模块后必须重新建立并人工审批新版本规则，不能直接恢复本卡。",
+    "predicted_roas、prediction_confidence 与 roas_decline_alert 当前均不得作为本规则的命中证据。"
+  ]
+}

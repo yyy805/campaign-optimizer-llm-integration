@@ -1,0 +1,27 @@
+{
+  "concept_id": "attribution_divergence",
+  "name_cn": "归因差异度",
+  "name_en": "Attribution Divergence",
+  "layer": "L5",
+  "tier": "mta",
+  "caliber": "mta",
+  "definition": "衡量同一触点在不同归因方法（Markov 与 Shapley）下 contribution_share 的差异程度，用于判断 R5 是否可以触发——分歧过大时两模型结论不一致，不应强行下结论。formula 只能引用 contribution_share（两法共有可比字段），禁止引用任何单一方法专有、量纲不通用的字段。",
+  "formula": "abs(contribution_share[attribution_model=markov] - contribution_share[attribution_model=shapley])",
+  "unit": "ratio",
+  "source": "比较 Markov 与 Shapley 模型输出的 contribution_share 列",
+  "source_field": null,
+  "value_type": "number",
+  "value_range": [0, 1],
+  "baseline": { "type": "historical_diff_mean", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "snapshot",
+    "entity": "touchpoint",
+    "aggregation": "compare",
+    "requires_full_batch": true
+  },
+  "dimensions": ["touchpoint"],
+  "related_concepts": [
+    { "target": "contribution_share", "relation": "compared_with", "strength": "strong" }
+  ]
+}

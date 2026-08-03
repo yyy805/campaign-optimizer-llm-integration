@@ -1,0 +1,19 @@
+[project]
+name = "campaign-optimizer-review"
+version = "0.1.0"
+description = "Review-only ontology contracts and LLM integration for the campaign optimizer demo"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "jsonschema>=4.26.0",
+    "rfc3339-validator>=0.1.4",
+    "sqlalchemy>=2.0.51",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

@@ -1,0 +1,25 @@
+name: Offline quality gates
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.14"
+          enable-cache: true
+      - name: Install locked dependencies
+        run: uv sync --frozen
+      - name: Validate ontology package
+        run: uv run python scripts/check_ontology_package.py --project-root .
+      - name: Run offline tests
+        run: uv run pytest -q
