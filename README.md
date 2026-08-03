@@ -2,6 +2,14 @@
 
 本仓库保存投放优化 Demo 的本体卡片、review-only 契约、大模型交换契约及自动检查。
 
+## 当前权威文档
+
+- [本体Review-only权威架构v2](docs/architecture/ontology-review-only-v2.md)
+- [本体搭建执行计划v2](docs/ontology-build-plan-v2.md)
+- [本次架构纠偏记录](docs/decisions/sprint-change-proposal-2026-08-03.md)
+
+`_bmad-output` 中的早期PRD、架构、Epic和搭建计划仅作历史记录；与以上v2文档冲突时，以v2为准。
+
 ## 本地环境
 
 ```powershell
