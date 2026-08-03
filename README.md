@@ -50,6 +50,8 @@ uv run python scripts/check_review_contract.py `
 
 - 方案只记录 `ACCEPT/REJECT`，使用 `plan_decision_event.schema.json`。
 - 本体评价只记录 `GOOD/FINE/BAD`，使用 `feedback_event.schema.json`。
+
+
 - 反馈只更新独立的运行时 `confidence_state`，不会直接修改规则卡，也不会自动创建新规则。
 - `feedback_policy.demo.json` 的增减幅度和阈值仅用于跑通 Demo，生产部署前必须重新标定并经人工审批。
 
@@ -67,3 +69,50 @@ uv run python scripts/check_review_contract.py `
 
 团队成员不再通过聊天软件互发文件。首次克隆和日常协作命令见
 [`docs/github-collaboration.md`](docs/github-collaboration.md)。所有改动通过独立分支和 Pull Request 合并，`main` 只保存已通过离线检查的最新版。
+
+## LLM offline evaluation
+
+The fixed evaluation suite uses synthetic fixtures and mock providers only. It
+does not read API credentials, access the network, or save full prompts and
+responses:
+
+```powershell
+uv run python scripts/run_llm_eval.py
+```
+
+The command prints one machine-readable JSON summary. A non-zero exit code means
+at least one case failed.
+
+## Explicit Qwen smoke test
+
+The smoke command makes one paid request to the Beijing workspace endpoint. Run
+it only when you intentionally want a real API call. Set credentials in the
+current PowerShell process; do not write keys to source files, `.env` files,
+notebooks, screenshots, issues, or logs:
+
+`Read-Host -MaskInput` requires PowerShell 7. Values stay in the current process and are removed after the command; no credential file is created.
+
+```powershell
+$env:DASHSCOPE_API_KEY = Read-Host "DASHSCOPE_API_KEY" -MaskInput
+$env:DASHSCOPE_WORKSPACE_ID = Read-Host "DASHSCOPE_WORKSPACE_ID" -MaskInput
+$env:QWEN_MODEL = "qwen-plus"  # optional
+
+uv run python scripts/smoke_qwen.py
+
+Remove-Item Env:DASHSCOPE_API_KEY
+Remove-Item Env:DASHSCOPE_WORKSPACE_ID
+Remove-Item Env:QWEN_MODEL
+```
+
+Successful output contains only `ok`, `model`, `request_id`, `latency_ms`, and
+token `usage`; it never prints the key, workspace ID, prompt, or model response.
+If required variables are missing, the command exits safely and names the
+variables to set.
+
+The existing pytest real-API smoke remains opt-in and is skipped by default:
+
+```powershell
+$env:LLM_REAL_API_TESTS = "1"
+uv run pytest tests/test_qwen_client_real.py -q
+Remove-Item Env:LLM_REAL_API_TESTS
+```
