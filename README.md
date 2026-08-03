@@ -113,6 +113,15 @@ The existing pytest real-API smoke remains opt-in and is skipped by default:
 
 ```powershell
 $env:LLM_REAL_API_TESTS = "1"
-uv run pytest tests/test_qwen_client_real.py -q
+uv run pytest tests/test_qwen_client_real.py -q --run-real-api
 Remove-Item Env:LLM_REAL_API_TESTS
 ```
+## Orchestrator API and session migration
+
+The public `LocalLLMOrchestrator.run()` API is chat-only and accepts a question plus server-created `SessionContext`; it accepts no mode, trusted caller intent, or caller-supplied assistant history. Backend initial rendering uses `render_initial(plan, review)`, which accepts no question and always uses the fixed server-owned review question. For chat, the server creates `SessionContext(tenant_id, user_id, session_id)` from authenticated identity; `plan_id`, `review_id`, `context_id`, and history authorization are backend-derived. `RequestBuilder` is an internal backend component and must not be exposed directly through an HTTP/UI payload.
+
+`LocalLLMOrchestrator.run_legacy(..., untrusted_intent=...)` exists only as a migration shim and ignores that value. New code should read validated data from `result.output` and safe operational metadata from `result.as_envelope()`. The envelope never includes keys, prompts, full model responses, or chat history.
+
+Intent routing is hybrid: backend-fixed initial review, hard prohibitions with priority over all allows, fully anchored explanation templates with explicit objects, then an injectable classifier only for genuine ambiguity. Compound commands and extra purposes are refused. Low-confidence or failed classification returns fixed refusal. This is not a claim of complete keyword-based natural-language understanding.
+
+A future dual-model Executor/Reviewer experiment is documented but not implemented. Its production default will be `max_revision_rounds=1`; explicit experiments may use at most `5`, and exhaustion at any configured revision limit must return fixed `FALLBACK`. The current one-time JSON/content repair is separate and remains limited to one attempt.

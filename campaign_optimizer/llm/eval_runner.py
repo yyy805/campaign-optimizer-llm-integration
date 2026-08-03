@@ -14,6 +14,7 @@ from .prompt_builder import PromptBuilder
 from .qwen_client import QwenClient, QwenClientError, QwenConfig, QwenErrorCode
 from .request_builder import LLMVersions, RequestBuilder
 from .retriever import LocalRuleRetriever
+from .session_store import SessionContext
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_MANIFEST = PROJECT_ROOT / "tests" / "fixtures" / "llm_eval" / "cases.json"
@@ -77,13 +78,7 @@ def _run_case(
                 return QwenClient(QwenConfig.from_env({}))
 
             local = _orchestrator(client_factory=no_key_factory)
-            output = local.run(
-                plan,
-                review,
-                mode="initial_render",
-                question="Explain the synthetic review.",
-                intent="EXPLAIN_REVIEW",
-            )
+            output = local.render_initial(plan, review)
             if factory_calls != 1:
                 raise RuntimeError("no-key provider factory count mismatch")
             provider_calls = 0
@@ -93,9 +88,15 @@ def _run_case(
             )
             client = _SequenceClient(responses)
             local = _orchestrator(client=client)
-            output = local.run(
-                plan, review, mode=mode, question=question, intent=intent
-            )
+            if mode == "initial_render":
+                output = local.render_initial(plan, review)
+            else:
+                output = local.run(
+                    plan,
+                    review,
+                    question=question,
+                    session_context=SessionContext("eval-tenant", "eval-user", case["case_id"]),
+                )
             provider_calls = client.calls
         actual_status = output["status"]
         passed = (
@@ -137,7 +138,7 @@ def _scenario(
     question = "Explain the synthetic review."
 
     if scenario == "chat_success":
-        mode, intent = "chat", "EXPLAIN_PLAN"
+        mode, intent, question = "chat", "EXPLAIN_PLAN", "Explain this plan."
         output["intent"] = intent
         return mode, intent, question, [_json(output)]
     if scenario == "initial_success":

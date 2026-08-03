@@ -21,7 +21,22 @@ from .retriever import (
     RetrievalResult,
     Retriever,
 )
+from .intent_policy import (
+    EXPLANATION_INTENTS,
+    HybridIntentPolicy,
+    IntentDecision,
+    RouterClassification,
+    RouterClassifier,
+)
+from .orchestration_result import AttemptMetadata, OrchestrationResult
 from .orchestrator import ChatClient, LocalLLMOrchestrator
+from .session_store import (
+    InMemorySessionStore,
+    SessionBinding,
+    SessionContext,
+    SessionSnapshot,
+    SessionStore,
+)
 from .output_guard import OutputGuard
 from .prompt_builder import PromptBuilder
 from .request_builder import (
@@ -52,7 +67,20 @@ __all__ = [
     "RetrievalErrorCode",
     "RetrievalResult",
     "Retriever",
+    "EXPLANATION_INTENTS",
+    "HybridIntentPolicy",
+    "IntentDecision",
+    "RouterClassification",
+    "RouterClassifier",
+    "AttemptMetadata",
+    "OrchestrationResult",
     "ChatClient",
+    "InMemorySessionStore",
+    "SessionBinding",
+    "SessionContext",
+    "SessionSnapshot",
+    "SessionStore",
+    "SessionStoreError",
     "LocalLLMOrchestrator",
     "OutputGuard",
     "PromptBuilder",

@@ -164,3 +164,25 @@ R1–R7 规模下，规则 ID 精确查询优先于向量检索。知识库主�
 ## 11. 决策优先级
 
 本文件取代 `_bmad-output/planning-artifacts/llm-integration-plan-a.md` 中“必须使用百炼 Workflow”的决策。旧文件保留为历史设计证据；若发生冲突，以本文件及后续明确的导师/用户决策为准。
+## 12. General Review hardening (authoritative)
+
+### Intent ownership and hybrid Router
+
+`LocalLLMOrchestrator.run()` is chat-only and accepts `question` plus an authenticated server `SessionContext`; it does not accept caller-owned `mode`, `intent`, assistant history, or `history_context_id`. Backend initial rendering uses `render_initial(plan, review)`, which accepts no question and fixes both `initial_render` and `EXPLAIN_REVIEW`. Chat routing gives hard prohibitions priority, then permits only fully anchored explanation templates containing an explanation verb and explicit object; compound commands and extra purposes are refused. Ambiguous questions go to an injectable `RouterClassifier`. Missing classifiers, classifier failures, invalid confidence, and confidence below the configured threshold fail closed to `OUT_OF_SCOPE`/fixed `REFUSED`. Keyword rules are not represented as complete natural-language understanding.
+
+`run_legacy(..., untrusted_intent=...)` is a deprecated migration shim. The supplied value is ignored and never enters routing or metadata. `RequestBuilder` is an internal backend boundary; its `resolved_intent` and `server_chat_history` parameters must not be exposed as HTTP/UI inputs.
+
+### Server-owned session isolation
+
+Chat history is owned by a `SessionStore` and keyed by the exact binding `(tenant_id, user_id, session_id, plan_id, review_id, context_id)`. Tenant/user identity must come from authenticated server context; plan, review, and context identifiers are derived from validated backend objects. The local `InMemorySessionStore` serializes operations with a lock, lazily expires records by TTL, is the sole history pair/count/character trimming authority, and appends only validated `OK` exchanges. `RequestBuilder` validates strict user/assistant alternation without applying a second budget. Read failure returns safe fixed `FALLBACK` with `persistence_status=READ_FAILED`; write failure is explicitly reported as `WRITE_FAILED`. Future database implementations must preserve the same binding and atomicity rules. Prompt or history content must never be written to logs.
+
+### L6 capacity and identity gate
+
+Before any production or shared deployment, an authenticated principal-to-`SessionContext` mapping, a bounded session capacity, and deterministic LRU eviction are mandatory L6 release gates. The current in-memory store is for local validation only; no database implementation is introduced by this change.
+### Result envelope
+
+Every path returns `OrchestrationResult`: deeply immutable validated workflow `output`, immutable metadata for every provider attempt, accumulated latency/usage, routed intent metadata, separate refusal/fallback reasons, and explicit persistence status. `REFUSED`, no-key, and `FALLBACK` use the same envelope. The object remains a read-only `Mapping`; `.as_envelope()` returns an independent deep copy so caller mutation cannot alter Gate state. Keys, prompts, full provider responses, and chat history are forbidden from the envelope.
+
+### Dual-model revision target (not implemented in this change)
+
+The future target is an Executor model followed by an independent Reviewer/Guard and, when allowed, a return to the Executor for revision. Reviewer self-calls and Reviewer-to-Reviewer loops are forbidden. Production default is `max_revision_rounds=1`. An explicit non-production experiment may configure at most `5`; exhaustion at any configured revision limit (from the production default through the experiment upper bound) must return fixed `FALLBACK`. The current implementation does not contain this Reviewer loop: `revision_rounds` is `0`, and the existing single content-format repair remains separately reported as `repair_attempts <= 1`.

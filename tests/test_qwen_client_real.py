@@ -9,11 +9,14 @@ import pytest
 from campaign_optimizer.llm import QwenClient, QwenConfig
 
 
-@pytest.mark.skipif(
-    os.getenv("LLM_REAL_API_TESTS") != "1",
-    reason="set LLM_REAL_API_TESTS=1 to enable the paid real API smoke test",
-)
-def test_real_qwen_api_smoke():
+def test_real_qwen_api_smoke(request):
+    if not (
+        os.getenv("LLM_REAL_API_TESTS") == "1"
+        and request.config.getoption("--run-real-api")
+    ):
+        pytest.skip(
+            "requires both LLM_REAL_API_TESTS=1 and --run-real-api for paid API access"
+        )
     client = QwenClient(QwenConfig.from_env())
 
     result = client.chat(

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+
+import pytest
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -137,3 +139,31 @@ def test_smoke_unexpected_error_is_fixed_safe_failure(capsys):
     assert "sensitive-value" not in combined
     assert "synthetic-secret-never-print" not in combined
     assert "workspace-test" not in combined
+
+def test_smoke_rejects_empty_success_metadata_without_leakage(capsys):
+    class InvalidSuccessClient:
+        def __init__(self, config):
+            self.config = config
+
+        def chat(self, messages, *, parameters=None):
+            return SimpleNamespace(
+                text="",
+                model="qwen-plus",
+                request_id="request-safe",
+                latency_ms=1.0,
+                usage=QwenUsage(1, 1, 2),
+            )
+
+    exit_code = smoke_qwen.main(
+        environ={
+            "DASHSCOPE_API_KEY": "synthetic-secret-never-print",
+            "DASHSCOPE_WORKSPACE_ID": "workspace-test",
+        },
+        client_factory=InvalidSuccessClient,
+    )
+    captured = capsys.readouterr()
+    assert exit_code == 1
+    assert json.loads(captured.out)["ok"] is False
+    exposed = captured.out + captured.err
+    assert "synthetic-secret-never-print" not in exposed
+    assert "workspace-test" not in exposed

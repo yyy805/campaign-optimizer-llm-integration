@@ -59,8 +59,6 @@ class RequestBuilder:
         clock: Callable[[], datetime] | None = None,
         request_id_factory: Callable[[], str] | None = None,
         rules_dir: Path = RULES_DIR,
-        max_history_messages: int = 10,
-        max_history_chars: int = 8_000,
     ) -> None:
         self._retriever = retriever
         self._versions = versions or LLMVersions()
@@ -69,8 +67,6 @@ class RequestBuilder:
             lambda: f"request_{uuid.uuid4().hex}"
         )
         self._rules_dir = rules_dir
-        self._max_history_messages = max_history_messages
-        self._max_history_chars = max_history_chars
 
     def build(
         self,
@@ -79,15 +75,14 @@ class RequestBuilder:
         *,
         mode: str,
         question: str,
-        intent: str,
-        chat_history: Sequence[Mapping[str, str]] = (),
-        history_context_id: str | None = None,
+        resolved_intent: str,
+        server_chat_history: Sequence[Mapping[str, str]] = (),
     ) -> RequestArtifacts:
         plan_snapshot = copy.deepcopy(dict(plan))
         review_snapshot = copy.deepcopy(dict(review))
         validate_contract_object("final_plan", plan_snapshot)
         validate_contract_object("ontology_review", review_snapshot)
-        _validate_mode_intent(mode, intent)
+        _validate_mode_intent(mode, resolved_intent)
 
         context_id = _context_id(plan_snapshot, review_snapshot)
         rule_versions = _rule_versions(review_snapshot)
@@ -140,56 +135,103 @@ class RequestBuilder:
         )
 
         history = []
-        if mode == "chat" and history_context_id == context_id:
-            history = trim_chat_history(
-                chat_history,
-                max_messages=self._max_history_messages,
-                max_chars=self._max_history_chars,
-            )
+        if mode == "chat":
+            history = _validate_server_chat_history(server_chat_history)
         request = {
             "schema_version": "1.0",
             "request_id": self._request_id_factory(),
             "mode": mode,
             "question": question,
             "context_id": context_id,
-            "allowed_intents": [intent],
+            "allowed_intents": [resolved_intent],
             "expected_versions": self._versions.as_dict(),
             "chat_history": history,
         }
         validate_contract_object("llm_request", request)
         return RequestArtifacts(request=request, context=context)
 
+    @staticmethod
+    def context_id_for(
+        plan: Mapping[str, Any], review: Mapping[str, Any]
+    ) -> str:
+        plan_snapshot = copy.deepcopy(dict(plan))
+        review_snapshot = copy.deepcopy(dict(review))
+        validate_contract_object("final_plan", plan_snapshot)
+        validate_contract_object("ontology_review", review_snapshot)
+        return _context_id(plan_snapshot, review_snapshot)
 
+
+def _validate_server_chat_history(
+    history: Sequence[Mapping[str, str]],
+) -> list[dict[str, str]]:
+    """Validate the SessionStore snapshot without applying a second budget."""
+    if isinstance(history, (str, bytes)) or not isinstance(history, Sequence):
+        raise ContractValidationError("server chat_history must be a sequence")
+    if len(history) > 10 or len(history) % 2:
+        raise ContractValidationError("server chat_history must contain at most five complete exchanges")
+    validated: list[dict[str, str]] = []
+    for index, item in enumerate(history):
+        if not isinstance(item, Mapping):
+            raise ContractValidationError("server chat_history item must be an object")
+        role = item.get("role")
+        content = item.get("content")
+        expected_role = "user" if index % 2 == 0 else "assistant"
+        if role != expected_role or not isinstance(content, str) or not 1 <= len(content) <= 2_000:
+            raise ContractValidationError("server chat_history must be strict user/assistant pairs")
+        if set(item) != {"role", "content"}:
+            raise ContractValidationError("server chat_history item has unsupported fields")
+        validated.append({"role": role, "content": content})
+    return validated
 def trim_chat_history(
     history: Sequence[Mapping[str, str]],
     *,
     max_messages: int = 10,
     max_chars: int = 8_000,
 ) -> list[dict[str, str]]:
-    """Keep newest valid messages within deterministic count and char budgets."""
+    """Keep newest complete exchanges within deterministic count/char budgets."""
     if isinstance(history, (str, bytes)) or not isinstance(history, Sequence):
         raise ContractValidationError("chat_history must be a sequence")
     if max_messages < 0 or max_chars < 0:
         raise ValueError("history limits cannot be negative")
-    kept: list[dict[str, str]] = []
-    remaining = max_chars
-    for item in reversed(history):
-        if len(kept) >= max_messages or remaining == 0:
-            break
-        if not isinstance(item, Mapping):
-            raise ContractValidationError("chat_history item must be an object")
-        role = item.get("role")
-        content = item.get("content")
-        if role not in {"user", "assistant"} or not isinstance(content, str):
-            raise ContractValidationError("chat_history item is invalid")
-        content = content[: min(2_000, remaining)]
-        if not content:
-            continue
-        kept.append({"role": role, "content": content})
-        remaining -= len(content)
-    kept.reverse()
-    return kept
+    if len(history) % 2:
+        raise ContractValidationError("chat_history must contain complete exchanges")
 
+    pairs: list[list[dict[str, str]]] = []
+    for index in range(0, len(history), 2):
+        pair: list[dict[str, str]] = []
+        for offset, expected_role in enumerate(("user", "assistant")):
+            item = history[index + offset]
+            if not isinstance(item, Mapping):
+                raise ContractValidationError("chat_history item must be an object")
+            role = item.get("role")
+            content = item.get("content")
+            if role != expected_role or not isinstance(content, str) or not content:
+                raise ContractValidationError(
+                    "chat_history must contain strict user/assistant exchanges"
+                )
+            pair.append({"role": role, "content": content})
+        pairs.append(pair)
+
+    kept: list[list[dict[str, str]]] = []
+    remaining = max_chars
+    pair_limit = max_messages // 2
+    for user_assistant in reversed(pairs):
+        if len(kept) >= pair_limit or remaining < 2:
+            break
+        user, assistant = user_assistant
+        user_content = user["content"][: min(2_000, remaining - 1)]
+        assistant_content = assistant["content"][: min(2_000, remaining - len(user_content))]
+        if not user_content or not assistant_content:
+            break
+        kept.append(
+            [
+                {"role": "user", "content": user_content},
+                {"role": "assistant", "content": assistant_content},
+            ]
+        )
+        remaining -= len(user_content) + len(assistant_content)
+    kept.reverse()
+    return [message for pair in kept for message in pair]
 
 def _validate_mode_intent(mode: str, intent: str) -> None:
     if mode not in {"initial_render", "chat"}:

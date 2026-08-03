@@ -31,6 +31,15 @@ def execute_smoke(
         [{"role": "user", "content": "Reply with exactly: pong"}],
         parameters={"max_tokens": 16, "temperature": 0, "stream": False},
     )
+    if not (
+        isinstance(result.text, str)
+        and result.text.strip()
+        and isinstance(result.request_id, str)
+        and result.request_id.strip()
+        and isinstance(result.model, str)
+        and result.model.strip()
+    ):
+        raise QwenClientError(QwenErrorCode.INVALID_RESPONSE)
     return {
         "ok": True,
         "model": result.model,
