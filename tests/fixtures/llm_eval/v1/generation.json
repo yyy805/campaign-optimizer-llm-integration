@@ -1,0 +1,1111 @@
+{
+  "schema_version": "1.0",
+  "suite_id": "generation-paired-deidentified-v1",
+  "dataset_type": "generation",
+  "description": "Ten paired baseline/reviewer-candidate comparisons over shared synthetic inputs, config, and quality rubric.",
+  "fixtures": {
+    "plan": "../../plan_a/final_plan.demo.json",
+    "review": "../../plan_a/ontology_review.demo.json",
+    "valid_output": "../../plan_a/llm_workflow_output.demo.json"
+  },
+  "frozen_inputs": {
+    "input_01": {
+      "mode": "chat",
+      "question": "Explain plan.",
+      "expected_intent": "EXPLAIN_PLAN",
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_001"
+    },
+    "input_02": {
+      "mode": "chat",
+      "question": "请说明本次方案。",
+      "expected_intent": "EXPLAIN_PLAN",
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_005"
+    },
+    "input_03": {
+      "mode": "chat",
+      "question": "Explain review.",
+      "expected_intent": "EXPLAIN_REVIEW",
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_007"
+    },
+    "input_04": {
+      "mode": "chat",
+      "question": "请说明本体评价。",
+      "expected_intent": "EXPLAIN_REVIEW",
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_011"
+    },
+    "input_05": {
+      "mode": "chat",
+      "question": "Explain rule.",
+      "expected_intent": "EXPLAIN_RULE",
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_013"
+    },
+    "input_06": {
+      "mode": "chat",
+      "question": "请说明这条规则。",
+      "expected_intent": "EXPLAIN_RULE",
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_017"
+    },
+    "input_07": {
+      "mode": "chat",
+      "question": "Clarify the budget recommendation.",
+      "expected_intent": "EXPLAIN_PLAN",
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_generation_input_07"
+    },
+    "input_08": {
+      "mode": "chat",
+      "question": "Describe the verdict.",
+      "expected_intent": "EXPLAIN_REVIEW",
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_009"
+    },
+    "input_09": {
+      "mode": "chat",
+      "question": "Please explain rule R5.",
+      "expected_intent": "EXPLAIN_RULE",
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_014"
+    },
+    "input_10": {
+      "mode": "chat",
+      "question": "为什么本体评价冲突？",
+      "expected_intent": "EXPLAIN_REVIEW",
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_012"
+    }
+  },
+  "quality_rubrics": {
+    "rubric_01": {
+      "dimensions": {
+        "authority_fidelity": 0.4,
+        "completeness": 0.25,
+        "clarity": 0.15,
+        "safety": 0.2
+      },
+      "pass_threshold": 0.85,
+      "hard_gates": [
+        "schema_valid",
+        "authority_ids_only",
+        "numeric_values_exact",
+        "no_new_facts"
+      ]
+    }
+  },
+  "cases": [
+    {
+      "case_id": "gen_001_base",
+      "category": "paired_plan",
+      "scenario": "generation_eval",
+      "mode": "chat",
+      "expected_intent": "EXPLAIN_PLAN",
+      "expected_status": "OK",
+      "expected_provider_calls": 1,
+      "pair_id": "pair_01",
+      "comparison_arm": "baseline",
+      "frozen_input_id": "input_01",
+      "quality_rubric_id": "rubric_01",
+      "tags": [
+        "en",
+        "plan",
+        "baseline"
+      ],
+      "checks": [
+        "schema_valid",
+        "status_ok",
+        "intent_exact",
+        "authority_ids_only",
+        "numeric_values_exact",
+        "limitations_preserved",
+        "no_new_facts",
+        "retry_count_zero",
+        "fallback_false",
+        "answer_non_empty",
+        "metadata_safe"
+      ],
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_001",
+      "common_executor_config_id": "executor_01",
+      "arm_config_id": "baseline_01",
+      "candidate_id": "candidate_clean_plan",
+      "observed_cost_cny": null,
+      "observed_latency_ms": null,
+      "arm_expectation": {
+        "provider_calls": 1,
+        "revision_rounds": 0,
+        "status": "OK",
+        "reviewer_action": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "case_id": "gen_001_review",
+      "category": "paired_plan",
+      "scenario": "generation_eval",
+      "mode": "chat",
+      "expected_intent": "EXPLAIN_PLAN",
+      "expected_status": "OK",
+      "expected_provider_calls": 2,
+      "pair_id": "pair_01",
+      "comparison_arm": "reviewer_candidate",
+      "frozen_input_id": "input_01",
+      "quality_rubric_id": "rubric_01",
+      "tags": [
+        "en",
+        "plan",
+        "reviewer"
+      ],
+      "checks": [
+        "schema_valid",
+        "status_ok",
+        "intent_exact",
+        "authority_ids_only",
+        "numeric_values_exact",
+        "limitations_preserved",
+        "no_new_facts",
+        "retry_count_zero",
+        "fallback_false",
+        "answer_non_empty",
+        "metadata_safe"
+      ],
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_001",
+      "common_executor_config_id": "executor_01",
+      "arm_config_id": "reviewer_01",
+      "candidate_id": "candidate_clean_plan",
+      "observed_cost_cny": null,
+      "observed_latency_ms": null,
+      "arm_expectation": {
+        "provider_calls": 2,
+        "revision_rounds": 0,
+        "status": "OK",
+        "reviewer_action": "PASS"
+      }
+    },
+    {
+      "case_id": "gen_002_base",
+      "category": "paired_plan",
+      "scenario": "generation_eval",
+      "mode": "chat",
+      "expected_intent": "EXPLAIN_PLAN",
+      "expected_status": "OK",
+      "expected_provider_calls": 1,
+      "pair_id": "pair_02",
+      "comparison_arm": "baseline",
+      "frozen_input_id": "input_02",
+      "quality_rubric_id": "rubric_01",
+      "tags": [
+        "zh",
+        "plan",
+        "baseline"
+      ],
+      "checks": [
+        "schema_valid",
+        "status_ok",
+        "intent_exact",
+        "authority_ids_only",
+        "numeric_values_exact",
+        "limitations_preserved",
+        "no_new_facts",
+        "retry_count_zero",
+        "fallback_false",
+        "answer_non_empty",
+        "metadata_safe"
+      ],
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_005",
+      "common_executor_config_id": "executor_01",
+      "arm_config_id": "baseline_01",
+      "candidate_id": "candidate_clean_plan",
+      "observed_cost_cny": null,
+      "observed_latency_ms": null,
+      "arm_expectation": {
+        "provider_calls": 1,
+        "revision_rounds": 0,
+        "status": "OK",
+        "reviewer_action": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "case_id": "gen_002_review",
+      "category": "paired_plan",
+      "scenario": "generation_eval",
+      "mode": "chat",
+      "expected_intent": "EXPLAIN_PLAN",
+      "expected_status": "OK",
+      "expected_provider_calls": 2,
+      "pair_id": "pair_02",
+      "comparison_arm": "reviewer_candidate",
+      "frozen_input_id": "input_02",
+      "quality_rubric_id": "rubric_01",
+      "tags": [
+        "zh",
+        "plan",
+        "reviewer"
+      ],
+      "checks": [
+        "schema_valid",
+        "status_ok",
+        "intent_exact",
+        "authority_ids_only",
+        "numeric_values_exact",
+        "limitations_preserved",
+        "no_new_facts",
+        "retry_count_zero",
+        "fallback_false",
+        "answer_non_empty",
+        "metadata_safe"
+      ],
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_005",
+      "common_executor_config_id": "executor_01",
+      "arm_config_id": "reviewer_01",
+      "candidate_id": "candidate_clean_plan",
+      "observed_cost_cny": null,
+      "observed_latency_ms": null,
+      "arm_expectation": {
+        "provider_calls": 2,
+        "revision_rounds": 0,
+        "status": "OK",
+        "reviewer_action": "PASS"
+      }
+    },
+    {
+      "case_id": "gen_003_base",
+      "category": "paired_review",
+      "scenario": "generation_eval",
+      "mode": "chat",
+      "expected_intent": "EXPLAIN_REVIEW",
+      "expected_status": "OK",
+      "expected_provider_calls": 1,
+      "pair_id": "pair_03",
+      "comparison_arm": "baseline",
+      "frozen_input_id": "input_03",
+      "quality_rubric_id": "rubric_01",
+      "tags": [
+        "en",
+        "review",
+        "baseline"
+      ],
+      "checks": [
+        "schema_valid",
+        "status_ok",
+        "intent_exact",
+        "authority_ids_only",
+        "numeric_values_exact",
+        "limitations_preserved",
+        "no_new_facts",
+        "retry_count_zero",
+        "fallback_false",
+        "answer_non_empty",
+        "metadata_safe"
+      ],
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_007",
+      "common_executor_config_id": "executor_01",
+      "arm_config_id": "baseline_01",
+      "candidate_id": "candidate_clean_review",
+      "observed_cost_cny": null,
+      "observed_latency_ms": null,
+      "arm_expectation": {
+        "provider_calls": 1,
+        "revision_rounds": 0,
+        "status": "OK",
+        "reviewer_action": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "case_id": "gen_003_review",
+      "category": "paired_review",
+      "scenario": "generation_eval",
+      "mode": "chat",
+      "expected_intent": "EXPLAIN_REVIEW",
+      "expected_status": "OK",
+      "expected_provider_calls": 2,
+      "pair_id": "pair_03",
+      "comparison_arm": "reviewer_candidate",
+      "frozen_input_id": "input_03",
+      "quality_rubric_id": "rubric_01",
+      "tags": [
+        "en",
+        "review",
+        "reviewer"
+      ],
+      "checks": [
+        "schema_valid",
+        "status_ok",
+        "intent_exact",
+        "authority_ids_only",
+        "numeric_values_exact",
+        "limitations_preserved",
+        "no_new_facts",
+        "retry_count_zero",
+        "fallback_false",
+        "answer_non_empty",
+        "metadata_safe"
+      ],
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_007",
+      "common_executor_config_id": "executor_01",
+      "arm_config_id": "reviewer_01",
+      "candidate_id": "candidate_clean_review",
+      "observed_cost_cny": null,
+      "observed_latency_ms": null,
+      "arm_expectation": {
+        "provider_calls": 2,
+        "revision_rounds": 0,
+        "status": "OK",
+        "reviewer_action": "PASS"
+      }
+    },
+    {
+      "case_id": "gen_004_base",
+      "category": "paired_review",
+      "scenario": "generation_eval",
+      "mode": "chat",
+      "expected_intent": "EXPLAIN_REVIEW",
+      "expected_status": "OK",
+      "expected_provider_calls": 1,
+      "pair_id": "pair_04",
+      "comparison_arm": "baseline",
+      "frozen_input_id": "input_04",
+      "quality_rubric_id": "rubric_01",
+      "tags": [
+        "zh",
+        "review",
+        "baseline"
+      ],
+      "checks": [
+        "schema_valid",
+        "status_ok",
+        "intent_exact",
+        "authority_ids_only",
+        "numeric_values_exact",
+        "limitations_preserved",
+        "no_new_facts",
+        "retry_count_zero",
+        "fallback_false",
+        "answer_non_empty",
+        "metadata_safe"
+      ],
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_011",
+      "common_executor_config_id": "executor_01",
+      "arm_config_id": "baseline_01",
+      "candidate_id": "candidate_clean_review",
+      "observed_cost_cny": null,
+      "observed_latency_ms": null,
+      "arm_expectation": {
+        "provider_calls": 1,
+        "revision_rounds": 0,
+        "status": "OK",
+        "reviewer_action": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "case_id": "gen_004_review",
+      "category": "paired_review",
+      "scenario": "generation_eval",
+      "mode": "chat",
+      "expected_intent": "EXPLAIN_REVIEW",
+      "expected_status": "OK",
+      "expected_provider_calls": 2,
+      "pair_id": "pair_04",
+      "comparison_arm": "reviewer_candidate",
+      "frozen_input_id": "input_04",
+      "quality_rubric_id": "rubric_01",
+      "tags": [
+        "zh",
+        "review",
+        "reviewer"
+      ],
+      "checks": [
+        "schema_valid",
+        "status_ok",
+        "intent_exact",
+        "authority_ids_only",
+        "numeric_values_exact",
+        "limitations_preserved",
+        "no_new_facts",
+        "retry_count_zero",
+        "fallback_false",
+        "answer_non_empty",
+        "metadata_safe"
+      ],
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_011",
+      "common_executor_config_id": "executor_01",
+      "arm_config_id": "reviewer_01",
+      "candidate_id": "candidate_clean_review",
+      "observed_cost_cny": null,
+      "observed_latency_ms": null,
+      "arm_expectation": {
+        "provider_calls": 2,
+        "revision_rounds": 0,
+        "status": "OK",
+        "reviewer_action": "PASS"
+      }
+    },
+    {
+      "case_id": "gen_005_base",
+      "category": "paired_rule",
+      "scenario": "generation_eval",
+      "mode": "chat",
+      "expected_intent": "EXPLAIN_RULE",
+      "expected_status": "OK",
+      "expected_provider_calls": 1,
+      "pair_id": "pair_05",
+      "comparison_arm": "baseline",
+      "frozen_input_id": "input_05",
+      "quality_rubric_id": "rubric_01",
+      "tags": [
+        "en",
+        "rule",
+        "baseline"
+      ],
+      "checks": [
+        "schema_valid",
+        "status_ok",
+        "intent_exact",
+        "authority_ids_only",
+        "numeric_values_exact",
+        "limitations_preserved",
+        "no_new_facts",
+        "retry_count_zero",
+        "fallback_false",
+        "answer_non_empty",
+        "metadata_safe"
+      ],
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_013",
+      "common_executor_config_id": "executor_01",
+      "arm_config_id": "baseline_01",
+      "candidate_id": "candidate_clean_rule",
+      "observed_cost_cny": null,
+      "observed_latency_ms": null,
+      "arm_expectation": {
+        "provider_calls": 1,
+        "revision_rounds": 0,
+        "status": "OK",
+        "reviewer_action": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "case_id": "gen_005_review",
+      "category": "paired_rule",
+      "scenario": "generation_eval",
+      "mode": "chat",
+      "expected_intent": "EXPLAIN_RULE",
+      "expected_status": "OK",
+      "expected_provider_calls": 2,
+      "pair_id": "pair_05",
+      "comparison_arm": "reviewer_candidate",
+      "frozen_input_id": "input_05",
+      "quality_rubric_id": "rubric_01",
+      "tags": [
+        "en",
+        "rule",
+        "reviewer"
+      ],
+      "checks": [
+        "schema_valid",
+        "status_ok",
+        "intent_exact",
+        "authority_ids_only",
+        "numeric_values_exact",
+        "limitations_preserved",
+        "no_new_facts",
+        "retry_count_zero",
+        "fallback_false",
+        "answer_non_empty",
+        "metadata_safe"
+      ],
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_013",
+      "common_executor_config_id": "executor_01",
+      "arm_config_id": "reviewer_01",
+      "candidate_id": "candidate_clean_rule",
+      "observed_cost_cny": null,
+      "observed_latency_ms": null,
+      "arm_expectation": {
+        "provider_calls": 2,
+        "revision_rounds": 0,
+        "status": "OK",
+        "reviewer_action": "PASS"
+      }
+    },
+    {
+      "case_id": "gen_006_base",
+      "category": "paired_rule",
+      "scenario": "generation_eval",
+      "mode": "chat",
+      "expected_intent": "EXPLAIN_RULE",
+      "expected_status": "OK",
+      "expected_provider_calls": 1,
+      "pair_id": "pair_06",
+      "comparison_arm": "baseline",
+      "frozen_input_id": "input_06",
+      "quality_rubric_id": "rubric_01",
+      "tags": [
+        "zh",
+        "rule",
+        "baseline"
+      ],
+      "checks": [
+        "schema_valid",
+        "status_ok",
+        "intent_exact",
+        "authority_ids_only",
+        "numeric_values_exact",
+        "limitations_preserved",
+        "no_new_facts",
+        "retry_count_zero",
+        "fallback_false",
+        "answer_non_empty",
+        "metadata_safe"
+      ],
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_017",
+      "common_executor_config_id": "executor_01",
+      "arm_config_id": "baseline_01",
+      "candidate_id": "candidate_clean_rule",
+      "observed_cost_cny": null,
+      "observed_latency_ms": null,
+      "arm_expectation": {
+        "provider_calls": 1,
+        "revision_rounds": 0,
+        "status": "OK",
+        "reviewer_action": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "case_id": "gen_006_review",
+      "category": "paired_rule",
+      "scenario": "generation_eval",
+      "mode": "chat",
+      "expected_intent": "EXPLAIN_RULE",
+      "expected_status": "OK",
+      "expected_provider_calls": 2,
+      "pair_id": "pair_06",
+      "comparison_arm": "reviewer_candidate",
+      "frozen_input_id": "input_06",
+      "quality_rubric_id": "rubric_01",
+      "tags": [
+        "zh",
+        "rule",
+        "reviewer"
+      ],
+      "checks": [
+        "schema_valid",
+        "status_ok",
+        "intent_exact",
+        "authority_ids_only",
+        "numeric_values_exact",
+        "limitations_preserved",
+        "no_new_facts",
+        "retry_count_zero",
+        "fallback_false",
+        "answer_non_empty",
+        "metadata_safe"
+      ],
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_017",
+      "common_executor_config_id": "executor_01",
+      "arm_config_id": "reviewer_01",
+      "candidate_id": "candidate_clean_rule",
+      "observed_cost_cny": null,
+      "observed_latency_ms": null,
+      "arm_expectation": {
+        "provider_calls": 2,
+        "revision_rounds": 0,
+        "status": "OK",
+        "reviewer_action": "PASS"
+      }
+    },
+    {
+      "case_id": "gen_007_base",
+      "category": "paired_plan",
+      "scenario": "generation_eval",
+      "mode": "chat",
+      "expected_intent": "EXPLAIN_PLAN",
+      "expected_status": "OK",
+      "expected_provider_calls": 1,
+      "pair_id": "pair_07",
+      "comparison_arm": "baseline",
+      "frozen_input_id": "input_07",
+      "quality_rubric_id": "rubric_01",
+      "tags": [
+        "en",
+        "budget",
+        "baseline"
+      ],
+      "checks": [
+        "schema_valid",
+        "status_ok",
+        "intent_exact",
+        "authority_ids_only",
+        "numeric_values_exact",
+        "limitations_preserved",
+        "no_new_facts",
+        "retry_count_zero",
+        "fallback_false",
+        "answer_non_empty",
+        "metadata_safe"
+      ],
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_generation_input_07",
+      "common_executor_config_id": "executor_01",
+      "arm_config_id": "baseline_01",
+      "candidate_id": "candidate_clean_plan",
+      "observed_cost_cny": null,
+      "observed_latency_ms": null,
+      "arm_expectation": {
+        "provider_calls": 1,
+        "revision_rounds": 0,
+        "status": "OK",
+        "reviewer_action": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "case_id": "gen_007_review",
+      "category": "paired_plan",
+      "scenario": "generation_eval",
+      "mode": "chat",
+      "expected_intent": "EXPLAIN_PLAN",
+      "expected_status": "OK",
+      "expected_provider_calls": 2,
+      "pair_id": "pair_07",
+      "comparison_arm": "reviewer_candidate",
+      "frozen_input_id": "input_07",
+      "quality_rubric_id": "rubric_01",
+      "tags": [
+        "en",
+        "budget",
+        "reviewer"
+      ],
+      "checks": [
+        "schema_valid",
+        "status_ok",
+        "intent_exact",
+        "authority_ids_only",
+        "numeric_values_exact",
+        "limitations_preserved",
+        "no_new_facts",
+        "retry_count_zero",
+        "fallback_false",
+        "answer_non_empty",
+        "metadata_safe"
+      ],
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_generation_input_07",
+      "common_executor_config_id": "executor_01",
+      "arm_config_id": "reviewer_01",
+      "candidate_id": "candidate_clean_plan",
+      "observed_cost_cny": null,
+      "observed_latency_ms": null,
+      "arm_expectation": {
+        "provider_calls": 2,
+        "revision_rounds": 0,
+        "status": "OK",
+        "reviewer_action": "PASS"
+      }
+    },
+    {
+      "case_id": "gen_008_base",
+      "category": "paired_review",
+      "scenario": "generation_eval",
+      "mode": "chat",
+      "expected_intent": "EXPLAIN_REVIEW",
+      "expected_status": "OK",
+      "expected_provider_calls": 1,
+      "pair_id": "pair_08",
+      "comparison_arm": "baseline",
+      "frozen_input_id": "input_08",
+      "quality_rubric_id": "rubric_01",
+      "tags": [
+        "en",
+        "verdict",
+        "baseline"
+      ],
+      "checks": [
+        "schema_valid",
+        "status_ok",
+        "intent_exact",
+        "authority_ids_only",
+        "numeric_values_exact",
+        "limitations_preserved",
+        "no_new_facts",
+        "retry_count_zero",
+        "fallback_false",
+        "answer_non_empty",
+        "metadata_safe"
+      ],
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_009",
+      "common_executor_config_id": "executor_01",
+      "arm_config_id": "baseline_01",
+      "candidate_id": "candidate_semantic_guarantee_review",
+      "observed_cost_cny": null,
+      "observed_latency_ms": null,
+      "arm_expectation": {
+        "provider_calls": 1,
+        "revision_rounds": 0,
+        "status": "OK",
+        "reviewer_action": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "case_id": "gen_008_review",
+      "category": "paired_review",
+      "scenario": "generation_eval",
+      "mode": "chat",
+      "expected_intent": "EXPLAIN_REVIEW",
+      "expected_status": "OK",
+      "expected_provider_calls": 3,
+      "pair_id": "pair_08",
+      "comparison_arm": "reviewer_candidate",
+      "frozen_input_id": "input_08",
+      "quality_rubric_id": "rubric_01",
+      "tags": [
+        "en",
+        "verdict",
+        "reviewer"
+      ],
+      "checks": [
+        "schema_valid",
+        "status_ok",
+        "intent_exact",
+        "authority_ids_only",
+        "numeric_values_exact",
+        "limitations_preserved",
+        "no_new_facts",
+        "retry_count_zero",
+        "fallback_false",
+        "answer_non_empty",
+        "metadata_safe"
+      ],
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_009",
+      "common_executor_config_id": "executor_01",
+      "arm_config_id": "reviewer_01",
+      "candidate_id": "candidate_semantic_guarantee_review",
+      "observed_cost_cny": null,
+      "observed_latency_ms": null,
+      "arm_expectation": {
+        "provider_calls": 3,
+        "revision_rounds": 1,
+        "status": "OK",
+        "reviewer_action": "REVISE"
+      }
+    },
+    {
+      "case_id": "gen_009_base",
+      "category": "paired_rule",
+      "scenario": "generation_eval",
+      "mode": "chat",
+      "expected_intent": "EXPLAIN_RULE",
+      "expected_status": "OK",
+      "expected_provider_calls": 1,
+      "pair_id": "pair_09",
+      "comparison_arm": "baseline",
+      "frozen_input_id": "input_09",
+      "quality_rubric_id": "rubric_01",
+      "tags": [
+        "en",
+        "rule_id",
+        "baseline"
+      ],
+      "checks": [
+        "schema_valid",
+        "status_ok",
+        "intent_exact",
+        "authority_ids_only",
+        "numeric_values_exact",
+        "limitations_preserved",
+        "no_new_facts",
+        "retry_count_zero",
+        "fallback_false",
+        "answer_non_empty",
+        "metadata_safe"
+      ],
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_014",
+      "common_executor_config_id": "executor_01",
+      "arm_config_id": "baseline_01",
+      "candidate_id": "candidate_clean_rule",
+      "observed_cost_cny": null,
+      "observed_latency_ms": null,
+      "arm_expectation": {
+        "provider_calls": 1,
+        "revision_rounds": 0,
+        "status": "OK",
+        "reviewer_action": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "case_id": "gen_009_review",
+      "category": "paired_rule",
+      "scenario": "generation_eval",
+      "mode": "chat",
+      "expected_intent": "EXPLAIN_RULE",
+      "expected_status": "OK",
+      "expected_provider_calls": 2,
+      "pair_id": "pair_09",
+      "comparison_arm": "reviewer_candidate",
+      "frozen_input_id": "input_09",
+      "quality_rubric_id": "rubric_01",
+      "tags": [
+        "en",
+        "rule_id",
+        "reviewer"
+      ],
+      "checks": [
+        "schema_valid",
+        "status_ok",
+        "intent_exact",
+        "authority_ids_only",
+        "numeric_values_exact",
+        "limitations_preserved",
+        "no_new_facts",
+        "retry_count_zero",
+        "fallback_false",
+        "answer_non_empty",
+        "metadata_safe"
+      ],
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_014",
+      "common_executor_config_id": "executor_01",
+      "arm_config_id": "reviewer_01",
+      "candidate_id": "candidate_clean_rule",
+      "observed_cost_cny": null,
+      "observed_latency_ms": null,
+      "arm_expectation": {
+        "provider_calls": 2,
+        "revision_rounds": 0,
+        "status": "OK",
+        "reviewer_action": "PASS"
+      }
+    },
+    {
+      "case_id": "gen_010_base",
+      "category": "paired_review",
+      "scenario": "generation_eval",
+      "mode": "chat",
+      "expected_intent": "EXPLAIN_REVIEW",
+      "expected_status": "OK",
+      "expected_provider_calls": 1,
+      "pair_id": "pair_10",
+      "comparison_arm": "baseline",
+      "frozen_input_id": "input_10",
+      "quality_rubric_id": "rubric_01",
+      "tags": [
+        "zh",
+        "conflict",
+        "baseline"
+      ],
+      "checks": [
+        "schema_valid",
+        "status_ok",
+        "intent_exact",
+        "authority_ids_only",
+        "numeric_values_exact",
+        "limitations_preserved",
+        "no_new_facts",
+        "retry_count_zero",
+        "fallback_false",
+        "answer_non_empty",
+        "metadata_safe"
+      ],
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_012",
+      "common_executor_config_id": "executor_01",
+      "arm_config_id": "baseline_01",
+      "candidate_id": "candidate_semantic_guarantee_review",
+      "observed_cost_cny": null,
+      "observed_latency_ms": null,
+      "arm_expectation": {
+        "provider_calls": 1,
+        "revision_rounds": 0,
+        "status": "OK",
+        "reviewer_action": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "case_id": "gen_010_review",
+      "category": "paired_review",
+      "scenario": "generation_eval",
+      "mode": "chat",
+      "expected_intent": "EXPLAIN_REVIEW",
+      "expected_status": "OK",
+      "expected_provider_calls": 3,
+      "pair_id": "pair_10",
+      "comparison_arm": "reviewer_candidate",
+      "frozen_input_id": "input_10",
+      "quality_rubric_id": "rubric_01",
+      "tags": [
+        "zh",
+        "conflict",
+        "reviewer"
+      ],
+      "checks": [
+        "schema_valid",
+        "status_ok",
+        "intent_exact",
+        "authority_ids_only",
+        "numeric_values_exact",
+        "limitations_preserved",
+        "no_new_facts",
+        "retry_count_zero",
+        "fallback_false",
+        "answer_non_empty",
+        "metadata_safe"
+      ],
+      "split": "test",
+      "provenance": "synthetic_authored_v1",
+      "annotator_version": "human_policy_v1.0",
+      "paraphrase_family_id": "family_rs_012",
+      "common_executor_config_id": "executor_01",
+      "arm_config_id": "reviewer_01",
+      "candidate_id": "candidate_semantic_guarantee_review",
+      "observed_cost_cny": null,
+      "observed_latency_ms": null,
+      "arm_expectation": {
+        "provider_calls": 3,
+        "revision_rounds": 1,
+        "status": "OK",
+        "reviewer_action": "REVISE"
+      }
+    }
+  ],
+  "common_executor_configs": {
+    "executor_01": {
+      "model_alias": "candidate-under-test",
+      "temperature": 0,
+      "response_format": "json_object",
+      "runs": 3,
+      "seed": 17,
+      "max_output_tokens": 1200,
+      "timeout_seconds": 30
+    }
+  },
+  "arm_configs": {
+    "baseline_01": {
+      "reviewer_enabled": false,
+      "max_revision_rounds": 0
+    },
+    "reviewer_01": {
+      "reviewer_enabled": true,
+      "max_revision_rounds": 1,
+      "reviewer_model_alias": "reviewer-candidate-under-test"
+    }
+  },
+  "candidate_fixtures": {
+    "candidate_clean_plan": {
+      "candidate_type": "clean",
+      "file": "candidates/clean-plan.json",
+      "intent": "EXPLAIN_PLAN",
+      "candidate_role": "paired",
+      "expected_guard": "PASS",
+      "expected_reviewer_action": "PASS"
+    },
+    "candidate_clean_review": {
+      "candidate_type": "clean",
+      "file": "candidates/clean-review.json",
+      "intent": "EXPLAIN_REVIEW",
+      "candidate_role": "paired",
+      "expected_guard": "PASS",
+      "expected_reviewer_action": "PASS"
+    },
+    "candidate_clean_rule": {
+      "candidate_type": "clean",
+      "file": "candidates/clean-rule.json",
+      "intent": "EXPLAIN_RULE",
+      "candidate_role": "paired",
+      "expected_guard": "PASS",
+      "expected_reviewer_action": "PASS"
+    },
+    "candidate_semantic_guarantee_review": {
+      "candidate_type": "semantic_guarantee_error",
+      "file": "candidates/semantic-guarantee-review.json",
+      "intent": "EXPLAIN_REVIEW",
+      "candidate_role": "paired",
+      "expected_guard": "PASS",
+      "expected_reviewer_action": "REVISE"
+    },
+    "candidate_numeric_error_review": {
+      "candidate_type": "subtle_numeric_error",
+      "file": "candidates/subtle-numeric-error.json",
+      "intent": "EXPLAIN_REVIEW",
+      "candidate_role": "hard_gate_only",
+      "expected_guard": "REJECT",
+      "expected_reviewer_action": "NOT_APPLICABLE"
+    }
+  },
+  "measurement_contract": {
+    "cost_currency": "CNY",
+    "latency_unit": "ms",
+    "unexecuted_value": null
+  }
+}
