@@ -3,10 +3,14 @@ from __future__ import annotations
 
 import json
 import math
-import operator
-import re
 from pathlib import Path
 from typing import Any
+
+from campaign_optimizer.ontology.condition_evaluator import (
+    EvaluationStatus,
+    evaluate_condition,
+    missing_required_concepts,
+)
 
 from .concept_authority import validate_rule_fact_semantics
 from .validation import ContractValidationError
@@ -19,16 +23,14 @@ PERIOD_ALIASES = {
     "snapshot": {"snapshot", "current_snapshot"},
     "mock": {"mock"},
 }
-OPERATORS = {
-    ">": operator.gt,
-    ">=": operator.ge,
-    "<": operator.lt,
-    "<=": operator.le,
-    "==": operator.eq,
-    "!=": operator.ne,
-}
-BASELINE_REF = re.compile(r"^baseline(?:\*([0-9]+(?:\.[0-9]+)?))?$")
 RULE_BEARING_VERDICTS = {"SUPPORT", "CONFLICT", "NOT_APPLICABLE"}
+CONFIDENCE_BLOCKERS = {
+    "runtime_confidence_state",
+    "active_confidence_state",
+    "minimum_usable_confidence",
+    "finite_runtime_confidence",
+    "base_confidence",
+}
 
 
 def load_rule_card(rule_id: str, rules_dir: Path = RULES_DIR) -> dict[str, Any]:
@@ -57,70 +59,16 @@ def latest_rule_version(card: dict[str, Any]) -> str:
     return version
 
 
-def _missing_required_concepts(value: Any, matched: set[str]) -> set[str]:
-    """按all/any语义返回最小缺失概念集合，避免把any错误当成all。"""
-    if isinstance(value, dict):
-        concept = value.get("concept")
-        if isinstance(concept, str):
-            return set() if concept in matched else {concept}
-        if isinstance(value.get("all"), list):
-            missing: set[str] = set()
-            for child in value["all"]:
-                missing.update(_missing_required_concepts(child, matched))
-            return missing
-        if isinstance(value.get("any"), list):
-            candidates = [
-                _missing_required_concepts(child, matched) for child in value["any"]
-            ]
-            if not candidates or any(not candidate for candidate in candidates):
-                return set()
-            return min(candidates, key=lambda candidate: (len(candidate), sorted(candidate)))
-    return set()
-
-
-def _resolve_ref(condition: dict[str, Any], fact: dict[str, Any]) -> Any | None:
-    ref = condition["ref"]
-    if not isinstance(ref, str):
-        return ref
-    match = BASELINE_REF.fullmatch(ref)
-    if match is None:
-        return None
-    baseline = fact.get("baseline_value")
-    if not isinstance(baseline, (int, float)) or isinstance(baseline, bool):
-        return None
-    factor = float(match.group(1)) if match.group(1) is not None else 1.0
-    return baseline * factor
-
-
 def _evaluate_trigger(
     condition: dict[str, Any], facts_by_concept: dict[str, dict[str, Any]]
 ) -> bool | None:
-    """返回True/False；缺事实或baseline时返回None。"""
-    if "concept" in condition:
-        fact = facts_by_concept.get(condition["concept"])
-        if fact is None:
-            return None
-        ref = _resolve_ref(condition, fact)
-        value = fact.get("value")
-        if ref is None or value is None:
-            return None
-        try:
-            return bool(OPERATORS[condition["op"]](value, ref))
-        except (KeyError, TypeError):
-            return None
-
-    key = "all" if "all" in condition else "any"
-    children = condition.get(key, [])
-    if not children:
-        return None
-    outcomes = [_evaluate_trigger(child, facts_by_concept) for child in children]
-    if key == "all":
-        if False in outcomes:
-            return False
-        return None if None in outcomes else True
-    if True in outcomes:
+    """Backward-compatible bool/None projection of the shared evaluator."""
+    status = evaluate_condition(condition, facts_by_concept).status
+    if status == EvaluationStatus.MATCHED:
         return True
-    return None if None in outcomes else False
+    if status == EvaluationStatus.NOT_MATCHED:
+        return False
+    return None
 
 
 def public_rule_from_card(card: dict[str, Any]) -> dict[str, Any]:
@@ -142,6 +90,71 @@ def public_rule_from_card(card: dict[str, Any]) -> dict[str, Any]:
         },
         "limitations": list(card.get("known_limitations", [])),
     }
+
+
+def _validate_insufficient_item(
+    item: dict[str, Any],
+    card: dict[str, Any],
+    plan_items: dict[str, dict[str, Any]],
+    review_facts: dict[str, dict[str, Any]],
+    errors: list[str],
+) -> None:
+    item_id = item["review_item_id"]
+    plan_item = plan_items.get(item["plan_item_id"])
+    if plan_item is None:
+        errors.append(f"{item_id} references an unknown plan item")
+        return
+    if plan_item["entity_type"] != card["evaluation_grain"]["entity"]:
+        errors.append(f"{item_id} insufficient review has the wrong entity grain")
+
+    unknown_fact_ids = sorted(set(item["matched_fact_ids"]) - set(review_facts))
+    if unknown_fact_ids:
+        errors.append(f"{item_id} references unknown review facts: {', '.join(unknown_fact_ids)}")
+    matched_facts = [
+        review_facts[fact_id]
+        for fact_id in item["matched_fact_ids"]
+        if fact_id in review_facts
+    ]
+    if any(fact["plan_item_id"] != item["plan_item_id"] for fact in matched_facts):
+        errors.append(f"{item_id} references facts from another plan item")
+    names = [fact["name"] for fact in matched_facts]
+    duplicates = sorted({name for name in names if names.count(name) > 1})
+    if duplicates:
+        errors.append(f"{item_id} repeats rule concepts: {', '.join(duplicates)}")
+
+    facts_by_concept = {fact["name"]: fact for fact in matched_facts}
+    evaluation = evaluate_condition(card["trigger_condition"], facts_by_concept)
+    if evaluation.status == EvaluationStatus.NOT_MATCHED:
+        errors.append(f"{item_id} cannot claim insufficient evidence for a non-matched rule")
+
+    expected_missing = missing_required_concepts(
+        card["trigger_condition"], set(facts_by_concept)
+    )
+    if set(item["missing_evidence"]) != expected_missing:
+        errors.append(f"{item_id} does not truthfully report missing evidence")
+    allowed_parameters = set(evaluation.missing_rule_parameters).union(CONFIDENCE_BLOCKERS)
+    reported_parameters = set(item["missing_rule_parameters"])
+    if not reported_parameters.issubset(allowed_parameters):
+        errors.append(f"{item_id} reports unsupported missing rule parameters")
+    if evaluation.status == EvaluationStatus.MATCHED and not reported_parameters:
+        errors.append(f"{item_id} matched the rule and lacks a confidence blocker")
+
+    errors.extend(
+        f"{item_id}: {error}"
+        for error in validate_rule_fact_semantics(card["trigger_condition"], matched_facts)
+    )
+    grain = card["evaluation_grain"]["time"]
+    allowed_periods = PERIOD_ALIASES.get(grain, {grain})
+    if any(fact["period"] not in allowed_periods for fact in matched_facts):
+        errors.append(f"{item_id} insufficient evidence uses an incompatible period")
+
+    base = item["base_confidence"]
+    card_base = card.get("confidence")
+    if base is not None and (
+        not isinstance(card_base, (int, float))
+        or not math.isclose(base, card_base, rel_tol=0, abs_tol=1e-9)
+    ):
+        errors.append(f"{item_id} base confidence does not match the rule card")
 
 
 def validate_authoritative_review(
@@ -181,6 +194,9 @@ def validate_authoritative_review(
         if actual_public != expected_public:
             errors.append(f"{rule_id}公开规则上下文不是由权威规则卡确定性导出")
 
+        if item["verdict"] == "INSUFFICIENT_EVIDENCE":
+            _validate_insufficient_item(item, card, plan_items, review_facts, errors)
+            continue
         if item["verdict"] not in RULE_BEARING_VERDICTS:
             continue
 
@@ -237,7 +253,7 @@ def validate_authoritative_review(
                 + ", ".join(duplicate_concepts)
             )
         facts_by_concept = {fact["name"]: fact for fact in matched_facts}
-        missing_concepts = _missing_required_concepts(
+        missing_concepts = missing_required_concepts(
             card.get("trigger_condition", {}), set(facts_by_concept)
         )
         if missing_concepts:

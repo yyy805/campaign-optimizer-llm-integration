@@ -16,17 +16,17 @@
 - GOOD/FINE/BAD运行时置信度状态机；
 - 8份MTA材料清单检查；
 - GitHub私有仓库、PR模板和离线CI；
-- G1/G2安全退役，避免使用不存在或量纲不一致的字段。
+- G1/G2标记为 `PENDING_INPUT_CONTRACT`：保留设计意图，但在最终方案契约补齐出价、每日预算等字段前不参与运行时评价。
 
 ## 2. 当前关键缺口
 
-目前系统能验证一份 `ontology_review` 是否真实、合法，但该文件仍由Fixture预先写好。缺少自动读取最终方案和事实、遍历规则并生成评价的Review Engine。
+系统已具备 R5-only Review Engine v1：可自动读取最终方案和评价事实、确定性匹配 R5，并生成和复核 `ontology_review`。其余规则接入、MTA Evidence Adapter 与反馈持久化仍待完成。
 
-这意味着本体“定义和验真”已经完成，尚未完成“自动出评价”。
+这意味着 R5 的“定义、自动评价和验真”已经完成；尚未完成的是 MTA 原始输出适配、其他规则接入和反馈状态持久化。
 
 ## 3. 工作包与顺序
 
-### WP1：Review Engine
+### WP1：Review Engine（R5 v1已完成）
 
 **负责人：本体团队**
 
@@ -88,9 +88,20 @@ scripts/build_mta_review_evidence.py
 验收命令：
 
 ```powershell
-uv run pytest tests/test_r5_review_engine_e2e.py -q
+uv run pytest tests/test_review_engine.py -q
 uv run pytest -q
 ```
+
+Demo CLI：
+
+```powershell
+uv run python scripts/generate_ontology_review.py `
+  tests/fixtures/plan_a/final_plan.demo.json `
+  ontology_review.generated.json `
+  --confidence-state tests/fixtures/plan_a/confidence_state.r5.demo.json
+```
+
+未提供可验证的运行时 `confidence_state` 时，引擎只生成 `INSUFFICIENT_EVIDENCE`，不得用规则卡基础置信度冒充当前运行状态。
 
 ### WP4：反馈持久化
 

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import math
 from pathlib import Path
 from typing import Any
 
@@ -63,6 +64,9 @@ def validate_rule_fact_semantics(
         if value_type == "number":
             if not isinstance(value, (int, float)) or isinstance(value, bool):
                 errors.append(f"{fact['fact_id']}必须是概念{concept_id}的数值")
+                continue
+            if not math.isfinite(value):
+                errors.append(f"{fact['fact_id']} must be finite for concept {concept_id}")
                 continue
             lower, upper = card["value_range"]
             if lower is not None and value < lower:
