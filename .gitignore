@@ -14,13 +14,30 @@ wheels/
 .env
 .env.*
 !.env.example
+.secrets/
+secrets.*
+credentials.*
+*.key
+*.pem
+*.p12
+*.pfx
 
 # Test, coverage, logs, and local databases
 .pytest_cache/
 .coverage
+.coverage.*
+coverage.xml
 htmlcov/
+logs/
 *.log
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
 *.sqlite3
+*.sqlite3-shm
+*.sqlite3-wal
+*.db-shm
+*.db-wal
 *.db
 
 # Local AI/BMAD/IDE material; curated results belong in docs/
@@ -31,6 +48,8 @@ htmlcov/
 _bmad/
 _bmad-output/
 design-artifacts/
+.idea/
+.vscode/
 *.code-workspace
 *.zip
 BMAD操作指南*.md
