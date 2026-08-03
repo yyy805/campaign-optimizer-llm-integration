@@ -13,6 +13,14 @@ from .qwen_client import (
     TransportResponse,
     UrllibTransport,
 )
+from .retriever import (
+    BailianKnowledgeRetriever,
+    LocalRuleRetriever,
+    RetrievalError,
+    RetrievalErrorCode,
+    RetrievalResult,
+    Retriever,
+)
 
 __all__ = [
     "FALLBACK_MESSAGE",
@@ -26,4 +34,10 @@ __all__ = [
     "TransportRequest",
     "TransportResponse",
     "UrllibTransport",
+    "BailianKnowledgeRetriever",
+    "LocalRuleRetriever",
+    "RetrievalError",
+    "RetrievalErrorCode",
+    "RetrievalResult",
+    "Retriever",
 ]
