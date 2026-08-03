@@ -21,6 +21,18 @@ from .retriever import (
     RetrievalResult,
     Retriever,
 )
+from .orchestrator import ChatClient, LocalLLMOrchestrator
+from .output_guard import OutputGuard
+from .prompt_builder import PromptBuilder
+from .request_builder import (
+    EXPLAIN_INTENTS,
+    REFUSAL_INTENTS,
+    SUPPORTED_INTENTS,
+    LLMVersions,
+    RequestArtifacts,
+    RequestBuilder,
+    trim_chat_history,
+)
 
 __all__ = [
     "FALLBACK_MESSAGE",
@@ -40,4 +52,15 @@ __all__ = [
     "RetrievalErrorCode",
     "RetrievalResult",
     "Retriever",
+    "ChatClient",
+    "LocalLLMOrchestrator",
+    "OutputGuard",
+    "PromptBuilder",
+    "EXPLAIN_INTENTS",
+    "REFUSAL_INTENTS",
+    "SUPPORTED_INTENTS",
+    "LLMVersions",
+    "RequestArtifacts",
+    "RequestBuilder",
+    "trim_chat_history",
 ]
