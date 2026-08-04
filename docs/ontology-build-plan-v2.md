@@ -2,7 +2,7 @@
 
 **状态：当前权威执行计划**
 
-**日期：2026-08-03**
+**更新日期：2026-08-04**
 
 架构依据：[`architecture/ontology-review-only-v2.md`](architecture/ontology-review-only-v2.md)。
 
@@ -20,9 +20,9 @@
 
 ## 2. 当前关键缺口
 
-系统已具备 R5-only Review Engine v1：可自动读取最终方案和评价事实、确定性匹配 R5，并生成和复核 `ontology_review`。其余规则接入、MTA Evidence Adapter 与反馈持久化仍待完成。
+系统已具备 R5-only Review Engine v1：可自动读取最终方案和评价事实、确定性匹配 R5，并生成和复核 `ontology_review`。其余规则接入、反馈持久化与真实最终方案联调仍待完成。
 
-这意味着 R5 的“定义、自动评价和验真”已经完成；尚未完成的是 MTA 原始输出适配、其他规则接入和反馈状态持久化。
+MTA 组提供的 `initial_budget_recommendation.json` 是 `INITIAL_SEED`、`is_optimized=false` 的中间产物，只作为上游模型产物归档，不直接触发本体 Review。当前不建设 MTA→本体 Evidence Adapter；只有完整小模型链路的最终方案不符合 `final_plan` 契约时，才建设不增加业务计算的薄映射层。
 
 ## 3. 工作包与顺序
 
@@ -48,38 +48,24 @@ campaign_optimizer/ontology/review_engine.py
 
 验收：相同输入重复运行结果完全一致；不调用Qwen或任何外部API。
 
-### WP2：MTA Evidence Adapter
+### WP2：上游产物归档与最终方案契约（替代旧 MTA Evidence Adapter）
 
-**负责人：本体团队，MTA团队提供字段解释**
+**负责人：小模型链路团队提供契约，本体团队维护消费边界**
 
-新增建议路径：
+实现边界：
 
-```text
-campaign_optimizer/adapters/mta_review_evidence.py
-scripts/build_mta_review_evidence.py
-```
+- `INITIAL_SEED` 等中间结果原样保存为 `model_artifacts`，保留版本、哈希、周期、来源和上下游关联；
+- 只有通过 `final_plan` 契约的完整小模型链路最终方案才能触发 Review Engine；
+- Review 所需公开事实由最终链路契约提供，不从中间 MTA 文件推断或补算；
+- 如最终输出仅存在字段命名/封装差异，可以建设薄 Adapter；Adapter 不得计算 contribution_share、spend_share、attribution_divergence 或其他业务指标。
 
-实现：
-
-- 读取manifest声明的MTA结果文件；
-- 将MTA公开字段映射为concept_id；
-- 输出标准review_evidence；
-- 保留source、period、entity、unit和模型口径；
-- 不复刻Markov/Shapley内部计算。
-
-首批只满足R5所需的：
-
-- contribution_share；
-- spend_share；
-- attribution_divergence。
-
-验收：同一报告窗口和同一channel的三个事实可以被R5共同消费。
+验收：中间产物不能误触发 Review；最终方案及公开证据能被契约 Gate 验证并追溯到上游 artifact。
 
 ### WP3：R5端到端纵向切片
 
 **负责人：本体团队；后端协助触发**
 
-输入：一份最终预算方案和MTA公开结果。
+输入：一份通过契约验证的最终预算方案和最终链路公开评价事实。
 
 输出：Review Engine自动生成并经Gate验证的 `ontology_review.json`。
 
@@ -103,16 +89,19 @@ uv run python scripts/generate_ontology_review.py `
 
 未提供可验证的运行时 `confidence_state` 时，引擎只生成 `INSUFFICIENT_EVIDENCE`，不得用规则卡基础置信度冒充当前运行状态。
 
-### WP4：反馈持久化
+### WP4：运行时数据库与反馈持久化
 
 **负责人：本体团队/后端团队**
 
-Demo使用SQLite保存：
+本地 Demo 使用 SQLite，部署目标为 PolarDB for PostgreSQL。Git 中的本体发布包仍是概念卡、规则卡和反馈策略的权威来源；数据库保存运行快照、反馈状态和审计记录。
 
-- confidence_state；
-- processed feedback digest；
-- 状态变更时间；
-- PENDING_HUMAN_REVIEW原因。
+首批保存：
+
+- model artifacts；
+- final plan及条目；
+- ontology review及条目；
+- feedback events与confidence state；
+- plan ACCEPT/REJECT事件。
 
 验收：重启程序后置信度和已处理反馈仍存在；重复事件不重复计分，篡改事件被拒绝。
 
@@ -167,16 +156,17 @@ llm_context.json
 
 ```text
 P0  Review Engine
-P0  MTA Evidence Adapter
+P0  上游产物归档边界与最终方案契约确认
 P0  R5端到端测试
-P1  feedback SQLite持久化
+P0  SQLite运行时数据库与feedback持久化
+P1  PolarDB迁移和真实环境烟测
 P1  维护指南
 P2  R1–R6其他适配
 P2  护栏重新激活评估
 P2  R7真实预测替换
 ```
 
-在WP1–WP3完成前，不继续扩充概念卡和规则卡数量。
+在WP1–WP4完成前，不继续扩充概念卡和规则卡数量。
 
 ## 6. 当前完成定义
 
