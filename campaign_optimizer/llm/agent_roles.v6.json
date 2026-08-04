@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "configuration_version": "agent_roles_v6",
+  "model_aliases": {
+    "triage": "qwen3.7-plus",
+    "executor": "qwen3.7-max",
+    "reviewer": "qwen3.8-max-preview"
+  },
+  "prompt_artifacts": {
+    "triage": "triage_v2.md",
+    "executor": "executor_v3.md",
+    "reviewer": "reviewer_v3.md"
+  },
+  "expected_prompt_hashes": {
+    "triage": "9bd3e1d3569ebd1e03927e45e25ed500bb9922be6769b0ee7faf74aaad0ead9a",
+    "executor": "e0a92289f3e4ea7a7830685b54e473ee7dd863ed9a2184583bacfbb5c72dd2c3",
+    "reviewer": "690c8bf249db34fb73bb1be30195c871cbf25cb5f8c4ab1f72773d00edbe0995"
+  },
+  "output_contract_prompt_version": "draft-1.0",
+  "routing": {
+    "triage_only_for_ambiguous_chat": true,
+    "minimum_confidence": 0.8
+  },
+  "revision_profiles": {
+    "baseline": 0,
+    "production_candidate": 1,
+    "experiment": 3,
+    "stress_only": 5
+  }
+}
