@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MTA to Ontology Field Mapping",
+  "type": "object",
+  "required": ["mapping_id", "version", "datasets", "mappings", "requests"],
+  "additionalProperties": false,
+  "properties": {
+    "mapping_id": {"const": "mta_ontology_demo_field_mapping"},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "datasets": {
+      "type": "array", "minItems": 8,
+      "items": {
+        "type": "object", "required": ["dataset_id", "path", "grain", "time_window", "key_fields", "expected_headers", "owner"],
+        "additionalProperties": false,
+        "properties": {
+          "dataset_id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+          "path": {"type": "string", "minLength": 5},
+          "grain": {"type": "string", "minLength": 3},
+          "time_window": {"type": "string", "minLength": 3},
+          "key_fields": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+          "expected_headers": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+          "owner": {"const": "mta_team"}
+        }
+      }
+    },
+    "mappings": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["mapping_id", "concept_id", "etl_identifier", "strategy", "source_dataset", "source_fields", "source_grain", "target_grain", "time_window", "transform", "null_behavior", "supported_rules", "ownership", "status", "blocker", "workaround"],
+        "additionalProperties": false,
+        "properties": {
+          "mapping_id": {"type": "string", "pattern": "^FM-[A-Z0-9-]+$"},
+          "concept_id": {"type": ["string", "null"]},
+          "etl_identifier": {"type": ["string", "null"]},
+          "strategy": {"enum": ["direct", "rename", "derived", "aggregate", "unsupported_grain", "demo_mock", "owned_outside_mta"]},
+          "source_dataset": {"type": ["string", "null"]},
+          "source_fields": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+          "source_grain": {"type": "string"},
+          "target_grain": {"type": "string"},
+          "time_window": {"type": "string"},
+          "transform": {"type": "string", "minLength": 3},
+          "null_behavior": {"type": "string", "minLength": 3},
+          "supported_rules": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^R[1-7]$"}},
+          "ownership": {"enum": ["ontology_team", "mta_team", "prediction_team", "optimization_team", "shared_pending_agreement"]},
+          "status": {"enum": ["reusable", "derived", "blocked", "mock", "outside_mta"]},
+          "blocker": {"type": ["string", "null"]},
+          "workaround": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "requests": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "required": ["request_id", "category", "owner", "fields", "reason"],
+        "additionalProperties": false,
+        "properties": {
+          "request_id": {"type": "string", "pattern": "^REQ-[0-9]{2}$"},
+          "category": {"enum": ["must_have", "optional", "outside_mta"]},
+          "owner": {"enum": ["mta_team", "ontology_team", "prediction_team", "optimization_team", "shared_pending_agreement"]},
+          "fields": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+          "reason": {"type": "string", "minLength": 10}
+        }
+      }
+    }
+  }
+}

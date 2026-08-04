@@ -1,0 +1,29 @@
+{
+  "concept_id": "roas",
+  "name_cn": "广告投产比",
+  "name_en": "ROAS",
+  "layer": "L5",
+  "tier": "derived",
+  "caliber": "platform",
+  "definition": "平台口径下的广告投产比，等于广告收入除以广告花费，是衡量广告效率的核心指标。与 mta_roas（MTA 口径）是两张不同的卡，禁止混用。",
+  "formula": "revenue / spend",
+  "unit": "ratio",
+  "source": "平台数据计算",
+  "source_field": null,
+  "value_range": [0, null],
+  "baseline": { "type": "account_mean", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "daily",
+    "entity": "campaign",
+    "aggregation": "recompute",
+    "requires_full_batch": false
+  },
+  "dimensions": ["campaign"],
+  "related_concepts": [
+    { "target": "revenue", "relation": "depends_on", "strength": "strong" },
+    { "target": "spend", "relation": "depends_on", "strength": "strong" },
+    { "target": "acos", "relation": "inverse", "strength": "strong" },
+    { "target": "mta_roas", "relation": "comparable_alt_caliber", "strength": "medium" }
+  ]
+}

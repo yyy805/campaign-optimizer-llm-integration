@@ -1,0 +1,26 @@
+services:
+  review-api:
+    image: ontology-review-api:0.1.0
+    build:
+      context: ..
+      dockerfile: ontology review api/Dockerfile
+    env_file:
+      - .env
+    environment:
+      ONTOLOGY_PATH: /ontology
+      FINAL_PLAN_SCHEMA_PATH: /contracts/final_plan.schema.json
+      ONTOLOGY_REVIEW_SCHEMA_PATH: /contracts/ontology_review.schema.json
+    ports:
+      - "8000:8000"
+    volumes:
+      - review-data:/data
+      - ../docs/ontology/ontology 概念卡:/ontology:ro
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,noexec,nosuid
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  review-data:

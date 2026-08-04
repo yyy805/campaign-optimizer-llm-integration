@@ -1,0 +1,38 @@
+{
+  "rule_id": "R3",
+  "name": "高ROAS渠道预算小幅上调",
+  "evaluation_grain": {"time": "snapshot", "entity": "touchpoint"},
+  "attribution_model": "markov",
+  "trigger_condition": {
+    "all": [
+      {"concept": "mta_roas", "op": ">", "ref": "baseline*1.5"}
+    ]
+  },
+  "diagnosis": "该触点当前 MTA 归因周期的 ROAS 显著高于账户基准，建议小幅上调预算以扩大优势",
+  "recommended_action": {"type": "budget_increase", "param": {"pct": 10}},
+  "match_inputs": [
+    { "concept": "mta_roas", "role": "trigger_signal", "required": true }
+  ],
+  "confidence_model": {
+    "source": ["ab_tested", "historical_pattern"],
+    "thresholds": { "auto": 0.7, "review": 0.5 }
+  },
+  "risk_model": {
+    "impact_score": 0.35,
+    "formula": "impact_score * (1 - confidence)",
+    "auto_execute_threshold": 0.25,
+    "review_threshold": 0.6
+  },
+  "execution_policy": {
+    "mode": "auto",
+    "reason": "低风险且置信度高，可直接执行小幅增预算"
+  },
+  "confidence": 0.84,
+  "risk_level": "LOW",
+  "evidence_type": "ab_tested",
+  "validation_count": 12,
+  "rejection_count": 0,
+  "version_history": [],
+  "causal_annotation": "相关性证据，非因果证明",
+  "status": "ACTIVE"
+}

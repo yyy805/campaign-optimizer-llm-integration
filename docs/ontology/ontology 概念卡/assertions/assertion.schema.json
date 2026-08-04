@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://campaign-optimizer.local/schemas/story-assertions.schema.json",
+  "title": "Ontology Demo Story Assertion Suite",
+  "type": "object",
+  "required": ["suite_id", "version", "purpose", "assumptions", "scenarios"],
+  "additionalProperties": false,
+  "properties": {
+    "suite_id": {"const": "ontology_demo_story_assertions"},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "purpose": {"type": "string", "minLength": 20},
+    "assumptions": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "required": ["id", "statement", "production_evidence"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string", "pattern": "^DA-[0-9]{2}$"},
+          "statement": {"type": "string", "minLength": 10},
+          "production_evidence": {"const": false}
+        }
+      }
+    },
+    "scenarios": {
+      "type": "array",
+      "items": {"$ref": "#/definitions/scenario"}
+    }
+  },
+  "definitions": {
+    "entity": {
+      "type": "object", "required": ["grain", "id"], "additionalProperties": false,
+      "properties": {
+        "grain": {"enum": ["campaign", "touchpoint", "ad_group", "platform"]},
+        "id": {"type": "string", "minLength": 1}
+      }
+    },
+    "input": {
+      "type": "object", "required": ["concept", "value", "source"], "additionalProperties": false,
+      "properties": {
+        "concept": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+        "value": {"type": ["number", "string", "boolean", "null"]},
+        "baseline": {"type": ["number", "null"]},
+        "source": {"enum": ["derived_fixture", "mta_fixture", "demo_mock", "platform_fixture", "action_parameter"]},
+        "mock_provenance": {
+          "type": "object", "required": ["label", "production_evidence"], "additionalProperties": false,
+          "properties": {
+            "label": {"const": "DEMO_ONLY_MOCK"},
+            "production_evidence": {"const": false}
+          }
+        }
+      }
+    },
+    "action": {
+      "type": "object", "required": ["type", "param"], "additionalProperties": false,
+      "properties": {"type": {"type": "string", "minLength": 1}, "param": {"type": "object"}}
+    },
+    "expected": {
+      "type": "object", "required": ["triggered_rules", "disposition"], "additionalProperties": false,
+      "properties": {
+        "triggered_rules": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^R[0-9]+$"}},
+        "winner": {"type": ["string", "null"], "pattern": "^R[0-9]+$"},
+        "suppressed": {
+          "type": "array", "items": {
+            "type": "object", "required": ["rule_id", "by", "reason"], "additionalProperties": false,
+            "properties": {"rule_id": {"type": "string", "pattern": "^R[0-9]+$"}, "by": {"type": "string", "pattern": "^R[0-9]+$"}, "reason": {"type": "string", "minLength": 5}}
+          }
+        },
+        "action": {"$ref": "#/definitions/action"},
+        "diagnosis_contains": {"type": "string"},
+        "disposition": {"enum": ["AUTO_EXECUTE", "REVIEW", "MANUAL_CONFIRM", "NO_ACTION", "BLOCKED", "SUPPRESSED", "PENDING_HUMAN_REVIEW"]},
+        "guardrail": {"type": ["string", "null"], "pattern": "^G[0-9]+$"},
+        "message": {"type": "string"},
+        "coverage_status": {"enum": ["MATCH", "CONFLICT", "NO_COVERAGE"]}
+      }
+    },
+    "transition": {
+      "type": "object", "required": ["before", "event", "after"], "additionalProperties": false,
+      "properties": {"before": {"type": "object"}, "event": {"type": "string", "minLength": 1}, "after": {"type": "object"}}
+    },
+    "scenario": {
+      "type": "object",
+      "required": ["assertion_id", "title", "category", "as_of", "entity", "rule_refs", "guardrail_refs", "client_id", "inputs", "expected", "notes"],
+      "additionalProperties": false,
+      "properties": {
+        "assertion_id": {"type": "string", "pattern": "^A-[A-Z0-9-]+$"},
+        "title": {"type": "string", "minLength": 5},
+        "category": {"enum": ["rule_positive", "rule_negative", "rule_boundary", "conflict", "client_governance", "guardrail", "mock_model", "lifecycle", "coverage", "fast_forward"]},
+        "as_of": {"type": "string", "format": "date"},
+        "entity": {"$ref": "#/definitions/entity"},
+        "rule_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^R[0-9]+$"}},
+        "guardrail_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^G[0-9]+$"}},
+        "client_id": {"type": ["string", "null"], "pattern": "^demo_client_[0-9]{3}$"},
+        "inputs": {"type": "array", "items": {"$ref": "#/definitions/input"}},
+        "expected": {"$ref": "#/definitions/expected"},
+        "transition": {"$ref": "#/definitions/transition"},
+        "assumption_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^DA-[0-9]{2}$"}},
+        "notes": {"type": "string", "minLength": 5}
+      }
+    }
+  }
+}

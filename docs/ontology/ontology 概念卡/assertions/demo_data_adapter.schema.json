@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ontology Demo Data Adapter Contract",
+  "type": "object",
+  "required": ["adapter_id", "version", "scope", "batch_manifest", "campaign_adapter", "consistency_contract", "mock_contracts", "fallback_policy"],
+  "additionalProperties": false,
+  "properties": {
+    "adapter_id": {"const": "ontology_demo_mta_adapter"},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "scope": {"const": "DEMO_ONLY_NOT_PRODUCTION"},
+    "batch_manifest": {
+      "type": "object",
+      "required": ["batch_id", "report_start_date", "report_end_date", "timezone", "source", "interpretation"],
+      "properties": {
+        "batch_id": {"type": "string"},
+        "report_start_date": {"type": "string", "format": "date"},
+        "report_end_date": {"type": "string", "format": "date"},
+        "timezone": {"const": "UTC"},
+        "source": {"const": "ontology_wrapper_over_current_mta_fixture"},
+        "interpretation": {"const": "full_report_window_touchpoint_snapshot"}
+      },
+      "additionalProperties": false
+    },
+    "campaign_adapter": {
+      "type": "object",
+      "required": ["strategy", "production_evidence", "mappings"],
+      "properties": {
+        "strategy": {"const": "explicit_touchpoint_to_demo_campaign_lookup"},
+        "production_evidence": {"const": false},
+        "mappings": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": {
+            "type": "object", "required": ["touchpoint", "demo_campaign_id"], "additionalProperties": false,
+            "properties": {"touchpoint": {"type": "string"}, "demo_campaign_id": {"type": "string", "pattern": "^campaign_(dsp|sb|sd|sp)_001$"}}
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "consistency_contract": {
+      "type": "object",
+      "required": ["required_outcomes", "consistent_when", "missing_outcome_behavior", "production_evidence"],
+      "properties": {
+        "required_outcomes": {"const": ["converted_users", "purchase_count", "revenue"]},
+        "consistent_when": {"const": "all_required_outcomes_have_calculation_valid_and_data_support_sufficient_and_models_consistent"},
+        "missing_outcome_behavior": {"const": "unknown_and_do_not_trigger_R5"},
+        "production_evidence": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "mock_contracts": {
+      "type": "array", "maxItems": 0,
+      "items": {
+        "type": "object", "required": ["concept_id", "owner", "provenance", "missing_behavior", "validity"], "additionalProperties": false,
+        "properties": {
+          "concept_id": {"type": "string"},
+          "owner": {"enum": ["ontology_demo", "optimization_team", "prediction_team"]},
+          "provenance": {"const": "DEMO_ONLY_MOCK"},
+          "missing_behavior": {"type": "string", "pattern": "^disable_R[57]_and_report_NO_COVERAGE$"},
+          "validity": {"const": "static_fixture_until_responsible_module_integration"}
+        }
+      }
+    },
+    "fallback_policy": {
+      "type": "object",
+      "required": ["zero_denominator", "incomplete_window", "unknown_field", "grain_mismatch"],
+      "properties": {
+        "zero_denominator": {"const": "null_and_do_not_trigger"},
+        "incomplete_window": {"const": "null_and_do_not_trigger"},
+        "unknown_field": {"const": "fail_validation"},
+        "grain_mismatch": {"const": "block_mapping_never_coerce"}
+      },
+      "additionalProperties": false
+    }
+  }
+}
