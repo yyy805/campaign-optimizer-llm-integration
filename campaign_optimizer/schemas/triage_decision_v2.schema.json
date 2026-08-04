@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://campaign-optimizer.local/schemas/triage_decision_v2.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "agent_role", "prompt_version", "decision", "intent", "confidence", "reason_code"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "agent_role": {"const": "TRIAGE"},
+    "prompt_version": {"const": "triage_v2"},
+    "decision": {"enum": ["ROUTE", "ABSTAIN"]},
+    "intent": {"type": ["string", "null"], "enum": ["EXPLAIN_PLAN", "EXPLAIN_REVIEW", "EXPLAIN_RULE", null]},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "reason_code": {"enum": ["CLEAR_SINGLE_EXPLANATION", "AMBIGUOUS", "COMPOUND_REQUEST", "UNSUPPORTED_REQUEST"]}
+  },
+  "allOf": [
+    {"if": {"properties": {"decision": {"const": "ROUTE"}}}, "then": {"properties": {"intent": {"type": "string"}, "confidence": {"minimum": 0.8}, "reason_code": {"const": "CLEAR_SINGLE_EXPLANATION"}}}},
+    {"if": {"properties": {"decision": {"const": "ABSTAIN"}}}, "then": {"properties": {"intent": {"const": null}, "reason_code": {"enum": ["AMBIGUOUS", "COMPOUND_REQUEST", "UNSUPPORTED_REQUEST"]}}}}
+  ]
+}
