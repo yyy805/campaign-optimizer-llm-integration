@@ -38,8 +38,6 @@ def test_postgres_migration_persistence_and_idempotent_replay():
     principal_id = f"polar-test-{run_id}"
     fixture_path = (
         PROJECT_ROOT
-        / "docs"
-        / "campaign-optimizer-llm-integration-main"
         / "tests"
         / "fixtures"
         / "plan_a"

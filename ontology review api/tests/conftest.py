@@ -20,6 +20,8 @@ def settings(tmp_path: Path) -> Settings:
     return Settings(
         database_url=f"sqlite:///{tmp_path / 'review.db'}",
         ontology_path=ONTOLOGY_ROOT,
+        final_plan_schema_path=PROJECT_ROOT / "campaign_optimizer" / "schemas" / "final_plan.schema.json",
+        ontology_review_schema_path=PROJECT_ROOT / "campaign_optimizer" / "schemas" / "ontology_review.schema.json",
         api_key_principals=f"{API_KEY}:test-agent:tenant-a:SERVICE,test-reviewer-key:test-reviewer:tenant-a:REVIEWER",
         docs_enabled=True,
     )

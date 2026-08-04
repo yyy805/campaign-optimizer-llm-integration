@@ -25,8 +25,8 @@ class Settings(BaseSettings):
     database_url: str = "sqlite:///./data/review.db"
     ontology_path: Path = Path("../docs/ontology/ontology 概念卡")
     expected_ontology_checksum: str = "a2eaaf287417469a592ecb48d3a31759f930761bc97269e9c61618b7f65ca858"
-    final_plan_schema_path: Path = Path("../docs/campaign-optimizer-llm-integration-main/campaign_optimizer/schemas/final_plan.schema.json")
-    ontology_review_schema_path: Path = Path("../docs/campaign-optimizer-llm-integration-main/campaign_optimizer/schemas/ontology_review.schema.json")
+    final_plan_schema_path: Path = Path("../campaign_optimizer/schemas/final_plan.schema.json")
+    ontology_review_schema_path: Path = Path("../campaign_optimizer/schemas/ontology_review.schema.json")
     docs_enabled: bool = True
     cors_origins: list[str] = ["http://localhost:3000"]
     log_level: str = "INFO"

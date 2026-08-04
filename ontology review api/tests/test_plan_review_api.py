@@ -6,6 +6,7 @@ import sys
 from copy import deepcopy
 from pathlib import Path
 
+import pytest
 from fastapi.testclient import TestClient
 from jsonschema import Draft7Validator, FormatChecker
 from sqlalchemy import text
@@ -16,7 +17,7 @@ from app.main import create_app
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-CAMPAIGN_ROOT = PROJECT_ROOT / "docs" / "campaign-optimizer-llm-integration-main"
+CAMPAIGN_ROOT = PROJECT_ROOT
 PLAN_FIXTURE = CAMPAIGN_ROOT / "tests" / "fixtures" / "plan_a" / "final_plan.demo.json"
 REVIEW_SCHEMA = CAMPAIGN_ROOT / "campaign_optimizer" / "schemas" / "ontology_review.schema.json"
 
@@ -198,10 +199,18 @@ def test_replay_precedes_current_client_check_and_audit_is_complete(client: Test
 def test_real_response_passes_downstream_canonical_compatibility_gate(client: TestClient):
     response = post(client, plan_fixture(), "downstream")
     assert response.status_code == 201
+    request_builder_module = pytest.importorskip(
+        "campaign_optimizer.llm.request_builder",
+        reason="the optional Agent orchestrator is not present in this review-only repository",
+    )
+    retriever_module = pytest.importorskip(
+        "campaign_optimizer.llm.retriever",
+        reason="the optional Agent orchestrator is not present in this review-only repository",
+    )
     sys.path.insert(0, str(CAMPAIGN_ROOT))
     try:
-        from campaign_optimizer.llm.request_builder import RequestBuilder
-        from campaign_optimizer.llm.retriever import LocalRuleRetriever
+        RequestBuilder = request_builder_module.RequestBuilder
+        LocalRuleRetriever = retriever_module.LocalRuleRetriever
         canonical = PROJECT_ROOT / "docs" / "ontology" / "ontology 概念卡"
         retriever = LocalRuleRetriever(
             rules_dir=canonical / "rules", rule_schema_path=canonical / "schemas" / "rule.schema.json",

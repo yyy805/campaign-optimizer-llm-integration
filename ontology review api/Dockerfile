@@ -15,8 +15,8 @@ COPY ["ontology review api/migrations", "./migrations"]
 RUN python -m pip install --upgrade "pip==25.2" && python -m pip install .
 
 COPY ["docs/ontology/ontology 概念卡", "/ontology"]
-COPY ["docs/campaign-optimizer-llm-integration-main/campaign_optimizer/schemas/final_plan.schema.json", "/contracts/final_plan.schema.json"]
-COPY ["docs/campaign-optimizer-llm-integration-main/campaign_optimizer/schemas/ontology_review.schema.json", "/contracts/ontology_review.schema.json"]
+COPY ["campaign_optimizer/schemas/final_plan.schema.json", "/contracts/final_plan.schema.json"]
+COPY ["campaign_optimizer/schemas/ontology_review.schema.json", "/contracts/ontology_review.schema.json"]
 RUN mkdir -p /data && chown -R app:app /service /data
 
 USER app
