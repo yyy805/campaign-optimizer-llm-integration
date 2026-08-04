@@ -38,9 +38,18 @@ def _decision(packet: ReviewerPacket, decision: str, *, operation: str = "ADD_RE
 
 def test_pinned_prompts_have_explicit_model_role_and_schema_versions():
     config = load_role_configuration()
-    assert config.model_aliases == {"triage": "qwen-3.7plus", "executor": "qwen-3.7max", "reviewer": "qwen-3.8max"}
+    assert config.model_aliases == {"triage": "qwen3.7-plus", "executor": "qwen3.7-max", "reviewer": "qwen3.8-max-preview"}
     assert config.prompt_versions == {"triage": "triage_v2", "executor": "executor_v2", "reviewer": "reviewer_v3"}
     assert config.revision_profiles == {"baseline": 0, "production_candidate": 1, "experiment": 3, "stress_only": 5}
+
+def test_role_model_aliases_are_the_exact_bailian_api_model_ids():
+    """The runner sends these values unchanged to the provider client."""
+    config = load_role_configuration()
+    assert config.model_aliases == {
+        "triage": "qwen3.7-plus",
+        "executor": "qwen3.7-max",
+        "reviewer": "qwen3.8-max-preview",
+    }
 
 
 def test_changed_pinned_prompt_hash_fails_closed(tmp_path: Path):

@@ -9,9 +9,14 @@ workflow can later be used for a visual demo, not as this runtime's dependency.
 
 | Role | Pinned model | When called | Output authority |
 | --- | --- | --- | --- |
-| TRIAGE | `qwen-3.7plus` | Only an ambiguous explanation request | Route one approved intent, or abstain |
-| EXECUTOR | `qwen-3.7max` | Every server-created task/revision | Structured candidate only |
-| REVIEWER | `qwen-3.8max` | Every candidate, including the last | PASS, typed revision, or rejection |
+| TRIAGE | `qwen3.7-plus` | Only an ambiguous explanation request | Route one approved intent, or abstain |
+| EXECUTOR | `qwen3.7-max` | Every server-created task/revision | Structured candidate only |
+| REVIEWER | `qwen3.8-max-preview` | Every candidate, including the last | PASS, typed revision, or rejection |
+
+These are Model Studio API model IDs, not the hyphenated aliases used by some
+local tools. The runner sends the configured value to the Bailian client
+unchanged. Access to `qwen3.8-max-preview` is workspace-dependent and is
+therefore verified only by the later Reviewer live smoke test.
 
 ## Contract and integrity boundary
 

@@ -2,9 +2,9 @@
   "schema_version": "1.0",
   "configuration_version": "agent_roles_v5",
   "model_aliases": {
-    "triage": "qwen-3.7plus",
-    "executor": "qwen-3.7max",
-    "reviewer": "qwen-3.8max"
+    "triage": "qwen3.7-plus",
+    "executor": "qwen3.7-max",
+    "reviewer": "qwen3.8-max-preview"
   },
   "prompt_artifacts": {
     "triage": "triage_v2.md",

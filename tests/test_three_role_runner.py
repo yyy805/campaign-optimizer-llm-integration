@@ -30,6 +30,13 @@ def args(question=None,multi=False):
  r=fixture("llm_request.demo.json")
  if question is not None:r.update({"mode":"chat","question":question,"allowed_intents":["EXPLAIN_PLAN","EXPLAIN_REVIEW","EXPLAIN_RULE"] if multi else ["EXPLAIN_REVIEW"]})
  return {"request":r,"plan":fixture("final_plan.demo.json"),"review":fixture("ontology_review.demo.json"),"context":fixture("llm_context.demo.json"),"question":question}
+def test_role_adapter_passes_canonical_model_studio_ids_to_the_client_factory():
+ models=[]
+ class RecordingClient:
+  def chat(self,messages,*,parameters=None):return response({})
+ adapter=RoleCallAdapter(load_role_configuration(),client_factory=lambda _,model:(models.append(model) or RecordingClient()))
+ for role in ("triage","executor","reviewer"):adapter.call_json(role=role,payload={})
+ assert models==["qwen3.7-plus","qwen3.7-max","qwen3.8-max-preview"]
 def test_dry_run_uses_no_provider_and_reserves_repair():
  result=runner({}).run(**args(),revision_profile="baseline");assert result.status=="DRY_RUN" and result.provider_calls==0 and result.reserved_provider_calls==3
 def test_ambiguous_multi_intent_triage_seals_before_executor_without_caller_intent():
