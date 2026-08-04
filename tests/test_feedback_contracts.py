@@ -5,11 +5,18 @@ from pathlib import Path
 
 import jsonschema
 import pytest
+from datetime import datetime, timezone
+from sqlalchemy.orm import Session
 
 from campaign_optimizer.contracts.feedback import apply_feedback_event
 from campaign_optimizer.contracts.validation import (
     ContractValidationError,
     validate_contract_object,
+)
+from campaign_optimizer.ontology.db import (
+    FeedbackEventRow, OntologyReviewItemRow, OntologyReviewRow,
+    PlanItemRow, PlanSnapshotRow, RuleConfidenceStateRow,
+    apply_feedback_transaction, init_db,
 )
 
 ROOT = Path(__file__).parent.parent
@@ -133,6 +140,38 @@ def test_suspended_rule_rejects_feedback():
     state["status"] = "SUSPENDED"
     with pytest.raises(ContractValidationError, match="cannot accept feedback"):
         _apply(state, _event())
+
+
+def test_feedback_transaction_persists_and_replays_once(tmp_path):
+    db_url = 'sqlite:///' + str(tmp_path / 'runtime.db')
+    engine = init_db(db_url)
+    feedback = _event()
+    review = _review(feedback)
+    now = datetime.now(timezone.utc)
+    with Session(engine) as session:
+        session.add(PlanSnapshotRow(client_id='c1', plan_id='plan_1', source_artifact_id=None,
+            source_version='1', plan_digest='a' * 64, created_at=now, payload={}))
+        session.flush()
+        session.add(PlanItemRow(client_id='c1', plan_id='plan_1', plan_item_id='plan_item_1',
+            entity_id='channel_1', action='INCREASE', payload={}))
+        session.flush()
+        session.add(OntologyReviewRow(client_id='c1', review_id='review_1', plan_id='plan_1',
+            ontology_version='test', overall_verdict='SUPPORT', created_at=now, payload=review))
+        session.flush()
+        session.add(OntologyReviewItemRow(client_id='c1', review_id='review_1', review_item_id='review_item_1',
+            plan_item_id='plan_item_1', rule_id='R1', rule_version='1.0', verdict='SUPPORT',
+            confidence_snapshot=0.65, payload=review['items'][0]))
+        session.add(RuleConfidenceStateRow(client_id='c1', rule_id='R1', rule_version='1.0',
+            runtime_confidence=0.65, status='ACTIVE', revision=0, updated_at=now, payload=_state()))
+        session.commit()
+    once = apply_feedback_transaction(engine, client_id='c1', event_payload=feedback, policy=_policy())
+    twice = apply_feedback_transaction(engine, client_id='c1', event_payload=feedback, policy=_policy())
+    assert once == twice
+    assert once['runtime_confidence'] == pytest.approx(0.67)
+    with Session(init_db(db_url)) as session:
+        state = session.get(RuleConfidenceStateRow, ('c1', 'R1', '1.0'))
+        assert state.revision == 1
+        assert session.get(FeedbackEventRow, ('c1', 'fb-1')) is not None
 
 
 def test_plan_decision_is_a_separate_accept_reject_contract():

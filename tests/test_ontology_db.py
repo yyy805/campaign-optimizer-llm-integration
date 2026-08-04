@@ -26,7 +26,14 @@ ONTOLOGY_DIR = Path(__file__).parent.parent / "campaign_optimizer" / "ontology"
 EXPECTED_TABLES = {"concepts", "rules", "clients", "diagnoses", "execution_log"}
 
 
-def test_init_db_creates_five_tables_on_sqlite(tmp_path):
+EXPECTED_TABLES = EXPECTED_TABLES | {
+    'model_artifacts', 'plan_snapshots', 'plan_items', 'ontology_reviews',
+    'ontology_review_items', 'feedback_events', 'rule_confidence_states',
+    'plan_decision_events',
+}
+
+
+def test_init_db_creates_static_and_runtime_tables_on_sqlite(tmp_path):
     db_url = f"sqlite:///{tmp_path / 'test.db'}"
     engine = init_db(db_url)
     with engine.connect() as conn:
