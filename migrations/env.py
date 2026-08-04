@@ -1,4 +1,5 @@
 from logging.config import fileConfig
+import os
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -7,6 +8,9 @@ from sqlalchemy import engine_from_config, pool
 from campaign_optimizer.ontology.db import Base
 
 config = context.config
+database_url = os.getenv('ONTOLOGY_DATABASE_URL')
+if database_url:
+    config.set_main_option('sqlalchemy.url', database_url)
 if config.config_file_name:
     fileConfig(config.config_file_name)
 target_metadata = Base.metadata

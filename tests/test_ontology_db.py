@@ -14,12 +14,19 @@ PostgreSQL 连接串暂不在本地跑集成测试（本机没有可用的 PG �
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 
+import pytest
 from sqlalchemy import inspect, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from campaign_optimizer.ontology.db import ConceptRow, init_db
+from campaign_optimizer.contracts.validation import ContractValidationError
+from campaign_optimizer.ontology.db import (
+    ClientRow, ConceptRow, PlanItemRow, PlanSnapshotRow, RuleConfidenceStateRow,
+    canonical_digest, init_db,
+)
 
 ONTOLOGY_DIR = Path(__file__).parent.parent / "campaign_optimizer" / "ontology"
 
@@ -76,6 +83,48 @@ def test_init_db_reset_wipes_existing_data(tmp_path):
 
     with Session(engine) as session:
         assert session.execute(select(ConceptRow)).scalars().all() == []
+
+
+def test_cross_client_plan_item_reference_is_rejected(tmp_path):
+    engine = init_db('sqlite:///' + str(tmp_path / 'tenant.db'))
+    now = datetime.now(timezone.utc)
+    with Session(engine) as session:
+        session.add_all([ClientRow(client_id='c1', card={}), ClientRow(client_id='c2', card={})])
+        session.flush()
+        session.add(PlanSnapshotRow(client_id='c1', plan_id='plan_1', source_artifact_id=None,
+            source_version='1', plan_digest=canonical_digest({}), created_at=now, payload={}))
+        session.commit()
+        session.add(PlanItemRow(client_id='c2', plan_id='plan_1', plan_item_id='item_1',
+            entity_id='x', action='keep_budget', payload={}))
+        with pytest.raises(IntegrityError):
+            session.commit()
+
+
+def test_plan_digest_must_match_payload(tmp_path):
+    engine = init_db('sqlite:///' + str(tmp_path / 'digest.db'))
+    with Session(engine) as session:
+        session.add(ClientRow(client_id='c1', card={}))
+        session.flush()
+        session.add(PlanSnapshotRow(client_id='c1', plan_id='plan_1', source_artifact_id=None,
+            source_version='1', plan_digest='a' * 64,
+            created_at=datetime.now(timezone.utc), payload={'changed': True}))
+        with pytest.raises(ContractValidationError, match='digest'):
+            session.commit()
+
+
+def test_confidence_outside_zero_to_one_is_rejected(tmp_path):
+    engine = init_db('sqlite:///' + str(tmp_path / 'confidence.db'))
+    payload = {
+        'runtime_confidence': 1.2, 'status': 'ACTIVE',
+    }
+    with Session(engine) as session:
+        session.add(ClientRow(client_id='c1', card={}))
+        session.flush()
+        session.add(RuleConfidenceStateRow(client_id='c1', rule_id='R1', rule_version='1',
+            runtime_confidence=1.2, status='ACTIVE', revision=0,
+            updated_at=datetime.now(timezone.utc), payload=payload))
+        with pytest.raises(IntegrityError):
+            session.commit()
 
 
 def test_concept_card_round_trips_through_json_column(tmp_path):

@@ -46,3 +46,19 @@ model artifact
 3. 本地先通过SQLite契约测试。
 4. PolarDB环境必须额外验证JSONB、复合外键、行锁、并发反馈、连接池、TLS和迁移回退策略。
 5. 未完成真实PolarDB烟测前，不得宣称生产数据库能力已完成。
+
+本地迁移默认连接 `sqlite:///ontology-runtime.db`。指定其他SQLite数据库或PolarDB时，必须显式设置：
+
+```powershell
+$env:ONTOLOGY_DATABASE_URL='sqlite:///ontology-runtime.db'
+uv run alembic upgrade head
+```
+
+运行时数据完整性要求：
+
+- SQLite反馈写事务使用 `BEGIN IMMEDIATE`，防止并发反馈丢失更新；PostgreSQL路径使用状态行锁；
+- feedback ID重复且摘要一致返回 `ALREADY_APPLIED`，摘要不同则拒绝；
+- 模型产物、方案、评价、评价条目、反馈和方案决策是不可变快照/事件；
+- 摘要由规范JSON生成并在写入时核验；
+- 事件发生时间与服务器接收时间分开保存，运行时状态使用服务器UTC时间；
+- `drop_first`只允许SQLite，不得用于PostgreSQL/PolarDB。
