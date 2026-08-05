@@ -1,0 +1,51 @@
+{
+  "rule_id": "R6",
+  "name": "低转化率复查提醒",
+  "evaluation_grain": { "time": "14day", "entity": "campaign" },
+  "attribution_model": null,
+  "trigger_condition": {
+    "all": [
+      { "concept": "cvr", "op": "<", "ref": "baseline*0.5", "window_days": 14 }
+    ]
+  },
+  "diagnosis": "该campaign转化率显著低于账户基准，建议复查落地页与商品详情页",
+  "recommended_action": {
+    "type": "review_landing_page",
+    "param": {}
+  },
+  "match_inputs": [
+    { "concept": "cvr", "role": "trigger_signal", "required": true }
+  ],
+  "confidence_model": {
+    "source": ["human_expert", "historical_pattern"],
+    "thresholds": { "auto": 0.7, "review": 0.5 }
+  },
+  "risk_model": {
+    "impact_score": 0.4,
+    "formula": "impact_score * (1 - confidence)",
+    "auto_execute_threshold": 0.25,
+    "review_threshold": 0.6
+  },
+  "execution_policy": {
+    "mode": "review",
+    "reason": "提醒类动作，低风险但需要检查上下文"
+  },
+  "confidence": 0.5,
+  "risk_level": "LOW",
+  "evidence_type": "human_expert",
+  "validation_count": 0,
+  "rejection_count": 9,
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2026-07-07",
+      "author": "human_expert",
+      "change": "初始版本，用于演示反馈进化机制——拒绝累计达到阈值前的最后一次预埋"
+    }
+  ],
+  "causal_annotation": "相关性证据，证据强度弱，尚未经过验证",
+  "status": "ACTIVE",
+  "known_limitations": [
+    "预埋 rejection_count=9，用于演示：demo 当天再被拒绝一次即触发 PENDING_HUMAN_REVIEW（拒绝累计阈值=10）"
+  ]
+}

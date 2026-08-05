@@ -1,0 +1,28 @@
+{
+  "concept_id": "attribution_consistency_status",
+  "name_cn": "归因一致性状态",
+  "name_en": "Attribution Consistency Status",
+  "layer": "L5",
+  "tier": "mta",
+  "caliber": "mta",
+  "definition": "用于描述不同归因模型结论是否一致，作为本体层审核 MTA 提案的上下文信号。",
+  "formula": null,
+  "unit": "enum",
+  "source": "MTA 子模型/归因一致性检查",
+  "source_field": "attribution_consistency_status",
+  "value_range": [null, null],
+  "baseline": { "type": "none", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "snapshot",
+    "entity": "touchpoint",
+    "aggregation": "none",
+    "requires_full_batch": true
+  },
+  "dimensions": ["touchpoint"],
+  "expected_input_role": "context_signal",
+  "value_type": "string",
+  "related_concepts": [
+    { "target": "attribution_divergence", "relation": "summarizes", "strength": "medium" }
+  ]
+}

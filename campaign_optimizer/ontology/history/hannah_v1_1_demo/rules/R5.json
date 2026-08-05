@@ -1,0 +1,68 @@
+{
+  "rule_id": "R5",
+  "name": "低贡献高花费触点预算重分配实验",
+  "evaluation_grain": { "time": "snapshot", "entity": "touchpoint" },
+  "attribution_model": "markov",
+  "trigger_condition": {
+    "all": [
+      { "concept": "contribution_share", "op": "<", "ref": 0.10 },
+      { "concept": "spend_share", "op": ">", "ref": 0.20 },
+      { "concept": "attribution_divergence", "op": "<=", "ref": 0.05 }
+    ]
+  },
+  "diagnosis": "该触点的归因贡献份额低于10%，但花费份额高于20%；Markov 与 Shapley 的贡献份额差异不超过5%，建议通过受控实验复核预算重分配",
+  "recommended_action": {
+    "type": "budget_reallocation_experiment",
+    "param": {}
+  },
+  "match_inputs": [
+    { "concept": "contribution_share", "role": "comparison_signal", "required": true },
+    { "concept": "spend_share", "role": "comparison_signal", "required": true },
+    { "concept": "attribution_divergence", "role": "context_signal", "required": true }
+  ],
+  "confidence_model": {
+    "source": ["model_based", "transparent_derivation"],
+    "thresholds": { "auto": 0.8, "review": 0.6 }
+  },
+  "risk_model": {
+    "impact_score": 0.7,
+    "formula": "impact_score * (1 - confidence)",
+    "auto_execute_threshold": 0.25,
+    "review_threshold": 0.6
+  },
+  "execution_policy": {
+    "mode": "review",
+    "reason": "MTA 提案会改预算分配，需人工复核"
+  },
+  "confidence": 0.62,
+  "risk_level": "MEDIUM",
+  "evidence_type": "model_based",
+  "validation_count": 0,
+  "rejection_count": 0,
+  "version_history": [
+    {
+      "version": "0.1-skeleton",
+      "date": "2026-07-17",
+      "author": "human_expert",
+      "change": "骨架版，三个 ref 数值待定，MTA 差异化卖点规则"
+    },
+    {
+      "version": "0.2-skeleton",
+      "date": "2026-07-20",
+      "author": "human_expert",
+      "change": "曾改为审核外部优化模块的成型提案；该设计因当前 MTA 合同不提供所需字段，已被 1.1-demo 取代。"
+    },
+    {
+      "version": "1.1-demo",
+      "date": "2026-08-03",
+      "author": "ontology_team",
+      "change": "移除 MTA 不提供的提案 Mock 字段，恢复使用 MTA 直接或透明派生的 contribution_share、spend_share 与 attribution_divergence；Demo 阈值分别为 <0.10、>0.20、<=0.05。"
+    }
+  ],
+  "causal_annotation": "相关性证据，非因果证明",
+  "status": "ACTIVE",
+  "known_limitations": [
+    "10%、20% 与 5% 是 Demo 阈值，需用生产数据重新标定",
+    "缺少同一报告窗口的分母或任一输入时返回 NO_COVERAGE，不触发规则"
+  ]
+}
