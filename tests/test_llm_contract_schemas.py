@@ -204,17 +204,15 @@ def test_bundle_rejects_claim_value_tampering(fixtures):
         )
 
 
-def test_r5_fixture_matches_current_review_only_rule(fixtures):
+def test_r5_fixture_is_historical_and_current_campaign_rule_is_pending(fixtures):
     r5 = _load(R5_PATH)
     review_item = fixtures["ontology_review"]["items"][0]
     latest_version = r5["version_history"][-1]["version"]
-    refs = [
-        condition["ref"]
-        for condition in r5["trigger_condition"]["all"]
-    ]
-    assert review_item["rule_version"] == latest_version
-    assert r5["status"] == "ACTIVE"
-    assert refs == [0.10, 0.20, 0.05]
+    assert review_item["rule_version"] == "1.3-contract-hardening"
+    assert latest_version == "2.0-campaign-pending"
+    assert r5["status"] == "PENDING_HUMAN_REVIEW"
+    assert r5["evaluation_grain"]["entity"] == "campaign"
+    assert r5["trigger_condition"] == {"all": []}
     assert review_item["verdict"] == "CONFLICT"
     assert review_item["base_confidence"] == 0.62
     assert review_item["runtime_confidence"] == 0.62

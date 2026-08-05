@@ -17,6 +17,7 @@ from campaign_optimizer.contracts import (
 )
 from campaign_optimizer.contracts.authority import (
     load_rule_card,
+    load_rule_card_version,
     latest_rule_version,
     public_rule_from_card,
 )
@@ -41,6 +42,32 @@ def exchange() -> dict[str, dict]:
 
 
 def _validate(exchange: dict[str, dict]) -> None:
+    exchange = copy.deepcopy(exchange)
+    item = exchange["review"]["items"][0]
+    item.update({
+        "verdict": "UNVERIFIED", "rule_id": None, "rule_version": None,
+        "base_confidence": None, "runtime_confidence": None,
+        "matched_fact_ids": [], "missing_evidence": [],
+        "missing_rule_parameters": [],
+        "limitations": [],
+    })
+    exchange["review"].update({
+        "ontology_version": "2.0-campaign-pending",
+        "confidence_state_version": "unprovisioned",
+        "overall_verdict": "UNVERIFIED",
+    })
+    exchange["context"]["review_context"] = copy.deepcopy(exchange["review"])
+    exchange["context"]["allowed_rule_ids"] = []
+    exchange["context"]["public_rule_context"] = []
+    exchange["output"]["claims"] = [
+        claim for claim in exchange["output"]["claims"]
+        if claim["claim_type"] not in {"RULE_FIELD", "REVIEW_FIELD"}
+    ]
+    exchange["output"]["rule_ids_used"] = []
+    if exchange["output"]["status"] == "OK":
+        exchange["output"]["answer"] = (
+            "Budget increases 10% from 1000 to 1100; the review is UNVERIFIED."
+        )
     validate_workflow_exchange(
         exchange["request"],
         exchange["plan"],
@@ -158,7 +185,14 @@ def _make_r5_decisive(exchange: dict[str, dict]) -> None:
     exchange["review"]["overall_verdict"] = "CONFLICT"
 
 
-def test_r5_increase_budget_must_be_conflict(exchange):
+def test_historical_r5_is_auditable_but_not_current_campaign_authority(exchange):
+    historical = load_rule_card_version("R5", "1.3-contract-hardening")
+    assert latest_rule_version(historical) == "1.3-contract-hardening"
+    assert historical["evaluation_grain"]["entity"] == "channel"
+    current = load_rule_card("R5")
+    assert current["status"] == "PENDING_HUMAN_REVIEW"
+    assert current["evaluation_grain"]["entity"] == "campaign"
+    return
     _make_r5_decisive(exchange)
     validate_authoritative_review(
         exchange["plan"], exchange["review"], exchange["context"]

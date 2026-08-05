@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 import subprocess
 
 import pytest
@@ -20,7 +21,10 @@ def test_health_readiness_version_and_docs(client: TestClient):
     assert client.get("/health").json() == {"status": "alive"}
     ready = client.get("/ready")
     assert ready.status_code == 200
-    assert ready.json()["ontology_version"] == "v1.1-demo"
+    assert ready.json()["ontology_version"] == "2.0-campaign-pending"
+    assert ready.json()["ontology_checksum"] == (
+        client.app.state.product_review_service.package_checksum
+    )
     assert set(ready.json()["rules"]) == {f"R{number}" for number in range(1, 8)}
     assert client.get("/docs").status_code == 200
     assert client.get("/api/v1/ontology/version").status_code == 401
@@ -209,6 +213,7 @@ def test_request_contract_hardening_and_supported_roles():
         ReviewCreate.model_validate(base | {"context": oversized_context})
 
 
+@pytest.mark.skipif(shutil.which("sh") is None, reason="requires a POSIX shell")
 def test_failed_restore_removes_partial_target(tmp_path):
     invalid_backup = tmp_path / "invalid.db"
     invalid_backup.write_text("not sqlite", encoding="utf-8")

@@ -1,7 +1,7 @@
 {
   "guardrail_id": "G1",
   "name": "出价不能超过广告组上限",
-  "status": "RETIRED",
+  "status": "PENDING_INPUT_CONTRACT",
   "scope": "ad_group",
   "applies_to_plan_actions": [],
   "condition": null,

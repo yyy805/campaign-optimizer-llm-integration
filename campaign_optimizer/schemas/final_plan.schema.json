@@ -9,6 +9,7 @@
     "plan_id",
     "source",
     "source_version",
+    "is_optimized",
     "period",
     "items",
     "decision_evidence",
@@ -30,6 +31,7 @@
       "minLength": 1,
       "maxLength": 64
     },
+    "is_optimized": { "const": true },
     "period": { "$ref": "#/definitions/period" },
     "items": {
       "type": "array",
@@ -79,7 +81,7 @@
         },
         "entity_type": {
           "type": "string",
-          "enum": ["channel", "touchpoint", "campaign", "account"]
+          "const": "campaign"
         },
         "entity_id": {
           "type": "string",
@@ -147,7 +149,7 @@
         },
         "entity_type": {
           "type": "string",
-          "enum": ["channel", "touchpoint", "campaign", "account"]
+          "const": "campaign"
         },
         "entity_id": {
           "type": "string",

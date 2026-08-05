@@ -7,7 +7,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
-EntityType = Literal["channel", "touchpoint", "campaign", "account"]
+EntityType = Literal["campaign"]
 PlanAction = Literal["increase_budget", "decrease_budget", "keep_budget"]
 Verdict = Literal["SUPPORT", "CONFLICT", "NOT_APPLICABLE", "UNVERIFIED", "INSUFFICIENT_EVIDENCE"]
 
@@ -87,6 +87,7 @@ class FinalPlan(BaseModel):
     plan_id: str = Field(pattern=r"^plan_[A-Za-z0-9_-]+$")
     source: Literal["DEMO_OPTIMIZER_STUB", "SMALL_MODEL_CHAIN"]
     source_version: str = Field(min_length=1, max_length=64)
+    is_optimized: Literal[True]
     period: PlanPeriod
     items: list[PlanItem] = Field(min_length=1, max_length=100)
     decision_evidence: list[PlanFact] = Field(default_factory=list, max_length=500)
@@ -162,6 +163,7 @@ class OntologyReview(BaseModel):
     plan_id: str = Field(pattern=r"^plan_[A-Za-z0-9_-]+$")
     source: Literal["ONTOLOGY_ENGINE"] = "ONTOLOGY_ENGINE"
     ontology_version: str = Field(min_length=1, max_length=64)
+    release_identity: dict[str, str]
     confidence_state_version: str = Field(min_length=1, max_length=64)
     is_synthetic: bool
     overall_verdict: Verdict

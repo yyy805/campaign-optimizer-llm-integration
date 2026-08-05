@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     app_env: str = "demo"
     database_url: str = "sqlite:///./data/review.db"
     ontology_path: Path = Path("../docs/ontology/ontology 概念卡")
-    expected_ontology_checksum: str = "a2eaaf287417469a592ecb48d3a31759f930761bc97269e9c61618b7f65ca858"
+    expected_ontology_checksum: str = "7183318d6811a9d1b5570f8385661caa8ea70b5ebd6d353a61c3c06b65447bb5"
     final_plan_schema_path: Path = Path("../campaign_optimizer/schemas/final_plan.schema.json")
     ontology_review_schema_path: Path = Path("../campaign_optimizer/schemas/ontology_review.schema.json")
     docs_enabled: bool = True

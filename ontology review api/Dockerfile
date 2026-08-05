@@ -12,6 +12,7 @@ COPY ["ontology review api/pyproject.toml", "./"]
 COPY ["ontology review api/app", "./app"]
 COPY ["ontology review api/alembic.ini", "./"]
 COPY ["ontology review api/migrations", "./migrations"]
+COPY ["campaign_optimizer", "./campaign_optimizer"]
 RUN python -m pip install --upgrade "pip==25.2" && python -m pip install .
 
 COPY ["docs/ontology/ontology 概念卡", "/ontology"]

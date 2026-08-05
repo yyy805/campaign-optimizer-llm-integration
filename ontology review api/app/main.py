@@ -21,6 +21,7 @@ from app.errors import AppError
 from app.logging import configure_logging
 from app.ontology import load_ontology
 from app.services.review_engine import ReviewEngine
+from app.services.plan_review_service import PlanReviewService
 
 
 logger = logging.getLogger("ontology_review_api")
@@ -62,14 +63,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         app.state.engine = None
         app.state.database = None
         app.state.external_contracts = None
+        app.state.product_review_service = None
         try:
             app.state.principals = settings.principals()
         except Exception as exc:
             app.state.startup_errors.append({"component": "auth", "message": str(exc)})
         try:
             ontology = load_ontology(settings.ontology_path)
-            if ontology.checksum != settings.expected_ontology_checksum:
-                raise ValueError("loaded Ontology package does not match the approved canonical checksum")
             app.state.ontology = ontology
             app.state.engine = ReviewEngine(ontology)
         except Exception as exc:
@@ -87,6 +87,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         except Exception as exc:
             app.state.startup_errors.append({"component": "database", "message": str(exc)})
             logger.error("database startup validation failed", extra={"error_code": "DATABASE_UNAVAILABLE"})
+        try:
+            app.state.product_review_service = PlanReviewService(
+                settings.database_url, settings.plan_review_client_id
+            )
+        except Exception as exc:
+            app.state.startup_errors.append({"component": "product_review", "message": str(exc)})
+            logger.error("product review startup validation failed", extra={"error_code": "ONTOLOGY_UNAVAILABLE"})
         yield
         if app.state.database is not None:
             app.state.database.close()
@@ -105,6 +112,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.engine = None
     app.state.database = None
     app.state.external_contracts = None
+    app.state.product_review_service = None
     app.state.startup_errors = []
     app.state.database_lock = Lock()
     app.add_middleware(
@@ -179,12 +187,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         db_ready = database is not None and database.check()
         auth_ready = bool(request.app.state.principals)
         contracts_ready = request.app.state.external_contracts is not None
-        if ontology is None or not db_ready or not auth_ready or not contracts_ready:
+        product_service = request.app.state.product_review_service
+        if ontology is None or product_service is None or not db_ready or not auth_ready or not contracts_ready:
             return JSONResponse(
                 status_code=503,
                 content={
                     "status": "not_ready",
-                    "ontology_ready": ontology is not None,
+                    "ontology_ready": product_service is not None,
                     "database_ready": db_ready,
                     "auth_ready": auth_ready,
                     "contracts_ready": contracts_ready,
@@ -199,10 +208,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "auth_ready": True,
             "contracts_ready": True,
             "migration": "applied",
-            "ontology_version": ontology.version,
-            "ontology_checksum": ontology.checksum,
-            "rules": {key: rule["status"] for key, rule in ontology.rules.items()},
-            "guardrails": sorted(ontology.guardrails),
+            "ontology_version": product_service.ontology_version,
+            "ontology_checksum": product_service.package_checksum,
+            "rules": product_service.rule_statuses,
+            "guardrails": product_service.guardrail_ids,
         }
 
     app.include_router(v1_router)

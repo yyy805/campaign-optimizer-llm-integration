@@ -40,14 +40,16 @@ create_principal = require_roles("SERVICE", "REVIEWER", "ADMIN")
 
 @router.get("/ontology/version", response_model=OntologyVersionResponse)
 def ontology_version(request: Request, _: Principal = Depends(read_principal)) -> OntologyVersionResponse:
-    ontology, _engine = get_runtime(request)
+    service = request.app.state.product_review_service
+    if service is None:
+        raise AppError(503, "ONTOLOGY_UNAVAILABLE", "canonical review workflow is unavailable")
     return OntologyVersionResponse(
-        version=ontology.version,
-        checksum=ontology.checksum,
-        concepts=sorted(ontology.concepts),
-        rules={rule_id: str(rule["status"]) for rule_id, rule in ontology.rules.items()},
-        guardrails=sorted(ontology.guardrails),
-        clients=sorted(ontology.clients),
+        version=service.ontology_version,
+        checksum=service.package_checksum,
+        concepts=service.concept_ids,
+        rules=service.rule_statuses,
+        guardrails=service.guardrail_ids,
+        clients=service.client_ids,
     )
 
 
@@ -101,14 +103,6 @@ def create_plan_review(
 ) -> OntologyReview:
     if not idempotency_key:
         raise AppError(400, "IDEMPOTENCY_KEY_REQUIRED", "Idempotency-Key header is required")
-    contracts = request.app.state.external_contracts
-    if contracts is None:
-        raise AppError(503, "CONTRACTS_UNAVAILABLE", "external contracts are unavailable")
-    contracts.validate_final_plan(payload)
-    try:
-        plan = FinalPlan.model_validate(payload)
-    except ValidationError as exc:
-        raise AppError(422, "VALIDATION_ERROR", "request validation failed", details=jsonable_encoder(exc.errors())) from exc
     digest = value_hash(payload)
     repository = PlanReviewRepository(session)
     replay = repository.existing(principal.principal_id, idempotency_key, digest)
@@ -117,19 +111,31 @@ def create_plan_review(
         response.headers["Location"] = f"/api/v1/plan-reviews/{replay.review_id}"
         response.headers["X-Ontology-Checksum"] = checksum
         return replay
-    ontology, _engine = get_runtime(request)
-    client_id = request.app.state.settings.plan_review_client_id
-    if client_id not in ontology.clients:
-        raise AppError(503, "PLAN_REVIEW_CLIENT_UNAVAILABLE", "configured plan-review client is unavailable")
-    review = PlanReviewService(ontology).evaluate(plan)
+    service = request.app.state.product_review_service
+    if service is None:
+        raise AppError(503, "ONTOLOGY_UNAVAILABLE", "canonical review workflow is unavailable")
+    result = service.review(payload)
+    if result["status"] != "COMMITTED":
+        raise AppError(
+            422, result["status"], "payload was archived and is not reviewable",
+            details={"artifact_id": result["artifact_id"], "content_digest": result["content_digest"]},
+        )
+    try:
+        plan = FinalPlan.model_validate(payload)
+        review = OntologyReview.model_validate(result["review"])
+    except ValidationError as exc:
+        raise AppError(500, "CORE_CONTRACT_MISMATCH", "canonical workflow returned an invalid contract") from exc
+    contracts = request.app.state.external_contracts
+    if contracts is None:
+        raise AppError(503, "CONTRACTS_UNAVAILABLE", "external contracts are unavailable")
     contracts.validate_ontology_review(review.model_dump(mode="json"))
     saved = repository.create(
-        payload, plan, review, digest=digest, tenant=principal.tenant, client_id=client_id,
+        payload, plan, review, digest=digest, tenant=principal.tenant, client_id=service.client_id,
         principal_id=principal.principal_id, request_id=request.state.request_id,
-        ontology_checksum=ontology.checksum, idempotency_key=idempotency_key,
+        ontology_checksum=service.package_checksum, idempotency_key=idempotency_key,
     )
     response.headers["Location"] = f"/api/v1/plan-reviews/{saved.review_id}"
-    response.headers["X-Ontology-Checksum"] = ontology.checksum
+    response.headers["X-Ontology-Checksum"] = service.package_checksum
     return saved
 
 
