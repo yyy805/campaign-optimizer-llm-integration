@@ -1,6 +1,6 @@
 {
   "manifest_version": "1.0",
-  "source_commit": "09767383719e5f07db8a421bb0ce398bd1adf01f",
+  "source_commit": "a83ff2b4f63a7e24da276a034b39d3360b6fccc3",
   "ontology_version": "2.0-campaign-pending",
   "rule_version": "R5@2.0-campaign-pending",
   "engine_version": "2.0",
@@ -43,8 +43,8 @@
     },
     {
       "path": "campaign_optimizer/ontology/assertions/hannah_asset_migration_inventory.json",
-      "sha256": "c7e82718ff0e535ddb3f79603ef0ef65469e89341821670a206855a755639814",
-      "size": 22882
+      "sha256": "97ee57900deefb2a72c72c819f3989c48d431d936210a521e4e64851f9223764",
+      "size": 22432
     },
     {
       "path": "campaign_optimizer/ontology/assertions/review_only_contract.json",
@@ -193,8 +193,8 @@
     },
     {
       "path": "campaign_optimizer/ontology/db.py",
-      "sha256": "ea3e56cd0219c4a2d80614b526db877b2f53c367a834d91c4c65c6e1e1bc2d16",
-      "size": 22910
+      "sha256": "62af7ac40d3bf3526bf936ee3304d79c2eeccb3c1c2b0535318cd3464be229fe",
+      "size": 23109
     },
     {
       "path": "campaign_optimizer/ontology/guardrails/G1.json",
@@ -632,5 +632,5 @@
       "size": 1330
     }
   ],
-  "package_checksum": "932e44f71af74bbfbb2dcac7a2bac6622e9d7666c97a3393fb04f1771022b7f9"
+  "package_checksum": "626cfbdedc954f41c7a335cf6178886c8c5cc3c71b2c1b7400ed6f87595d3513"
 }
