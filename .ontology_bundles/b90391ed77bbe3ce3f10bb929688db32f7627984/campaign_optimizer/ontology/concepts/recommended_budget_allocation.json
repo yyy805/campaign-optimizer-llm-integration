@@ -1,0 +1,28 @@
+{
+  "concept_id": "recommended_budget_allocation",
+  "name_cn": "建议预算分配",
+  "name_en": "Recommended Budget Allocation",
+  "layer": "L5",
+  "tier": "derived",
+  "caliber": "platform",
+  "definition": "优化引擎为给定目标（如最大化 ROI）计算出的建议预算分配方案，界面上以优化建议卡片形式展示。",
+  "formula": null,
+  "unit": "currency",
+  "source": "优化引擎 / 建议卡片",
+  "source_field": "recommended_budget_allocation",
+  "value_type": "number",
+  "value_range": [0, null],
+  "baseline": { "type": "current_budget", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "14day",
+    "entity": "campaign",
+    "aggregation": "none",
+    "requires_full_batch": false
+  },
+  "dimensions": ["campaign"],
+  "related_concepts": [
+    { "target": "predicted_roas", "relation": "depends_on", "strength": "strong" },
+    { "target": "prediction_confidence", "relation": "used_by", "strength": "medium" }
+  ]
+}

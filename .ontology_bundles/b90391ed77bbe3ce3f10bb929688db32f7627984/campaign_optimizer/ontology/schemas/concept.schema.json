@@ -1,0 +1,27 @@
+{
+ "$schema":"http://json-schema.org/draft-07/schema#",
+ "$id":"https://campaign-optimizer.local/schemas/concept.schema.json",
+ "title":"Concept Card","type":"object","additionalProperties":false,
+ "required":["concept_id","name_cn","name_en","layer","tier","caliber","definition","formula","unit","source","source_field","value_type","value_range","baseline","granularity","dimensions","related_concepts"],
+ "properties":{
+  "concept_id":{"type":"string","pattern":"^[a-z][a-z0-9_]*$"},
+  "name_cn":{"type":"string","minLength":1},"name_en":{"type":"string","minLength":1},
+  "layer":{"type":"string","pattern":"^(L[1-6]|R)$"},
+  "tier":{"enum":["base","derived","mta","mock"]},"caliber":{"enum":["platform","mta","mock",null]},
+  "definition":{"type":"string","minLength":1},"formula":{"type":["string","null"]},
+  "unit":{"type":"string"},"source":{"type":"string"},"source_field":{"type":["string","null"]},
+  "value_type":{"enum":["number","string_enum","boolean"]},
+  "value_range":{"oneOf":[{"type":"array","items":{"type":["number","null"]},"minItems":2,"maxItems":2},{"type":"null"}]},
+  "allowed_values":{"oneOf":[{"type":"array","items":{"type":"string"},"minItems":1,"uniqueItems":true},{"type":"null"}]},
+  "baseline":{"type":"object","required":["type","value"],"additionalProperties":false,"properties":{"type":{"type":"string"},"value":{"type":["number","null"]}}},
+  "threshold":{"type":["number","null"]},
+  "granularity":{"type":"object","required":["time","entity","aggregation","requires_full_batch"],"additionalProperties":false,"properties":{"time":{"enum":["daily","7day","14day","snapshot","mock"]},"entity":{"enum":["touchpoint","campaign","ad_group","account","platform","path"]},"aggregation":{"enum":["sum","recompute","none","compare"]},"requires_full_batch":{"type":"boolean"}}},
+  "dimensions":{"type":"array","items":{"type":"string"}},
+  "related_concepts":{"type":"array","items":{"type":"object","required":["target","relation","strength"],"additionalProperties":false,"properties":{"target":{"type":"string"},"relation":{"type":"string"},"strength":{"type":"string"}}}}
+ },
+ "allOf":[
+  {"if":{"properties":{"value_type":{"const":"number"}}},"then":{"properties":{"value_range":{"type":"array"},"allowed_values":{"type":"null"}}}},
+  {"if":{"properties":{"value_type":{"const":"string_enum"}}},"then":{"required":["allowed_values"],"properties":{"value_range":{"type":"null"},"allowed_values":{"type":"array"}}}},
+  {"if":{"properties":{"value_type":{"const":"boolean"}}},"then":{"properties":{"value_range":{"type":"null"},"allowed_values":{"type":"null"},"threshold":{"type":"null"}}}}
+ ]
+}

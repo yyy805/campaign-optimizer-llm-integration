@@ -1,0 +1,20 @@
+{
+  "client_id": "demo_client_001",
+  "name": "示例客户A（多渠道投放，宽松型）",
+  "risk_tolerance": {
+    "max_auto_budget_change_pct": 0.15,
+    "max_auto_bid_change_pct": 0.20,
+    "preferred_approval_threshold": "HIGH"
+  },
+  "custom_baselines": {
+    "ACoS_target": 0.35,
+    "calibrated_from": "demo_config"
+  },
+  "ontology_version_locked": "v1.1-demo",
+  "campaign_kpi": {
+    "primary_kpi": "roas",
+    "secondary_kpi": "acos",
+    "target_value": 0.35
+  },
+  "_status": "沿用此前跑通过的 demo 配置（ontology_demo/ontology_store.py），本身也是模拟数据，非真实客户"
+}

@@ -1,6 +1,6 @@
 {
   "manifest_version": "1.0",
-  "source_commit": "b90391ed77bbe3ce3f10bb929688db32f7627984",
+  "source_commit": "a83ff2b4f63a7e24da276a034b39d3360b6fccc3",
   "ontology_version": "2.0-campaign-pending",
   "rule_version": "R5@2.0-campaign-pending",
   "engine_version": "2.0",
@@ -40,6 +40,11 @@
       "path": "campaign_optimizer/ontology/__init__.py",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "size": 0
+    },
+    {
+      "path": "campaign_optimizer/ontology/assertions/hannah_asset_migration_inventory.json",
+      "sha256": "97ee57900deefb2a72c72c819f3989c48d431d936210a521e4e64851f9223764",
+      "size": 22432
     },
     {
       "path": "campaign_optimizer/ontology/assertions/review_only_contract.json",
@@ -188,8 +193,8 @@
     },
     {
       "path": "campaign_optimizer/ontology/db.py",
-      "sha256": "b95d94597f88c75ef02ff1edecc5262a4468adfbf991908b6b9e4c0cb280e295",
-      "size": 22127
+      "sha256": "62af7ac40d3bf3526bf936ee3304d79c2eeccb3c1c2b0535318cd3464be229fe",
+      "size": 23109
     },
     {
       "path": "campaign_optimizer/ontology/guardrails/G1.json",
@@ -200,6 +205,271 @@
       "path": "campaign_optimizer/ontology/guardrails/G2.json",
       "sha256": "a8f543178146fcf9d9bad2c6a6146d31ed0545fbf96070fe4f5dbea023eed161",
       "size": 511
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/assertions/README.md",
+      "sha256": "bb149e1c40fda75c2d52468750c1b4062b2b84b240229c9c5e4b4a88e3fa02cd",
+      "size": 2039
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/assertions/assertion.schema.json",
+      "sha256": "c4a09ce813ccabfb15fd19797653cf2ff0385d67eb5696031db069d75e8c1634",
+      "size": 5055
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/assertions/check_assertions.py",
+      "sha256": "04ece747f9beca485a875149860564e206bd029afff1cb0214405881f0bfd4b9",
+      "size": 17387
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/assertions/check_demo_data_adapter.py",
+      "sha256": "e0f4bd3f248bb98159b5e84c8f1d30adcbb08e65eda274f6ef51cb0eeabf56bb",
+      "size": 8020
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/assertions/check_field_mapping.py",
+      "sha256": "4f0fbb60d98e18120124824273c271d8903305cf611a721937d057625435352c",
+      "size": 10547
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/assertions/demo_data_adapter.json",
+      "sha256": "94288597e67ccb323c7ca93487a8f0976dfff55b5008d11cf747f2b1d3c4d315",
+      "size": 3117
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/assertions/demo_data_adapter.schema.json",
+      "sha256": "4498e8a97a35b7ecee1cd27a749b24f0bfe619935442d907621b4a5dfc1799e6",
+      "size": 3524
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/assertions/field_mapping.json",
+      "sha256": "b70cdc69e30552de9363799799a82e9504f1c037c22c31e4e6dead3486cb1689",
+      "size": 16744
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/assertions/field_mapping.schema.json",
+      "sha256": "326889d030c868809007ab7645300d67156db92d11287dcdb3f70d8d04583070",
+      "size": 3467
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/assertions/mta_simulated_data_requirements.md",
+      "sha256": "4b7365c95e1c1f94f22c2769a2ade82e12d68e61f3777e882809c8523a87c350",
+      "size": 7701
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/assertions/ontology_demo_simulated_data_change_request.md",
+      "sha256": "e1a3e361a77c843e810da7605a4b13e72add51c9bc71e4a938e1e053360c4263",
+      "size": 13433
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/assertions/story_assertions.json",
+      "sha256": "2ea93c44b7776d0397b43ee9d85c40bc743565537b77856231a143d972305dc5",
+      "size": 20799
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/clients/demo_client_001.json",
+      "sha256": "559466d2c66c55a955b593160198ee75b41fd87ad73c92d4df6263e10fd84958",
+      "size": 618
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/clients/demo_client_002.json",
+      "sha256": "0bbe4fba59193d34eda0874cb8fd0947ebdfed163891b1060ce0813cb57dc13f",
+      "size": 559
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/acos.json",
+      "sha256": "c1020e445df5237eb99f3eb464554ff915752cda91742645fd54cc3dff0f991c",
+      "size": 924
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/attributed_revenue.json",
+      "sha256": "1886a5f9254d6305482339057ba9e1ea10ec8c551be7f4768a138481ca3be3e0",
+      "size": 827
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/attribution_consistency_status.json",
+      "sha256": "70d87464d4013eb91219a81d78205a74efd79226f0b3f501fe044fc6664133cb",
+      "size": 913
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/attribution_divergence.json",
+      "sha256": "e8d2e3138c9c70cfd693c188837db79152b90f63f14dfab31f722be4c43ef5e9",
+      "size": 1175
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/clicks.json",
+      "sha256": "5d006e2ff875d616a529dba1a03c8c7b10ab98eaaaf36fc766ce09615edcbacb",
+      "size": 856
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/contribution_share.json",
+      "sha256": "e26f1f14c4d91f33c2d3f3d7c1e4804f68c62f3bb4469c4b62d1c2cd21f11cac",
+      "size": 1079
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/conversions.json",
+      "sha256": "35d43d14449072719f97107037705f86277557e8d97496b8b4e47850fde6f9a7",
+      "size": 944
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/ctr.json",
+      "sha256": "94dcd19481449c6b0aef52955b7b79384dd7eea14d3a918a46032bf958f6e015",
+      "size": 900
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/cvr.json",
+      "sha256": "18c40863e616616f22ac97f0e1a5501438d85acf6ded1180a5f2449b29157fba",
+      "size": 888
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/impressions.json",
+      "sha256": "eac76afd99d370ced540d184cd1920f92e397f333223e0cdadd204185c710338",
+      "size": 873
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/impressions_growth.json",
+      "sha256": "13f3d98a6f94a8090ba079c883029e79374e4624083434cc664c6d4f12317e89",
+      "size": 1074
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/impressions_last_period.json",
+      "sha256": "1e366d694c70a6cbcf5ee6df78b9d6aa735bc2c87de64d7b25fdc5426192e7d5",
+      "size": 1019
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/max_cpc.json",
+      "sha256": "bd033ece46ac33dedab6cbeb55d5ce7f76e416352a5e73f8d25a9474d96b3228",
+      "size": 919
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/min_cpc.json",
+      "sha256": "b4953d32f86a306bd5fa73ce294a6687bd09ecf9bef3c72f7db86f764685cbd2",
+      "size": 919
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/mta_roas.json",
+      "sha256": "92cf8df56a2960a244a28c0a6a53ffada2bfea3b87fff022e551b58bcff3b2b0",
+      "size": 1072
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/predicted_roas.json",
+      "sha256": "d6cf49e86859992c47b43191ed9294fc12c95580a45f68c897e9e05a32077d37",
+      "size": 878
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/recommended_budget_allocation.json",
+      "sha256": "ee3f800693289b7a321b31d4fbf8d3e0a4fcfa589708155c2084b4450cba4501",
+      "size": 943
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/revenue.json",
+      "sha256": "e377a624ab59e8c51b094df4b653988e3d689f66eb1709ddffaf2bc3da323fd8",
+      "size": 847
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/roas.json",
+      "sha256": "969616f292313a5f42990185b2131a6dc1495a419f7e7efc12f00b7d6f7e69c0",
+      "size": 1066
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/roas_decline_alert.json",
+      "sha256": "07ce597d794fb14b39d8bfc50e10a0bb9425647879e3f535ce35d946aaa55a4b",
+      "size": 879
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/sp_min_daily_budget.json",
+      "sha256": "b4e1672ce1216c1dd5eee464da06126ccc67342837560ca78fe61df8d2fdb275",
+      "size": 1062
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/spend.json",
+      "sha256": "de472e1a0425b0ec8a799a01288c689cb93e9a7c0652f67582c37605d6192dd8",
+      "size": 929
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/spend_share.json",
+      "sha256": "f71c27de17afc07376e7428d4042c62beb5ca612a47c20f5cf97746be8dee41b",
+      "size": 1044
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/total_spend.json",
+      "sha256": "66f31b9ad91cc24fccb35ca12439f3572ab7dc04aa84f1b7782e9e822856ac42",
+      "size": 960
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/db.py",
+      "sha256": "77fc7f92dd86e44a8896994875b122b096cc8fd73b0f04022b115c9c1ee1029a",
+      "size": 4209
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/diagrams/roas_trend_decision_flow.md",
+      "sha256": "e20f765d168a2d7f89a2c191be50d81faf6d2f34c33e758ec679d386c181dd97",
+      "size": 752
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/guardrails/G1.json",
+      "sha256": "0e3073b297db34c0cd598f6c4c97653129710562bea0fb445a90c2a4a4550863",
+      "size": 388
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/guardrails/G2.json",
+      "sha256": "ad764344f7ca6a928fc8127d22c2c27cf04a6b6371ee535addbc61b9ea7e17c0",
+      "size": 474
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/rules/R1.json",
+      "sha256": "379ac2a3205e05afbfb274ad35af6cbd261863158df64b65ea218a5d016561cf",
+      "size": 1683
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/rules/R2.json",
+      "sha256": "c5ab6aca4a299c023e9dc60c0cc99c5afc49488415fd2b59bfbc29cc995b074a",
+      "size": 1629
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/rules/R3.json",
+      "sha256": "4812c2961898c7c57cdad6ad15ed02f44db3e3a407645882067d9cccf1076ce7",
+      "size": 1230
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/rules/R4.json",
+      "sha256": "d942c603ce0ad229e4f5de0882eb6a6984cf76ec04f4ee82955e4a1ae5b509ce",
+      "size": 1561
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/rules/R5.json",
+      "sha256": "a265f3abef50680bc2025dddabd73f3f114a75c36d618cc365ba27666daba2cd",
+      "size": 2599
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/rules/R6.json",
+      "sha256": "e861b2dad58319c666ef2915ea92887810e6b2b858372d17343095859c6d847e",
+      "size": 1615
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/rules/R7.json",
+      "sha256": "fa6dc6991e0e47f67f644a289b79838d5b7522c77465136d7c88e10952a029d2",
+      "size": 2053
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/schemas/concept.schema.json",
+      "sha256": "27ad7c79cf7afd5734e11e04ff98415b3576ac32343ff86e3014edc0d2eb7f37",
+      "size": 4703
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/schemas/guardrail.schema.json",
+      "sha256": "c782bb0b40a73d95e8a866c66b4b6c09c16f00e84a30d62339734b967e827d28",
+      "size": 2198
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/schemas/rule.schema.json",
+      "sha256": "9e0e9f48c2ee01854168faf73783e84e1b2e22938a3e0e15c0fb9c1d35e5f0ac",
+      "size": 4396
     },
     {
       "path": "campaign_optimizer/ontology/history/rules/R5.touchpoint.1.3-contract-hardening.json",
@@ -228,8 +498,8 @@
     },
     {
       "path": "campaign_optimizer/ontology/review_workflow.py",
-      "sha256": "01bfc799ce5d7ceea427c7d92db50fc081b13482015ac9931417d323f899bc92",
-      "size": 8275
+      "sha256": "bfd3623fde3acd9ead8c1519dbb16923eb8cc6dedf3942a8db42a5481c0cdf88",
+      "size": 16295
     },
     {
       "path": "campaign_optimizer/ontology/rules/R1.json",
@@ -362,5 +632,5 @@
       "size": 1330
     }
   ],
-  "package_checksum": "eb80ab290d434544a4f70514933151be20ed7880ed087e9761331fe58e808e28"
+  "package_checksum": "626cfbdedc954f41c7a335cf6178886c8c5cc3c71b2c1b7400ed6f87595d3513"
 }

@@ -19,7 +19,7 @@ from campaign_optimizer.contracts.validation import (
     validate_contract_object,
 )
 from .release_pin import (
-    BUNDLE_ROOT,
+    bundle_root,
     load_verified_manifests,
     release_identity,
     verify_consumer_manifest,
@@ -74,12 +74,13 @@ class RequestBuilder:
             lambda: f"request_{uuid.uuid4().hex}"
         )
         self._rules_dir = rules_dir
-        self._ontology_root = ontology_root or BUNDLE_ROOT
         if ontology_manifest is None:
-            self._ontology_manifests = load_verified_manifests(root=self._ontology_root)
+            self._ontology_manifests = load_verified_manifests(root=ontology_root)
         else:
             manifest = copy.deepcopy(dict(ontology_manifest))
-            verify_consumer_manifest(manifest, root=self._ontology_root)
+            verify_consumer_manifest(
+                manifest, root=ontology_root or bundle_root(manifest)
+            )
             self._ontology_manifests = {manifest['package_checksum']: manifest}
 
     def build(

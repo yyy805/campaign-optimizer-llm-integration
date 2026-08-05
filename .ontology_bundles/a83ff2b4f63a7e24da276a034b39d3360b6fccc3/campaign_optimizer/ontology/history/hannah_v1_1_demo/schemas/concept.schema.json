@@ -1,0 +1,116 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://campaign-optimizer.local/schemas/concept.schema.json",
+  "title": "Concept Card",
+  "description": "概念卡模板，字段定义与理由见 _bmad-output/planning-artifacts/card-template-field-guide.md",
+  "type": "object",
+  "required": [
+    "concept_id", "name_cn", "name_en", "layer", "tier", "caliber",
+    "definition", "formula", "unit", "source", "source_field",
+    "value_range", "baseline", "granularity", "dimensions", "related_concepts"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "concept_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "唯一编号，全系统靠这个字符串互相指认"
+    },
+    "name_cn": { "type": "string", "minLength": 1 },
+    "name_en": { "type": "string", "minLength": 1 },
+    "layer": {
+      "type": "string",
+      "pattern": "^(L[1-6]|R)$",
+      "description": "对应 v2.2 蓝图的层号"
+    },
+    "tier": {
+      "type": "string",
+      "enum": ["base", "derived", "mta", "mock"],
+      "description": "mock：预测/占位数据（decision3 层的 predicted_roas 等），既不是原始字段也不是公式派生，也不是 MTA 输出"
+    },
+    "caliber": {
+      "type": ["string", "null"],
+      "enum": ["platform", "mta", "mock", null]
+    },
+    "definition": { "type": "string", "minLength": 1 },
+    "formula": {
+      "type": ["string", "null"],
+      "description": "base 层为 null；derived/mta 层必须填，且只能引用已存在的 concept_id"
+    },
+    "unit": { "type": "string" },
+    "source": { "type": "string" },
+    "source_field": {
+      "type": ["string", "null"],
+      "description": "上游原始列名；直接复用上游已算好的列时须显式写明，避免重复实现"
+    },
+    "value_range": {
+      "type": "array",
+      "items": { "type": ["number", "null"] },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "baseline": {
+      "type": "object",
+      "required": ["type", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string" },
+        "value": { "type": ["number", "null"] }
+      }
+    },
+    "threshold": {
+      "type": ["number", "null"],
+      "description": "业务判定阈值，可选字段，与 baseline 的统计均值语义分开"
+    },
+    "granularity": {
+      "type": "object",
+      "required": ["time", "entity", "aggregation", "requires_full_batch"],
+      "additionalProperties": false,
+      "properties": {
+        "time": {
+          "type": "string",
+          "enum": ["daily", "7day", "14day", "snapshot", "mock"],
+          "description": "7day 专指 R2 那类周环比统计口径，独立于 14 天评估窗口；不要用容易误解为'每周更新一次'的 weekly"
+        },
+        "entity": {
+          "type": "string",
+          "enum": ["touchpoint", "campaign", "ad_group", "account", "platform", "path"],
+          "description": "ad_group：客户系统在 Amazon 官方结构之上自行扩展的广告组级护栏值（如出价上下限）；platform：Amazon 平台统一值，不随客户/广告组变化（如最低预算门槛）"
+        },
+        "aggregation": {
+          "type": "string",
+          "enum": ["sum", "recompute", "none", "compare"],
+          "description": "compare：跨维度取值相减/对比（如 attribution_divergence 比较同一 concept 在 attribution_model 维度两个取值的差），不要用 per_touchpoint/from_source 这类临时造词——per_touchpoint 的语义已由 requires_full_batch 表达，from_source 直接填 none"
+        },
+        "requires_full_batch": { "type": "boolean" }
+      }
+    },
+    "dimensions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "空数组代表该概念不随任何维度变化（如全平台统一的硬性常量）"
+    },
+    "expected_input_role": {
+      "type": ["string", "null"],
+      "enum": ["trigger_signal", "comparison_signal", "context_signal", "confidence_signal", "action_signal", null],
+      "description": "用于说明该概念在规则匹配流程中扮演的角色"
+    },
+    "value_type": {
+      "type": ["string", "null"],
+      "enum": ["number", "boolean", "string", "enum", "currency", "percentage", "object", null]
+    },
+    "related_concepts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["target", "relation", "strength"],
+        "additionalProperties": false,
+        "properties": {
+          "target": { "type": "string" },
+          "relation": { "type": "string" },
+          "strength": { "type": "string" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "rule_id": "R2",
+  "name": "曝光增长期维持预算",
+  "evaluation_grain": { "time": "7day", "entity": "campaign" },
+  "attribution_model": null,
+  "trigger_condition": {
+    "all": [
+      { "concept": "impressions_growth", "op": ">", "ref": 0.2, "window_days": 7 }
+    ]
+  },
+  "diagnosis": "该campaign曝光量处于周环比增长期，暂不建议调整预算，避免打断自然增长趋势",
+  "recommended_action": {
+    "type": "maintain_budget",
+    "param": {}
+  },
+  "match_inputs": [
+    { "concept": "impressions_growth", "role": "trigger_signal", "required": true }
+  ],
+  "confidence_model": {
+    "source": ["historical_pattern", "data_quality"],
+    "thresholds": { "auto": 0.7, "review": 0.5 }
+  },
+  "risk_model": {
+    "impact_score": 0.3,
+    "formula": "impact_score * (1 - confidence)",
+    "auto_execute_threshold": 0.25,
+    "review_threshold": 0.6
+  },
+  "execution_policy": {
+    "mode": "manual",
+    "reason": "保持预算是低风险动作，默认人工确认即可"
+  },
+  "confidence": 0.55,
+  "risk_level": "LOW",
+  "evidence_type": "historical_pattern",
+  "validation_count": 0,
+  "rejection_count": 0,
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2026-07-17",
+      "author": "human_expert",
+      "change": "初始版本，与R1构成主线冲突裁决场景，证据等级刻意低于R1以保证裁决结果合理"
+    }
+  ],
+  "causal_annotation": "相关性证据，非因果证明",
+  "status": "ACTIVE",
+  "known_limitations": [
+    "20% 为客户 Demo 使用的经验阈值，不代表正式业务阈值；接入真实数据后需重新标定"
+  ]
+}

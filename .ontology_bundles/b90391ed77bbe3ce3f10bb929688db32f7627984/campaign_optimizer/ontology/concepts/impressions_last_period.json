@@ -1,0 +1,28 @@
+{
+  "concept_id": "impressions_last_period",
+  "name_cn": "上一周期展示量",
+  "name_en": "Impressions (Last Period)",
+  "layer": "L5",
+  "tier": "derived",
+  "caliber": "platform",
+  "definition": "用于计算周环比的上一周期展示量总和。当 impressions_growth 的粒度为 7day 时，impressions_last_period 表示再往前一个完整 7 天周期内的 impressions 总和。",
+  "formula": "sum(impressions) over previous period",
+  "unit": "count",
+  "source": "平台数据聚合（按时间窗口累计）",
+  "source_field": null,
+  "value_type": "number",
+  "value_range": [0, null],
+  "baseline": { "type": "account_mean", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "7day",
+    "entity": "campaign",
+    "aggregation": "sum",
+    "requires_full_batch": false
+  },
+  "dimensions": ["campaign"],
+  "related_concepts": [
+    { "target": "impressions", "relation": "depends_on", "strength": "strong" },
+    { "target": "impressions_growth", "relation": "input_to", "strength": "strong" }
+  ]
+}

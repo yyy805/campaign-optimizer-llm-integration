@@ -12,10 +12,7 @@ from campaign_optimizer.ontology.publication import PackageDriftError
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CURRENT_MANIFEST = PROJECT_ROOT / 'campaign_optimizer/ontology/publication_manifest.json'
 HISTORY_MANIFESTS = PROJECT_ROOT / 'campaign_optimizer/ontology/history/manifests'
-BUNDLE_ROOT = (
-    PROJECT_ROOT / 'campaign_optimizer/ontology/bundles'
-    / 'b90391ed77bbe3ce3f10bb929688db32f7627984'
-)
+BUNDLES_ROOT = PROJECT_ROOT / '.ontology_bundles'
 IDENTITY_FIELDS = (
     'ontology_version', 'rule_version', 'engine_version',
     'schema_version', 'source_commit', 'package_checksum',
@@ -63,14 +60,20 @@ def release_identity(manifest: Mapping[str, Any]) -> dict[str, str]:
     return {name: str(manifest[name]) for name in IDENTITY_FIELDS}
 
 
-def load_verified_manifests(*, root: Path = BUNDLE_ROOT) -> dict[str, dict[str, Any]]:
+def bundle_root(manifest: Mapping[str, Any]) -> Path:
+    return BUNDLES_ROOT / str(manifest['source_commit'])
+
+
+def load_verified_manifests(
+    *, root: Path | None = None,
+) -> dict[str, dict[str, Any]]:
     paths = [CURRENT_MANIFEST]
     if HISTORY_MANIFESTS.is_dir():
         paths.extend(sorted(HISTORY_MANIFESTS.glob('*.json')))
     manifests: dict[str, dict[str, Any]] = {}
     for path in paths:
         manifest = load_manifest(path)
-        verify_consumer_manifest(manifest, root=root)
+        verify_consumer_manifest(manifest, root=root or bundle_root(manifest))
         checksum = manifest['package_checksum']
         if checksum in manifests:
             raise PackageDriftError('duplicate ontology package checksum')

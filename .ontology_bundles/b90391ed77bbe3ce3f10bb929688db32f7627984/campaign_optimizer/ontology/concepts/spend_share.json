@@ -1,0 +1,30 @@
+{
+  "concept_id": "spend_share",
+  "name_cn": "花费占比",
+  "name_en": "Spend Share",
+  "layer": "L5",
+  "tier": "derived",
+  "caliber": "platform",
+  "definition": "某个实体的广告花费占该层级总花费的比重，用于判断花费是否与贡献、表现等指标匹配。R5 引用时口径为 MTA 快照粒度、R7 引用时为占位 mock 数据，两者分母粒度可能不同，已知限制，待 R7 从 mock 换成真实预测模型时重新核定。",
+  "formula": "spend / total_spend",
+  "unit": "ratio",
+  "source": "平台数据计算",
+  "source_field": null,
+  "value_type": "number",
+  "value_range": [0, 1],
+  "baseline": { "type": "account_mean", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "daily",
+    "entity": "campaign",
+    "aggregation": "recompute",
+    "requires_full_batch": false
+  },
+  "dimensions": ["campaign"],
+  "related_concepts": [
+    { "target": "spend", "relation": "depends_on", "strength": "strong" },
+    { "target": "total_spend", "relation": "depends_on", "strength": "strong" },
+    { "target": "acos", "relation": "related", "strength": "weak" },
+    { "target": "contribution_share", "relation": "comparable", "strength": "strong" }
+  ]
+}
