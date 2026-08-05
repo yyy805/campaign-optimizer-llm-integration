@@ -170,6 +170,11 @@ class OntologyReviewRow(Base):
     __tablename__ = 'ontology_reviews'
     __table_args__ = (
         ForeignKeyConstraint(['client_id', 'plan_id'], ['plan_snapshots.client_id', 'plan_snapshots.plan_id']),
+        ForeignKeyConstraint(
+            ['client_id', 'parent_review_id'],
+            ['ontology_reviews.client_id', 'ontology_reviews.review_id'],
+            name='fk_review_parent',
+        ),
         UniqueConstraint('client_id', 'review_id', 'plan_id', name='uq_review_plan'),
         UniqueConstraint('client_id', 'plan_id', 'revision', name='uq_review_revision'),
         CheckConstraint('revision >= 0', name='ck_review_revision'),
