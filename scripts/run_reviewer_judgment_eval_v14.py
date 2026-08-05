@@ -14,6 +14,7 @@ from campaign_optimizer.llm.three_role_runner_v12 import _safe_structure_reason
 from campaign_optimizer.llm.three_role_runner_v13 import RoleCallAdapterV13
 from scripts.run_reviewer_function_pilot_v13 import classify
 DATASET=ROOT/"tests"/"fixtures"/"llm_eval"/"reviewer_judgment_v1"
+CONFIG_V13=ROOT/"campaign_optimizer"/"llm"/"agent_roles.v13.json"
 SCOPE_NOTE="Business-judgment eval on frozen reviewer_judgment_v1 labels; decision match is the hard gate, code membership is reported but not scored."
 def load(path):return json.loads(path.read_text(encoding="utf-8"))
 def load_cases():
@@ -48,7 +49,7 @@ def run_eval(adapter,config,cases):
  accepted=aggregate["matched"]==len(rows) and not any(x["failure_category"] for x in rows)
  return {"status":"PASS" if accepted else "FAIL","acceptance":{"all_expected_decisions_match":aggregate["matched"]==len(rows),"no_structure_or_safety_failure":not any(x["failure_category"] for x in rows),"accepted":accepted},"aggregate":aggregate,"cases":rows,"scope_note":SCOPE_NOTE}
 def main():
- p=argparse.ArgumentParser(description=__doc__);p.add_argument("--real",action="store_true");p.add_argument("--case",choices=[case[0] for case in load_cases()]);a=p.parse_args();config=load_role_configuration();cases=tuple(case for case in load_cases() if a.case is None or case[0]==a.case)
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument("--real",action="store_true");p.add_argument("--case",choices=[case[0] for case in load_cases()]);a=p.parse_args();config=load_role_configuration(CONFIG_V13);cases=tuple(case for case in load_cases() if a.case is None or case[0]==a.case)
  if not a.real:print(json.dumps({"status":"DRY_RUN","case_count":len(cases),"selected_case":a.case,"decision_distribution":{k:sum(1 for case in cases if case[2]==k) for k in ("PASS","REVISE","REJECT")},"label_class_distribution":{k:sum(1 for case in cases if case[1]==k) for k in ("explain_only","refuse_assertion","pending_review_semantics","safety")},"reviewer_call_limit":2*len(cases),"model":config.roles.model_aliases["reviewer"],"tool":config.tool_name,"scope_note":SCOPE_NOTE},sort_keys=True));return 0
  adapter=RoleCallAdapterV13(config);adapter.set_total_limit(2*len(cases));result=run_eval(adapter,config,cases);print(json.dumps(result,sort_keys=True));return 0 if result["acceptance"]["accepted"] else 1
 if __name__=="__main__":raise SystemExit(main())
