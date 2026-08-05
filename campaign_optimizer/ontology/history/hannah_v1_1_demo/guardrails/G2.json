@@ -1,0 +1,13 @@
+{
+  "guardrail_id": "G2",
+  "name": "预算不能低于平台最低每日预算",
+  "scope": "platform",
+  "applies_to_action_types": ["budget_increase", "budget_decrease"],
+  "condition": {
+    "concept": "sp_min_daily_budget",
+    "op": "<=",
+    "against": "recommended_action.param.new_daily_budget"
+  },
+  "on_violation": "block_auto_execution",
+  "message": "本次调整会让每日预算低于平台最低门槛，campaign 会被自动暂停，已转人工审批"
+}

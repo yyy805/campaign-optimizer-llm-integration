@@ -170,13 +170,28 @@ class OntologyReviewRow(Base):
     __tablename__ = 'ontology_reviews'
     __table_args__ = (
         ForeignKeyConstraint(['client_id', 'plan_id'], ['plan_snapshots.client_id', 'plan_snapshots.plan_id']),
+        ForeignKeyConstraint(
+            ['client_id', 'parent_review_id'],
+            ['ontology_reviews.client_id', 'ontology_reviews.review_id'],
+            name='fk_review_parent',
+        ),
         UniqueConstraint('client_id', 'review_id', 'plan_id', name='uq_review_plan'),
+        UniqueConstraint('client_id', 'plan_id', 'revision', name='uq_review_revision'),
+        CheckConstraint('revision >= 0', name='ck_review_revision'),
         CheckConstraint('overall_verdict IN (\'SUPPORT\',\'CONFLICT\',\'NOT_APPLICABLE\',\'UNVERIFIED\',\'INSUFFICIENT_EVIDENCE\')', name='ck_review_verdict'),
     )
     client_id: Mapped[str] = mapped_column(String(64), primary_key=True)
     review_id: Mapped[str] = mapped_column(String(128), primary_key=True)
     plan_id: Mapped[str] = mapped_column(String(128))
+    parent_review_id: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    revision: Mapped[int] = mapped_column(Integer, default=0)
     ontology_version: Mapped[str] = mapped_column(String(64))
+    rule_version: Mapped[str] = mapped_column(String(64), default='legacy')
+    engine_version: Mapped[str] = mapped_column(String(64), default='legacy')
+    schema_version: Mapped[str] = mapped_column(String(64), default='legacy')
+    source_commit: Mapped[str] = mapped_column(String(40), default='0' * 40)
+    package_checksum: Mapped[str] = mapped_column(String(64), default='0' * 64)
+    confidence_state_version: Mapped[str] = mapped_column(String(128), default='legacy')
     overall_verdict: Mapped[str] = mapped_column(String(32))
     created_at: Mapped[datetime] = mapped_column(UTCDateTime())
     payload: Mapped[dict] = mapped_column(JSONColumn)

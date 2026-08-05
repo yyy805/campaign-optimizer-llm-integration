@@ -75,7 +75,7 @@ class PlanReviewService:
     def review(self, payload: dict[str, Any]) -> dict[str, Any]:
         try:
             return self.workflow.review_final_plan(
-                client_id=self.client_id, plan=payload, confidence_states={}
+                client_id=self.client_id, plan=payload
             )
         except ContractValidationError as exc:
             raise AppError(422, "INVALID_INPUT", str(exc)) from exc

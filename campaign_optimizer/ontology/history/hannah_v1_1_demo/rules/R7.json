@@ -1,0 +1,60 @@
+{
+  "rule_id": "R7",
+  "name": "预测ROAS下滑提前预警",
+  "evaluation_grain": { "time": "snapshot", "entity": "campaign" },
+  "attribution_model": null,
+  "trigger_condition": {
+    "all": []
+  },
+  "diagnosis": "当前年度 MTA 快照不包含 campaign 级时间序列预测输出，Demo 对未来 ROAS 趋势返回 NO_COVERAGE",
+  "recommended_action": {
+    "type": "no_action",
+    "param": {}
+  },
+  "match_inputs": [],
+  "confidence_model": {
+    "source": ["unsupported_forecast_dependency"],
+    "thresholds": { "auto": 0.8, "review": 0.6 }
+  },
+  "risk_model": {
+    "impact_score": 0.65,
+    "formula": "impact_score * (1 - confidence)",
+    "auto_execute_threshold": 0.25,
+    "review_threshold": 0.6
+  },
+  "execution_policy": {
+    "mode": "manual",
+    "reason": "规则已退役；必须直接返回 NO_COVERAGE，不得进入条件求值或产生预算动作"
+  },
+  "confidence": 0.58,
+  "risk_level": "MEDIUM",
+  "evidence_type": "model_based",
+  "validation_count": 0,
+  "rejection_count": 0,
+  "version_history": [
+    {
+      "version": "0.1-skeleton",
+      "date": "2026-07-17",
+      "author": "human_expert",
+      "change": "骨架版，预测数据为 mock 占位，决策链预测环节的可推理化展示"
+    },
+    {
+      "version": "0.2-skeleton",
+      "date": "2026-07-20",
+      "author": "human_expert",
+      "change": "曾改为审核外部预测模型的成型预警；因当前没有真实预测合同，该设计已被 1.1-demo 退役。"
+    },
+    {
+      "version": "1.1-demo",
+      "date": "2026-08-03",
+      "author": "ontology_team",
+      "change": "退出活跃 Demo 规则清单：年度 MTA 快照不能证明未来趋势，不再用 Mock 预测字段替代缺失能力。"
+    }
+  ],
+  "causal_annotation": "相关性证据，非因果证明",
+  "status": "RETIRED",
+  "known_limitations": [
+    "缺少 campaign 级时间序列预测输出，不能执行未来 ROAS 趋势判断",
+    "相关用户请求必须返回 NO_COVERAGE；接入真实预测模块后需重新评审规则"
+  ]
+}
