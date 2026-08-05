@@ -44,7 +44,7 @@ def _validate(bundle: dict[str, dict]) -> None:
 def _second_plan_item() -> dict:
     return {
         "plan_item_id": "plan_item_002",
-        "entity_type": "channel",
+        "entity_type": "campaign",
         "entity_id": "Sponsored Brands",
         "action": "keep_budget",
         "delta_pct": 0,

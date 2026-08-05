@@ -33,7 +33,7 @@ def bundle() -> dict[str, dict]:
 def test_review_cannot_borrow_fact_from_another_plan_item(bundle):
     second_item = {
         "plan_item_id": "plan_item_002",
-        "entity_type": "channel",
+        "entity_type": "campaign",
         "entity_id": "Sponsored Brands",
         "action": "keep_budget",
         "delta_pct": 0,
@@ -44,7 +44,7 @@ def test_review_cannot_borrow_fact_from_another_plan_item(bundle):
     second_fact = {
         "fact_id": "review_fact_004",
         "plan_item_id": "plan_item_002",
-        "entity_type": "channel",
+        "entity_type": "campaign",
         "entity_id": "Sponsored Brands",
         "name": "contribution_share",
         "value": 0.2,

@@ -76,12 +76,14 @@ def test_all_rules_are_review_only_and_contain_no_auto_execution_policy():
         assert "risk_model" not in card
 
 
-def test_r5_is_active_and_r7_is_retired_after_compatibility_migration():
+def test_campaign_r5_is_pending_and_r7_is_retired_after_migration():
     r5 = _load(RULES_DIR / "R5.json")
     r7 = _load(RULES_DIR / "R7.json")
-    assert r5["status"] == "ACTIVE"
-    assert latest_rule_version(r5) == "1.3-contract-hardening"
-    assert r5["review_policy"]["conflicting_plan_actions"] == ["increase_budget"]
+    assert r5["status"] == "PENDING_HUMAN_REVIEW"
+    assert r5["evaluation_grain"]["entity"] == "campaign"
+    assert latest_rule_version(r5) == "2.0-campaign-pending"
+    assert r5["review_policy"]["supported_plan_actions"] == []
+    assert r5["review_policy"]["conflicting_plan_actions"] == []
     assert r7["status"] == "RETIRED"
     assert latest_rule_version(r7) == "1.3-contract-hardening"
     assert r7["match_inputs"] == []

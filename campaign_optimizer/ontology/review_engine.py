@@ -25,8 +25,8 @@ from campaign_optimizer.contracts.validation import (
 
 from .condition_evaluator import EvaluationStatus, evaluate_condition, required_concepts
 
-DEFAULT_ENABLED_RULE_IDS = ("R5",)
-IMPLEMENTED_RULE_IDS = frozenset(DEFAULT_ENABLED_RULE_IDS)
+DEFAULT_ENABLED_RULE_IDS: tuple[str, ...] = ()
+IMPLEMENTED_RULE_IDS = frozenset({"R5"})
 
 
 def _digest(value: Any, length: int = 16) -> str:
@@ -188,10 +188,11 @@ def generate_ontology_review(
     ontology_version: str,
     confidence_state_version: str,
     confidence_states: dict[str, dict[str, Any]] | None = None,
+    release_identity: dict[str, str] | None = None,
     rules_dir: Path = RULES_DIR,
     enabled_rule_ids: tuple[str, ...] = DEFAULT_ENABLED_RULE_IDS,
 ) -> dict[str, Any]:
-    """Generate a schema-valid review; v1 defaults to the approved R5-only scope."""
+    """Generate a schema-valid review; pending rules are never enabled by default."""
     validate_contract_object("final_plan", plan)
     _validate_plan_integrity(plan)
     if len(set(enabled_rule_ids)) != len(enabled_rule_ids):
@@ -284,6 +285,7 @@ def generate_ontology_review(
         "plan": plan,
         "ontology_version": ontology_version,
         "confidence_state_version": confidence_state_version,
+        "release_identity": release_identity,
         "enabled_rule_ids": list(enabled_rule_ids),
         "confidence_states": states,
     }

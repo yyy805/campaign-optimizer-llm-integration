@@ -61,7 +61,7 @@ def test_every_plan_item_must_receive_a_review(bundle):
     bundle["plan"]["items"].append(
         {
             "plan_item_id": "plan_item_002",
-            "entity_type": "channel",
+        "entity_type": "campaign",
             "entity_id": "Display",
             "action": "keep_budget",
             "delta_pct": 0,

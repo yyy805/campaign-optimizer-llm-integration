@@ -182,7 +182,7 @@ def test_action_direction_and_budget_math_are_enforced(
 def test_multiple_plan_items_and_mixed_verdict_use_conservative_priority(bundle):
     second_item = {
         "plan_item_id": "plan_item_002",
-        "entity_type": "channel",
+        "entity_type": "campaign",
         "entity_id": "Sponsored Brands",
         "action": "decrease_budget",
         "delta_pct": -5,
@@ -193,7 +193,7 @@ def test_multiple_plan_items_and_mixed_verdict_use_conservative_priority(bundle)
     second_fact = {
         "fact_id": "review_fact_004",
         "plan_item_id": "plan_item_002",
-        "entity_type": "channel",
+        "entity_type": "campaign",
         "entity_id": "Sponsored Brands",
         "name": "roas",
         "value": 1.2,

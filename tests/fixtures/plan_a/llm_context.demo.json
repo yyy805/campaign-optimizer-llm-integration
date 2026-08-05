@@ -7,6 +7,7 @@
     "plan_id": "plan_demo_001",
     "source": "DEMO_OPTIMIZER_STUB",
     "source_version": "1.0",
+    "is_optimized": true,
     "period": {
       "type": "next_14_days",
       "start_date": "2026-08-01",
@@ -15,7 +16,7 @@
     "items": [
       {
         "plan_item_id": "plan_item_001",
-        "entity_type": "channel",
+        "entity_type": "campaign",
         "entity_id": "Sponsored Products",
         "action": "increase_budget",
         "delta_pct": 10,
@@ -28,7 +29,7 @@
       {
         "fact_id": "decision_fact_001",
         "plan_item_id": "plan_item_001",
-        "entity_type": "channel",
+        "entity_type": "campaign",
         "entity_id": "Sponsored Products",
         "name": "predicted_roas",
         "value": 4.2,
@@ -42,7 +43,7 @@
       {
         "fact_id": "review_fact_001",
         "plan_item_id": "plan_item_001",
-        "entity_type": "channel",
+        "entity_type": "campaign",
         "entity_id": "Sponsored Products",
         "name": "contribution_share",
           "value": 0.08,
@@ -54,7 +55,7 @@
       {
         "fact_id": "review_fact_002",
         "plan_item_id": "plan_item_001",
-        "entity_type": "channel",
+        "entity_type": "campaign",
         "entity_id": "Sponsored Products",
         "name": "spend_share",
         "value": 0.28,
@@ -66,7 +67,7 @@
       {
         "fact_id": "review_fact_003",
         "plan_item_id": "plan_item_001",
-        "entity_type": "channel",
+        "entity_type": "campaign",
         "entity_id": "Sponsored Products",
         "name": "attribution_divergence",
         "value": 0.03,

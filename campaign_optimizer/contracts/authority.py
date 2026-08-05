@@ -44,6 +44,26 @@ def load_rule_card(rule_id: str, rules_dir: Path = RULES_DIR) -> dict[str, Any]:
         raise ContractValidationError(f"无法读取权威规则卡{rule_id}: {exc}") from exc
 
 
+def load_rule_card_version(
+    rule_id: str, rule_version: str, rules_dir: Path = RULES_DIR
+) -> dict[str, Any]:
+    """Resolve immutable historical snapshots without making them executable."""
+    current = load_rule_card(rule_id, rules_dir)
+    if latest_rule_version(current) == rule_version:
+        return current
+    history_dir = rules_dir.parent / "history" / "rules"
+    for path in sorted(history_dir.glob(f"{rule_id}.*.json")):
+        try:
+            card = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if card.get("rule_id") == rule_id and latest_rule_version(card) == rule_version:
+            return card
+    raise ContractValidationError(
+        f"authoritative rule history has no {rule_id}@{rule_version}"
+    )
+
+
 def latest_rule_version(card: dict[str, Any]) -> str:
     """提取规则卡最新版本；缺少版本时禁止发布。"""
     history = card.get("version_history")
@@ -178,7 +198,9 @@ def validate_authoritative_review(
         if rule_id is None:
             continue
         try:
-            card = load_rule_card(rule_id, rules_dir)
+            card = load_rule_card_version(
+                rule_id, item["rule_version"], rules_dir
+            )
             version = latest_rule_version(card)
             expected_public = public_rule_from_card(card)
         except ContractValidationError as exc:
