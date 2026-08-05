@@ -1,6 +1,6 @@
 {
   "manifest_version": "1.0",
-  "source_commit": "348e9d336b72473b39ad2776a9ea6b2c4951c4a8",
+  "source_commit": "b90391ed77bbe3ce3f10bb929688db32f7627984",
   "ontology_version": "2.0-campaign-pending",
   "rule_version": "R5@2.0-campaign-pending",
   "engine_version": "2.0",
@@ -223,8 +223,8 @@
     },
     {
       "path": "campaign_optimizer/ontology/review_engine.py",
-      "sha256": "4d31956ad627d86ccd9fbd95c08c864011dd07358fd9f9426654f19cf6e4f98d",
-      "size": 13226
+      "sha256": "ff24d721098ed96ef854fe370d0590639f45d15096d5e242dc9cfe3575d57c5f",
+      "size": 13452
     },
     {
       "path": "campaign_optimizer/ontology/review_workflow.py",
@@ -318,8 +318,8 @@
     },
     {
       "path": "campaign_optimizer/schemas/ontology_review.schema.json",
-      "sha256": "03fde56515ba74075735e56f3be352c2bad917e24f6b33ecce2058f2f3f65987",
-      "size": 5387
+      "sha256": "78b6679bca59713669acc75943780d2421c9daf6e4aef225c88928a029298053",
+      "size": 6198
     },
     {
       "path": "campaign_optimizer/schemas/plan_decision_event.schema.json",
@@ -343,8 +343,8 @@
     },
     {
       "path": "tests/fixtures/plan_a/llm_context.demo.json",
-      "sha256": "43ca60bace95b0c4a40a3f82df2003ba962879e0fa7a445c3c4375412775ccca",
-      "size": 4657
+      "sha256": "6c6fabe33097b61f5a0c2237fa01d6c93702b514458fab8fa04d480b151067bd",
+      "size": 5045
     },
     {
       "path": "tests/fixtures/plan_a/llm_request.demo.json",
@@ -358,9 +358,9 @@
     },
     {
       "path": "tests/fixtures/plan_a/ontology_review.demo.json",
-      "sha256": "b9bd380e5920fe5849f378ef3305a83f58129aadbfddcfad040690557c8d2a2b",
-      "size": 974
+      "sha256": "ed0de50f5cb4a7efe46dcdc1db7972791b20e1380579f345e66336dae661d21b",
+      "size": 1330
     }
   ],
-  "package_checksum": "11e82ab7e8d4934af0f7acfe64b1c050edbda3f1f8a03e5393beb3240f008713"
+  "package_checksum": "eb80ab290d434544a4f70514933151be20ed7880ed087e9761331fe58e808e28"
 }
