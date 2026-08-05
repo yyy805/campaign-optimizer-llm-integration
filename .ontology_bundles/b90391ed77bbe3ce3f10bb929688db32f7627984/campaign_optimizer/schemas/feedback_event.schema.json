@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://campaign-optimizer.local/schemas/feedback_event.schema.json",
+  "title": "Ontology Review Feedback Event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "feedback_id", "review_id", "review_item_id", "plan_id",
+    "plan_item_id", "rule_id", "rule_version", "verdict", "rating", "actor_id", "created_at"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "feedback_id": { "type": "string", "minLength": 1 },
+    "review_id": { "type": "string", "minLength": 1 },
+    "review_item_id": { "type": "string", "minLength": 1 },
+    "plan_id": { "type": "string", "minLength": 1 },
+    "plan_item_id": { "type": "string", "minLength": 1 },
+    "rule_id": { "type": ["string", "null"], "pattern": "^R[0-9]+$" },
+    "rule_version": { "type": ["string", "null"] },
+    "verdict": { "enum": ["SUPPORT", "CONFLICT", "NOT_APPLICABLE", "UNVERIFIED", "INSUFFICIENT_EVIDENCE"] },
+    "rating": { "enum": ["GOOD", "FINE", "BAD"] },
+    "actor_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "format": "date-time" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "verdict": { "const": "UNVERIFIED" } } },
+      "then": { "properties": { "rule_id": { "type": "null" }, "rule_version": { "type": "null" } } }
+    },
+    {
+      "if": { "properties": { "verdict": { "enum": ["SUPPORT", "CONFLICT", "NOT_APPLICABLE", "INSUFFICIENT_EVIDENCE"] } } },
+      "then": { "properties": { "rule_id": { "type": "string" }, "rule_version": { "type": "string" } } }
+    }
+  ]
+}

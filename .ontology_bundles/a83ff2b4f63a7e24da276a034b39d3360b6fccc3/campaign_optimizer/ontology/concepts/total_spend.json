@@ -1,0 +1,28 @@
+{
+  "concept_id": "total_spend",
+  "name_cn": "总花费",
+  "name_en": "Total Spend",
+  "layer": "L5",
+  "tier": "derived",
+  "caliber": "platform",
+  "definition": "当前粒度层级（campaign）内全部广告花费的汇总，用作计算花费占比的分母。",
+  "formula": "sum(spend)",
+  "unit": "currency",
+  "source": "平台数据计算 / 聚合后的总花费",
+  "source_field": null,
+  "value_type": "number",
+  "value_range": [0, null],
+  "baseline": { "type": "account_mean", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "daily",
+    "entity": "campaign",
+    "aggregation": "sum",
+    "requires_full_batch": false
+  },
+  "dimensions": ["campaign"],
+  "related_concepts": [
+    { "target": "spend", "relation": "depends_on", "strength": "strong" },
+    { "target": "spend_share", "relation": "input_to", "strength": "strong" }
+  ]
+}

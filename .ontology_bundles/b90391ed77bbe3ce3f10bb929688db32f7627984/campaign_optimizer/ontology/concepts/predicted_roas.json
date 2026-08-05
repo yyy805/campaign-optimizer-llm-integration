@@ -1,0 +1,29 @@
+{
+  "concept_id": "predicted_roas",
+  "name_cn": "预测ROAS",
+  "name_en": "Predicted ROAS",
+  "layer": "L5",
+  "tier": "mock",
+  "caliber": "mock",
+  "definition": "预测模型（R7）对未来期间某 campaign ROAS 的预测值，用于决策链中的预算与投放优化参考。当前为占位 mock 数据，非真实预测模型输出。",
+  "formula": null,
+  "unit": "ratio",
+  "source": "预测模型（R7），mock 占位数据",
+  "source_field": "predicted_roas",
+  "value_type": "number",
+  "value_range": [0, null],
+  "baseline": { "type": "model_forecast_mean", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "mock",
+    "entity": "campaign",
+    "aggregation": "none",
+    "requires_full_batch": false
+  },
+  "dimensions": ["campaign"],
+  "related_concepts": [
+    { "target": "prediction_confidence", "relation": "accompanies", "strength": "strong" },
+    { "target": "recommended_budget_allocation", "relation": "input_to", "strength": "strong" },
+    { "target": "roas_decline_alert", "relation": "input_to", "strength": "strong" }
+  ]
+}

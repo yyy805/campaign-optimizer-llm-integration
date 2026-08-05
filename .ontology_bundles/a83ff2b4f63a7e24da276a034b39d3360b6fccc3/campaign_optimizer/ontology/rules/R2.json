@@ -1,0 +1,46 @@
+{
+  "rule_id": "R2",
+  "name": "曝光增长期维持预算",
+  "evaluation_grain": { "time": "7day", "entity": "campaign" },
+  "attribution_model": null,
+  "trigger_condition": {
+    "all": [
+      { "concept": "impressions_growth", "op": ">", "ref": 0.20, "window_days": 7 }
+    ]
+  },
+  "diagnosis": "该campaign曝光量处于周环比增长期，暂不建议调整预算，避免打断自然增长趋势",
+  "match_inputs": [
+    { "concept": "impressions_growth", "role": "trigger_signal", "required": true }
+  ],
+  "reference_action": {
+    "type": "maintain_budget",
+    "param": {}
+  },
+  "confidence_model": { "source": ["historical_pattern", "data_quality"], "thresholds": { "high": 0.7, "minimum_usable": 0.5 } },
+  "review_policy": { "mode": "review_only", "supported_plan_actions": ["keep_budget"], "conflicting_plan_actions": [], "otherwise": "NOT_APPLICABLE" },
+  "confidence": 0.55,
+  "risk_level": "LOW",
+  "evidence_type": "historical_pattern",
+  "validation_count": 0,
+  "rejection_count": 0,
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2026-07-17",
+      "author": "human_expert",
+      "change": "初始版本，与R1构成主线冲突裁决场景，证据等级刻意低于R1以保证裁决结果合理"
+    },
+    {
+      "version": "1.1-review-only",
+      "date": "2026-08-03",
+      "author": "ontology_team",
+      "change": "填入 Demo 曝光增长阈值 20%，并增加 review-only 动作映射；生产部署前仍需重新标定。"
+    },
+    { "version": "1.2-contract-hardening", "date": "2026-08-03", "author": "ontology_team", "change": "将参考动作重命名为不可执行的reference_action；触发条件由运行时真实求值。" }
+  ],
+  "causal_annotation": "相关性证据，非因果证明",
+  "status": "ACTIVE",
+  "known_limitations": [
+    "20% 为 Demo 占位阈值，生产部署前必须用真实数据重新标定并经人工审批。"
+  ]
+}

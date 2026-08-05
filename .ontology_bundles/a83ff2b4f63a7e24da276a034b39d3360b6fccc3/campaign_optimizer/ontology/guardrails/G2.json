@@ -1,0 +1,13 @@
+{
+  "guardrail_id": "G2",
+  "name": "预算不能低于平台最低每日预算",
+  "status": "PENDING_INPUT_CONTRACT",
+  "scope": "platform",
+  "applies_to_plan_actions": [],
+  "condition": null,
+  "on_violation": null,
+  "message": "当前最终方案给出下一14天预算，不能直接与每日最低预算比较，本护栏暂不参与审核。",
+  "known_limitations": [
+    "只有最终方案公开daily_budget或明确可审计的日预算换算字段后，才能恢复为review-only护栏。"
+  ]
+}

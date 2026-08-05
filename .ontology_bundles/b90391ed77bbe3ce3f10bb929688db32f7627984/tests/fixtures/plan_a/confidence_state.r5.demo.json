@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "rule_id": "R5",
+  "rule_version": "1.3-contract-hardening",
+  "base_confidence": 0.62,
+  "runtime_confidence": 0.62,
+  "minimum_usable_confidence": 0.6,
+  "validation_count": 0,
+  "rejection_count": 0,
+  "consecutive_bad_count": 0,
+  "status": "ACTIVE",
+  "processed_feedback_ids": [],
+  "processed_feedback_digests": {},
+  "updated_at": "2026-08-03T12:00:00+08:00"
+}

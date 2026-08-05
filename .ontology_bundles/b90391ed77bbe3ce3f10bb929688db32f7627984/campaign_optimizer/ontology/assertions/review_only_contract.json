@@ -1,0 +1,20 @@
+{
+  "suite_id": "review_only_system_contract_v2",
+  "rule_card_independent": false,
+  "assertions": [
+    {"id": "REV-001", "guarantee": "Every final plan item has at least one ontology review item."},
+    {"id": "REV-002", "guarantee": "One plan item and rule snapshot pair has at most one review item."},
+    {"id": "REV-003", "guarantee": "Review matches use review evidence from the same plan item only."},
+    {"id": "REV-004", "guarantee": "UNVERIFIED carries no invented rule, confidence, or evidence."},
+    {"id": "REV-005", "guarantee": "INSUFFICIENT_EVIDENCE names missing evidence or rule parameters."},
+    {"id": "REV-006", "guarantee": "Overall verdict uses conservative conflict-first aggregation."},
+    {"id": "REV-007", "guarantee": "The LLM context is an immutable snapshot of plan and review."},
+    {"id": "REV-008", "guarantee": "Every rule-bearing verdict references the latest ACTIVE authoritative rule snapshot."},
+    {"id": "REV-009", "guarantee": "Matched facts actually satisfy the structured rule trigger, including grounded baselines."},
+    {"id": "REV-010", "guarantee": "Rule time and entity grain match the reviewed plan item and evidence."},
+    {"id": "REV-011", "guarantee": "SUPPORT, CONFLICT, and NOT_APPLICABLE are determined only by review_policy after a rule trigger matches."},
+    {"id": "REV-012", "guarantee": "Public rule context is a deterministic projection of the authoritative rule card, including review_policy."},
+    {"id": "REV-013", "guarantee": "Feedback is bound to an existing review snapshot and updates runtime confidence state without mutating rule cards."},
+    {"id": "REV-014", "guarantee": "Plan ACCEPT or REJECT events bind to the exact plan source version and content hash."}
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "concept_id": "prediction_confidence",
+  "name_cn": "预测置信度",
+  "name_en": "Prediction Confidence",
+  "layer": "L5",
+  "tier": "mock",
+  "caliber": "mock",
+  "definition": "与预测值配套的置信度/不确定性度量，供解释层判断预测可靠性并决定是否采纳。当前为占位 mock 数据。",
+  "formula": null,
+  "unit": "probability",
+  "source": "预测模型（R7）/ 解释层输出，mock 占位数据",
+  "source_field": "prediction_confidence",
+  "value_type": "number",
+  "value_range": [0, 1],
+  "baseline": { "type": "model_confidence_mean", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "mock",
+    "entity": "campaign",
+    "aggregation": "none",
+    "requires_full_batch": false
+  },
+  "dimensions": ["campaign"],
+  "related_concepts": [
+    { "target": "predicted_roas", "relation": "accompanies", "strength": "strong" },
+    { "target": "roas_decline_alert", "relation": "accompanies", "strength": "strong" }
+  ]
+}

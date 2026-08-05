@@ -1,0 +1,53 @@
+{
+  "rule_id": "R5",
+  "name": "低贡献高花费触点预算重分配审核",
+  "evaluation_grain": { "time": "snapshot", "entity": "channel" },
+  "attribution_model": "markov",
+  "trigger_condition": {
+    "all": [
+      { "concept": "contribution_share", "op": "<", "ref": 0.10 },
+      { "concept": "spend_share", "op": ">", "ref": 0.20 },
+      { "concept": "attribution_divergence", "op": "<=", "ref": 0.05 }
+    ]
+  },
+  "diagnosis": "该触点归因贡献份额低于10%，但花费份额高于20%，且 Markov 与 Shapley 的贡献份额差异不超过5%；若最终方案仍增加该触点预算，本体应标记冲突。",
+  "match_inputs": [
+    { "concept": "contribution_share", "role": "comparison_signal", "required": true },
+    { "concept": "spend_share", "role": "comparison_signal", "required": true },
+    { "concept": "attribution_divergence", "role": "context_signal", "required": true }
+  ],
+  "reference_action": {
+    "type": "budget_reallocation_experiment",
+    "param": {}
+  },
+  "confidence_model": {
+    "source": ["model_based", "transparent_derivation"],
+    "thresholds": { "high": 0.8, "minimum_usable": 0.6 }
+  },
+  "review_policy": {
+    "mode": "review_only",
+    "supported_plan_actions": ["decrease_budget"],
+    "conflicting_plan_actions": ["increase_budget"],
+    "otherwise": "NOT_APPLICABLE"
+  },
+  "confidence": 0.62,
+  "risk_level": "MEDIUM",
+  "evidence_type": "model_based",
+  "validation_count": 0,
+  "rejection_count": 0,
+  "version_history": [
+    { "version": "0.1-skeleton", "date": "2026-07-17", "author": "human_expert", "change": "骨架版，三个 ref 数值待定。" },
+    { "version": "0.2-skeleton", "date": "2026-07-20", "author": "human_expert", "change": "曾改为审核外部成型提案，后因真实 MTA 合同不提供相关字段而撤回。" },
+    { "version": "0.3-skeleton", "date": "2026-07-20", "author": "human_expert", "change": "恢复使用 contribution_share、spend_share 和 attribution_divergence，阈值待定。" },
+    { "version": "1.1-demo", "date": "2026-08-03", "author": "ontology_team", "change": "填入 Demo 阈值 <0.10、>0.20、<=0.05，规则恢复 ACTIVE；数值不代表生产标定。" },
+    { "version": "1.2-review-only", "date": "2026-08-03", "author": "ontology_team", "change": "加入 review_policy；reference_action 仅作为规则侧参考，不由本体生成或执行方案。" },
+    { "version": "1.3-contract-hardening", "date": "2026-08-03", "author": "ontology_team", "change": "运行时开始真实执行三个阈值条件并严格核对channel实体粒度。" }
+  ],
+  "causal_annotation": "相关性证据，非因果证明",
+  "status": "ACTIVE",
+  "known_limitations": [
+    "10%、20% 与 5% 均为 Demo 占位阈值，生产部署前必须用真实数据重新标定并经人工审批。",
+    "三个输入必须来自同一报告窗口；缺少任一输入时返回证据不足或未覆盖，不得触发决定性评价。",
+    "MTA snapshot 与下一14天方案存在时间粒度差异，评价中必须披露。"
+  ]
+}

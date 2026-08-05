@@ -34,6 +34,22 @@ def test_exact_retrieval_preserves_request_order_and_returns_public_projection()
     assert all(result.rule_id != "R2" for result in results)
 
 
+def test_current_pending_r5_fails_closed():
+    with pytest.raises(RetrievalError) as caught:
+        LocalRuleRetriever().retrieve(
+            ['R5'], query='Explain current R5', expected_version='2.0-campaign-pending'
+        )
+    assert caught.value.code is RetrievalErrorCode.INACTIVE_RULE
+
+
+def test_unknown_r5_version_never_falls_back():
+    with pytest.raises(RetrievalError) as caught:
+        LocalRuleRetriever().retrieve(
+            ['R5'], query='Explain R5', expected_version='1.3-contract-hardened-typo'
+        )
+    assert caught.value.code is RetrievalErrorCode.VERSION_MISMATCH
+
+
 def test_single_rule_accepts_string_expected_version():
     result = LocalRuleRetriever().retrieve(
         ["R1"], query="", expected_version="1.2-contract-hardening"
