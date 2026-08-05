@@ -1,0 +1,366 @@
+{
+  "manifest_version": "1.0",
+  "source_commit": "348e9d336b72473b39ad2776a9ea6b2c4951c4a8",
+  "ontology_version": "2.0-campaign-pending",
+  "rule_version": "R5@2.0-campaign-pending",
+  "engine_version": "2.0",
+  "schema_version": "1.1",
+  "entries": [
+    {
+      "path": "campaign_optimizer/contracts/__init__.py",
+      "sha256": "a62887c42da942b4d144bfc0fe06dbcec4eb1c389e5dbcda535f7c93ce6e47f8",
+      "size": 711
+    },
+    {
+      "path": "campaign_optimizer/contracts/authority.py",
+      "sha256": "c03a3c16a70c74db23dbffd7d6e5d4a576611df258d9fabc9a810077929a63fb",
+      "size": 13081
+    },
+    {
+      "path": "campaign_optimizer/contracts/concept_authority.py",
+      "sha256": "1e92e9dcc9dc134fe8454291d3db366f748bc268e1237e328e5b6a138597e78f",
+      "size": 3341
+    },
+    {
+      "path": "campaign_optimizer/contracts/exchange.py",
+      "sha256": "dea55b9971d1c516308ac5a0453c1929846489e34cfe78b651ca576b5ff12876",
+      "size": 5185
+    },
+    {
+      "path": "campaign_optimizer/contracts/feedback.py",
+      "sha256": "559f07205985a963dfe9d9fc59bb7d323feac06abfb993dcb1de8466031eecbb",
+      "size": 4111
+    },
+    {
+      "path": "campaign_optimizer/contracts/validation.py",
+      "sha256": "42eeebff830f72bffca06e67664b33c39a3479d30a91ec760b7bf4bdf89b34a9",
+      "size": 16435
+    },
+    {
+      "path": "campaign_optimizer/ontology/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "campaign_optimizer/ontology/assertions/review_only_contract.json",
+      "sha256": "b162530a2a854a3562b3a7c73de94e15d4a5c4a495a10b884dd0d9fe71f1f3d6",
+      "size": 1752
+    },
+    {
+      "path": "campaign_optimizer/ontology/asset_manifest.json",
+      "sha256": "ebab67b96ea4ae8a7ada021756614ea497fc48b5c6dec14a0b243f379a7136ee",
+      "size": 525
+    },
+    {
+      "path": "campaign_optimizer/ontology/clients/demo_client_001.json",
+      "sha256": "687bd10b29776611d7a87064e652ba4ec7aeb31bb46b1fdfcaf9661ac571ec9a",
+      "size": 618
+    },
+    {
+      "path": "campaign_optimizer/ontology/clients/demo_client_002.json",
+      "sha256": "436f958fe1add1b8d30b3dce5c5478681f3e822570c47599a75de3aa8eb7dca5",
+      "size": 559
+    },
+    {
+      "path": "campaign_optimizer/ontology/concepts/acos.json",
+      "sha256": "4e3584fb21ec676725d5ab32d4e3581ad498b99436697ebfee802b08d7cde912",
+      "size": 950
+    },
+    {
+      "path": "campaign_optimizer/ontology/concepts/attributed_revenue.json",
+      "sha256": "af475fa8891011feebaa44c8513ced9b802e404b10e8065b87dcae016bc7cde1",
+      "size": 1044
+    },
+    {
+      "path": "campaign_optimizer/ontology/concepts/attribution_divergence.json",
+      "sha256": "11e67175d67a8ce833fba78569d42e7a341c0fe6cc9b212f485d3e253dd3378b",
+      "size": 1201
+    },
+    {
+      "path": "campaign_optimizer/ontology/concepts/clicks.json",
+      "sha256": "89003028f3ffe874050663cd039831ad8470d79314605f194041ce5dd015ce85",
+      "size": 882
+    },
+    {
+      "path": "campaign_optimizer/ontology/concepts/contribution_share.json",
+      "sha256": "db59cdacbf5380ecad85bb00a6ed7e8431eaca272b0b7313ee48c87f68657700",
+      "size": 1165
+    },
+    {
+      "path": "campaign_optimizer/ontology/concepts/conversions.json",
+      "sha256": "d8bf4709117532b06d1e9dc93affaaa5903a12ca85513f4333633a386fed88da",
+      "size": 970
+    },
+    {
+      "path": "campaign_optimizer/ontology/concepts/ctr.json",
+      "sha256": "64c6baf24390e352643864794be94df3fce8500553fae9d67051b1374c840bf5",
+      "size": 926
+    },
+    {
+      "path": "campaign_optimizer/ontology/concepts/cvr.json",
+      "sha256": "2b6bda845649ddcedb1ee9257abf814a8d2826efc51a5297c20dbcffae3de629",
+      "size": 914
+    },
+    {
+      "path": "campaign_optimizer/ontology/concepts/impressions.json",
+      "sha256": "2c1a66ba821af6f24e89caf1e4fb06cf3efdbbcd36d962592aa68a1d725211f5",
+      "size": 899
+    },
+    {
+      "path": "campaign_optimizer/ontology/concepts/impressions_growth.json",
+      "sha256": "f765e4436611aee71a39ba4134e8776be8f5c345adf00878c9a6e9296e8f401e",
+      "size": 1100
+    },
+    {
+      "path": "campaign_optimizer/ontology/concepts/impressions_last_period.json",
+      "sha256": "02214c9b8f09736256f0307fa5cee885fd89973fd21b6e8f3920045da74c9f08",
+      "size": 1045
+    },
+    {
+      "path": "campaign_optimizer/ontology/concepts/max_cpc.json",
+      "sha256": "d87cf6ff6267513e83431821514ef06ff1776d142d5f08219e7573a458a99bc2",
+      "size": 945
+    },
+    {
+      "path": "campaign_optimizer/ontology/concepts/min_cpc.json",
+      "sha256": "718df1e14aaf7870b2971ad0f806af568081126ed2ce3435b3a1c2298e3614e3",
+      "size": 945
+    },
+    {
+      "path": "campaign_optimizer/ontology/concepts/mta_roas.json",
+      "sha256": "b1f0cd144e6c61b7c780313fd49ecc42c0a6f9caa69cc4d8c64e8df27e9afc86",
+      "size": 1098
+    },
+    {
+      "path": "campaign_optimizer/ontology/concepts/predicted_roas.json",
+      "sha256": "0a42a3462978a9b9a298b4720efc41a3ea94f1cc6e7aa0ff48dadfc9dc54102e",
+      "size": 1082
+    },
+    {
+      "path": "campaign_optimizer/ontology/concepts/prediction_confidence.json",
+      "sha256": "f6609e935dad7a427f252d079a8322ddbdc7fb5e6d137e665dc4e0c1ab8e5ce2",
+      "size": 989
+    },
+    {
+      "path": "campaign_optimizer/ontology/concepts/recommended_budget_allocation.json",
+      "sha256": "baf8a9f5a6ba30baa6eb99f8e8eced37730412f2e86fe765df346c6f08bea61e",
+      "size": 979
+    },
+    {
+      "path": "campaign_optimizer/ontology/concepts/revenue.json",
+      "sha256": "d3893897af34161aa66c73184a21a41f6bca8da88caeb203595c1dee7b06f442",
+      "size": 873
+    },
+    {
+      "path": "campaign_optimizer/ontology/concepts/roas.json",
+      "sha256": "e7a1b861f4e49884de523bc5ebebc05febb327f7f8f8b63d11c13eb0703d49e9",
+      "size": 1092
+    },
+    {
+      "path": "campaign_optimizer/ontology/concepts/roas_decline_alert.json",
+      "sha256": "c0cbebf4ce7ed925aa59263161c68345f4ad9d0b5c8dd01a5b842a680de928e9",
+      "size": 1370
+    },
+    {
+      "path": "campaign_optimizer/ontology/concepts/sp_min_daily_budget.json",
+      "sha256": "a44e73a62db9ec7fd613e739f1e2874999fd12131c8835b55a388f4a29f67499",
+      "size": 1088
+    },
+    {
+      "path": "campaign_optimizer/ontology/concepts/spend.json",
+      "sha256": "74a0be13ad109972a1759c5830dae25577db7b589894229972a785fdf7208c4a",
+      "size": 955
+    },
+    {
+      "path": "campaign_optimizer/ontology/concepts/spend_share.json",
+      "sha256": "dcd0626f16723bdb145dfb88bee26370ccf887ccf94c312802d94367cdc774ad",
+      "size": 1226
+    },
+    {
+      "path": "campaign_optimizer/ontology/concepts/total_spend.json",
+      "sha256": "d2ee5014309d57f91ac5ef3e5b0c5c0d518d1c25eebcd7ec8cc26b9db0655b4f",
+      "size": 877
+    },
+    {
+      "path": "campaign_optimizer/ontology/condition_evaluator.py",
+      "sha256": "d86100db957d0c0f120073b3c6ab84a932b3dad8734718cb5cfc1892375a5135",
+      "size": 5932
+    },
+    {
+      "path": "campaign_optimizer/ontology/db.py",
+      "sha256": "b95d94597f88c75ef02ff1edecc5262a4468adfbf991908b6b9e4c0cb280e295",
+      "size": 22127
+    },
+    {
+      "path": "campaign_optimizer/ontology/guardrails/G1.json",
+      "sha256": "2881564ea1c83237dc591c147ce6a5ad588b4f40d204c9c24781f9b7d91290f8",
+      "size": 435
+    },
+    {
+      "path": "campaign_optimizer/ontology/guardrails/G2.json",
+      "sha256": "a8f543178146fcf9d9bad2c6a6146d31ed0545fbf96070fe4f5dbea023eed161",
+      "size": 511
+    },
+    {
+      "path": "campaign_optimizer/ontology/history/rules/R5.touchpoint.1.3-contract-hardening.json",
+      "sha256": "68f54320ba68af57f3933692e50ad5e68e79a0390e809173f2194e95155915be",
+      "size": 3058
+    },
+    {
+      "path": "campaign_optimizer/ontology/mta/field_manifest.json",
+      "sha256": "4a02ce07c3f598049ab8daefcee9cfea05d9a83c0cb40425104a483649a469d1",
+      "size": 2774
+    },
+    {
+      "path": "campaign_optimizer/ontology/policies/feedback_policy.demo.json",
+      "sha256": "8d80668baef57cfc93cd15eca7e619738c7a0066e347d49e21fe27027444e5c5",
+      "size": 388
+    },
+    {
+      "path": "campaign_optimizer/ontology/publication.py",
+      "sha256": "bd97389db4d227925821ef2ee46c67b73240583ad4bca4eb88d1230589327c54",
+      "size": 4296
+    },
+    {
+      "path": "campaign_optimizer/ontology/review_engine.py",
+      "sha256": "4d31956ad627d86ccd9fbd95c08c864011dd07358fd9f9426654f19cf6e4f98d",
+      "size": 13226
+    },
+    {
+      "path": "campaign_optimizer/ontology/review_workflow.py",
+      "sha256": "01bfc799ce5d7ceea427c7d92db50fc081b13482015ac9931417d323f899bc92",
+      "size": 8275
+    },
+    {
+      "path": "campaign_optimizer/ontology/rules/R1.json",
+      "sha256": "7e9d757b2db8616c2a31f473edb12a47865d3d19ad4a74a518b0f65e467acfeb",
+      "size": 2097
+    },
+    {
+      "path": "campaign_optimizer/ontology/rules/R2.json",
+      "sha256": "ed61b9be99640fd4169442c4ca5559e6f587e46e845e6571d87120400f3600af",
+      "size": 1926
+    },
+    {
+      "path": "campaign_optimizer/ontology/rules/R3.json",
+      "sha256": "45e2eb38bf601a2a3a84a34311ced820316b8def5175aea547548168ed9381f9",
+      "size": 2011
+    },
+    {
+      "path": "campaign_optimizer/ontology/rules/R4.json",
+      "sha256": "0c4c25d98642a932b176ed579a2422598742d74f026d183fdf03199849a026ab",
+      "size": 2078
+    },
+    {
+      "path": "campaign_optimizer/ontology/rules/R5.json",
+      "sha256": "eced62fd789b0fb903a50722fe4600ea06906a357af88c84f023122292eb7b64",
+      "size": 1651
+    },
+    {
+      "path": "campaign_optimizer/ontology/rules/R6.json",
+      "sha256": "63969d98183cbfc50decd5aaa6a35b3900d61a14da77c9778892af711fb91fb8",
+      "size": 1882
+    },
+    {
+      "path": "campaign_optimizer/ontology/rules/R7.json",
+      "sha256": "1407be7504b8bf498a706e0ba444f397281bd046a0c9ac0652904213f48d190d",
+      "size": 2273
+    },
+    {
+      "path": "campaign_optimizer/ontology/schemas/concept.schema.json",
+      "sha256": "f52c8f7759a9012d32f0b0f5533c4a5ae8244fa9ca2df0890c0eb1c45bc11911",
+      "size": 2630
+    },
+    {
+      "path": "campaign_optimizer/ontology/schemas/guardrail.schema.json",
+      "sha256": "cec7b60a4727690d6487e8791a6a33aacd3a25de6a2d7fd50a1c6694d415dcd5",
+      "size": 2130
+    },
+    {
+      "path": "campaign_optimizer/ontology/schemas/rule.schema.json",
+      "sha256": "7b6706f47376418854d0758a8a6b5603fa75d99853d2908d1cbcf1fb13df6b48",
+      "size": 6719
+    },
+    {
+      "path": "campaign_optimizer/schemas/confidence_state.schema.json",
+      "sha256": "d4f40431be303d8cce7a1466d5a4b76dbd1896d44d383d407e8761dc2b671d33",
+      "size": 1587
+    },
+    {
+      "path": "campaign_optimizer/schemas/feedback_event.schema.json",
+      "sha256": "5488bbe31a5fedfa17fee0b57db00a10c54535f6ca4de0672c1af1a828286d0d",
+      "size": 1625
+    },
+    {
+      "path": "campaign_optimizer/schemas/feedback_policy.schema.json",
+      "sha256": "342cb5aa5f45f66ea788de79ab128cbf28f1f89fb6d6f16e23c145f2a6aa1267",
+      "size": 1539
+    },
+    {
+      "path": "campaign_optimizer/schemas/final_plan.schema.json",
+      "sha256": "c986f2571f141d0732f84be7d9421ff72c62ec363f7e020d85f0ab6cd3386271",
+      "size": 5915
+    },
+    {
+      "path": "campaign_optimizer/schemas/llm_context.schema.json",
+      "sha256": "5e4d833b2d4ad684091c415388bc484c2cbd55b6b24e77b4a4b0a4757cb30a4d",
+      "size": 3842
+    },
+    {
+      "path": "campaign_optimizer/schemas/llm_request.schema.json",
+      "sha256": "2e7a2bb9107f829ad272c5846a007deaee90f03bbfca6ce1c1ea2ea71d76451c",
+      "size": 2621
+    },
+    {
+      "path": "campaign_optimizer/schemas/llm_workflow_output.schema.json",
+      "sha256": "f23005f62de1622dcc14efb86f6266e0ea78ba64fcfd9acde01f384b88c616a4",
+      "size": 5079
+    },
+    {
+      "path": "campaign_optimizer/schemas/ontology_review.schema.json",
+      "sha256": "03fde56515ba74075735e56f3be352c2bad917e24f6b33ecce2058f2f3f65987",
+      "size": 5387
+    },
+    {
+      "path": "campaign_optimizer/schemas/plan_decision_event.schema.json",
+      "sha256": "ae3bd8c75b841c5a0ad0e9f89d9cc36e628dff2fadbc2c96a57c9ced89456d39",
+      "size": 859
+    },
+    {
+      "path": "tests/fixtures/plan_a/confidence_state.r5.demo.json",
+      "sha256": "ae6e2eaf6a87b1a729bdb84bc302f20d79d40538f92453fddb12c8aecf0bb8c0",
+      "size": 400
+    },
+    {
+      "path": "tests/fixtures/plan_a/final_plan.demo.json",
+      "sha256": "3ff0594399bff707464c2d4146fd0782dd8347c4a71ca8e2fd5f437b0bc52fb4",
+      "size": 1987
+    },
+    {
+      "path": "tests/fixtures/plan_a/initial_explanation.expected.md",
+      "sha256": "1be656c05a8788d20ec0791ee19a46d2bde56a7f586be86fdff38a7feb18df79",
+      "size": 1869
+    },
+    {
+      "path": "tests/fixtures/plan_a/llm_context.demo.json",
+      "sha256": "43ca60bace95b0c4a40a3f82df2003ba962879e0fa7a445c3c4375412775ccca",
+      "size": 4657
+    },
+    {
+      "path": "tests/fixtures/plan_a/llm_request.demo.json",
+      "sha256": "b274caf78a84df06e36f2eb3747d24e961d5c7e904957727cbcbbcee0c7137b8",
+      "size": 408
+    },
+    {
+      "path": "tests/fixtures/plan_a/llm_workflow_output.demo.json",
+      "sha256": "caa43ed55a4d183b198701cb60fef0a7e2c00f5fffdd6dfe89efaf98cdfdf138",
+      "size": 4858
+    },
+    {
+      "path": "tests/fixtures/plan_a/ontology_review.demo.json",
+      "sha256": "b9bd380e5920fe5849f378ef3305a83f58129aadbfddcfad040690557c8d2a2b",
+      "size": 974
+    }
+  ],
+  "package_checksum": "11e82ab7e8d4934af0f7acfe64b1c050edbda3f1f8a03e5393beb3240f008713"
+}\n
