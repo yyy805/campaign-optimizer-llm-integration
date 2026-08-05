@@ -21,6 +21,7 @@ from campaign_optimizer.llm.three_role_runner_v13 import ThreeRoleRunnerV13
 ROOT = Path(__file__).parent / "fixtures" / "llm_eval" / "reviewer_judgment_v1"
 PLAN_ROOT = Path(__file__).parent / "fixtures" / "plan_a"
 CONFIG_V13 = Path(__file__).resolve().parents[1] / "campaign_optimizer" / "llm" / "agent_roles.v13.json"
+CONFIG_V14 = Path(__file__).resolve().parents[1] / "campaign_optimizer" / "llm" / "agent_roles.v14.json"
 
 
 def _validator_module():
@@ -220,9 +221,13 @@ def test_rule_field_claim_is_rejected_before_reviewer():
         )
 
 
-def test_v13_configuration_pins_reviewer_v7_and_dry_run_stays_zero_provider():
-    config = load_role_configuration(CONFIG_V13)
-    assert config.roles.prompt_versions["reviewer"] == "reviewer_v7"
+@pytest.mark.parametrize(
+    ("config_path", "reviewer_prompt"),
+    [(CONFIG_V13, "reviewer_v7"), (CONFIG_V14, "reviewer_v8")],
+)
+def test_role_configuration_pins_reviewer_prompt_and_dry_run_stays_zero_provider(config_path, reviewer_prompt):
+    config = load_role_configuration(config_path)
+    assert config.roles.prompt_versions["reviewer"] == reviewer_prompt
     assert config.roles.prompt_versions["executor"] == "executor_v4"
     assert config.roles.output_contract_prompt_version == "draft-1.0"
     plan, review, artifacts = pending_chain()
@@ -234,8 +239,9 @@ def test_v13_configuration_pins_reviewer_v7_and_dry_run_stays_zero_provider():
     assert result.reserved_provider_calls == max_provider_calls_v12(0, False)
 
 
-def test_v7_prompt_pins_pending_review_semantics():
-    text = (PROMPTS / "reviewer_v7.md").read_text(encoding="utf-8")
+@pytest.mark.parametrize("prompt", ["reviewer_v7.md", "reviewer_v8.md"])
+def test_reviewer_prompts_pin_pending_review_semantics(prompt):
+    text = (PROMPTS / prompt).read_text(encoding="utf-8")
     for marker in (
         "ANSWER TEXT IS UNDER AUDIT",
         "UNVERIFIED",
@@ -244,4 +250,10 @@ def test_v7_prompt_pins_pending_review_semantics():
         "MISSING_LIMITATION",
         "ADD_REQUIRED_LIMITATION",
     ):
+        assert marker in text
+
+
+def test_v8_prompt_adds_compliance_whitelist_and_reject_boundary():
+    text = (PROMPTS / "reviewer_v8.md").read_text(encoding="utf-8")
+    for marker in ("COMPLIANT PENDING STATEMENTS", "REJECT BOUNDARY", "SAFETY_VIOLATION"):
         assert marker in text
