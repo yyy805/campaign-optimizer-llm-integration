@@ -10,6 +10,7 @@
     "plan_id",
     "source",
     "ontology_version",
+    "release_identity",
     "confidence_state_version",
     "is_synthetic",
     "overall_verdict",
@@ -34,6 +35,26 @@
       "type": "string",
       "minLength": 1,
       "maxLength": 64
+    },
+    "release_identity": {
+      "type": "object",
+      "required": [
+        "ontology_version",
+        "rule_version",
+        "engine_version",
+        "schema_version",
+        "source_commit",
+        "package_checksum"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "ontology_version": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "rule_version": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "engine_version": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "schema_version": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "source_commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "package_checksum": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
     },
     "confidence_state_version": {
       "type": "string",

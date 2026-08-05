@@ -187,14 +187,18 @@ def generate_ontology_review(
     *,
     ontology_version: str,
     confidence_state_version: str,
+    release_identity: dict[str, str],
     confidence_states: dict[str, dict[str, Any]] | None = None,
-    release_identity: dict[str, str] | None = None,
     rules_dir: Path = RULES_DIR,
     enabled_rule_ids: tuple[str, ...] = DEFAULT_ENABLED_RULE_IDS,
 ) -> dict[str, Any]:
     """Generate a schema-valid review; pending rules are never enabled by default."""
     validate_contract_object("final_plan", plan)
     _validate_plan_integrity(plan)
+    if release_identity.get("ontology_version") != ontology_version:
+        raise ContractValidationError(
+            "review ontology_version does not match release identity"
+        )
     if len(set(enabled_rule_ids)) != len(enabled_rule_ids):
         raise ContractValidationError("enabled_rule_ids must be unique")
     unsupported = set(enabled_rule_ids) - IMPLEMENTED_RULE_IDS
@@ -295,6 +299,7 @@ def generate_ontology_review(
         "plan_id": plan["plan_id"],
         "source": "ONTOLOGY_ENGINE",
         "ontology_version": ontology_version,
+        "release_identity": dict(release_identity),
         "confidence_state_version": confidence_state_version,
         "is_synthetic": plan["source"] == "DEMO_OPTIMIZER_STUB",
         "overall_verdict": aggregate_verdict(review_items),

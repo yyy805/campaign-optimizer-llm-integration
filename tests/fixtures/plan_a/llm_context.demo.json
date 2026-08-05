@@ -84,6 +84,14 @@
     "plan_id": "plan_demo_001",
     "source": "DEMO_ONTOLOGY_STUB",
       "ontology_version": "ontology-demo-2026-08-03-review-only",
+      "release_identity": {
+        "ontology_version": "ontology-demo-2026-08-03-review-only",
+        "rule_version": "R5@1.3-contract-hardening",
+        "engine_version": "1.3",
+        "schema_version": "1.0",
+        "source_commit": "1111111111111111111111111111111111111111",
+        "package_checksum": "2222222222222222222222222222222222222222222222222222222222222222"
+      },
       "confidence_state_version": "feedback-demo-v1",
     "is_synthetic": true,
       "overall_verdict": "CONFLICT",
