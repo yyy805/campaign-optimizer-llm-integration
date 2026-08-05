@@ -1,0 +1,183 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://campaign-optimizer.local/schemas/rule.schema.json",
+  "title": "Rule Card",
+  "description": "规则卡模板，字段定义与理由见 _bmad-output/planning-artifacts/card-template-field-guide.md",
+  "type": "object",
+  "required": [
+    "rule_id", "name", "evaluation_grain", "attribution_model",
+    "trigger_condition", "match_inputs", "diagnosis", "reference_action",
+    "confidence_model", "review_policy",
+    "confidence", "risk_level", "evidence_type",
+    "validation_count", "rejection_count", "version_history",
+    "causal_annotation", "status"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "rule_id": { "type": "string", "pattern": "^R[0-9]+$" },
+    "name": { "type": "string", "minLength": 1 },
+    "evaluation_grain": {
+      "type": "object",
+      "required": ["time", "entity"],
+      "additionalProperties": false,
+      "properties": {
+        "time": {
+          "type": "string",
+          "enum": ["daily", "7day", "14day", "snapshot", "mock"]
+        },
+        "entity": {
+          "type": "string",
+          "enum": ["channel", "touchpoint", "campaign", "account", "path"]
+        }
+      }
+    },
+    "attribution_model": {
+      "type": ["string", "null"],
+      "enum": ["markov", "shapley", null],
+      "description": "仅 caliber=mta 的规则需要填；平台口径规则一律 null"
+    },
+    "trigger_condition": { "$ref": "#/definitions/condition_group" },
+    "match_inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["concept", "role", "required"],
+        "additionalProperties": false,
+        "properties": {
+          "concept": { "type": "string" },
+          "role": {
+            "type": "string",
+            "enum": ["trigger_signal", "comparison_signal", "context_signal", "confidence_signal"]
+          },
+          "required": { "type": "boolean" }
+        }
+      }
+    },
+    "diagnosis": {
+      "type": "string",
+      "minLength": 1,
+      "description": "只写通用诊断逻辑，不写具体剧情案例"
+    },
+    "reference_action": {
+      "type": "object",
+      "description": "仅用于记录规则设计背景的不可执行参考动作；实际审核结论只能由 review_policy 产生。",
+      "required": ["type", "param"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string" },
+        "param": { "type": "object" }
+      }
+    },
+    "confidence_model": {
+      "type": "object",
+      "description": "仅用于评价置信度分层，不包含自动执行阈值。",
+      "required": ["source", "thresholds"],
+      "additionalProperties": false,
+      "properties": {
+        "source": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "thresholds": {
+          "type": "object",
+          "required": ["high", "minimum_usable"],
+          "additionalProperties": false,
+          "properties": {
+            "high": { "type": "number", "minimum": 0, "maximum": 1 },
+            "minimum_usable": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        }
+      }
+    },
+    "review_policy": {
+      "type": "object",
+      "description": "把已命中的规则与小模型最终方案动作映射为 SUPPORT/CONFLICT；其他动作返回 NOT_APPLICABLE。",
+      "required": ["mode", "supported_plan_actions", "conflicting_plan_actions", "otherwise"],
+      "additionalProperties": false,
+      "properties": {
+        "mode": { "const": "review_only" },
+        "supported_plan_actions": {
+          "type": "array", "uniqueItems": true,
+          "items": { "enum": ["increase_budget", "decrease_budget", "keep_budget"] }
+        },
+        "conflicting_plan_actions": {
+          "type": "array", "uniqueItems": true,
+          "items": { "enum": ["increase_budget", "decrease_budget", "keep_budget"] }
+        },
+        "otherwise": { "const": "NOT_APPLICABLE" }
+      }
+    },
+    "confidence": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": ["LOW", "MEDIUM", "HIGH"]
+    },
+    "evidence_type": {
+      "type": "string",
+      "enum": ["human_expert", "historical_pattern", "model_based", "ab_tested", "user_validated"]
+    },
+    "validation_count": { "type": "integer", "minimum": 0 },
+    "rejection_count": { "type": "integer", "minimum": 0 },
+    "version_history": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["version", "date", "author", "change"],
+        "additionalProperties": false,
+        "properties": {
+          "version": { "type": "string", "minLength": 1, "maxLength": 64 },
+          "date": { "type": "string", "format": "date" },
+          "author": { "type": "string", "minLength": 1, "maxLength": 100 },
+          "change": { "type": "string", "minLength": 1, "maxLength": 1000 }
+        }
+      }
+    },
+    "causal_annotation": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["ACTIVE", "SUSPENDED", "PENDING_HUMAN_REVIEW", "RETIRED"]
+    },
+    "known_limitations": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "可选。记录这条规则当前已知但尚未解决的缺口（如触发条件里某个 ref 数值待外部确认），不要把这类状态说明塞进 trigger_condition 或其他字段"
+    }
+  },
+  "definitions": {
+    "condition_leaf": {
+      "type": "object",
+      "required": ["concept", "op", "ref"],
+      "additionalProperties": false,
+      "properties": {
+        "concept": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "op": { "enum": [">", ">=", "<", "<=", "==", "!="] },
+        "ref": {
+          "oneOf": [
+            { "type": "number" },
+            { "type": "boolean" },
+            { "type": "string", "pattern": "^baseline(?:\\*[0-9]+(?:\\.[0-9]+)?)?$" }
+          ]
+        },
+        "window_days": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "condition_group": {
+      "oneOf": [
+        {
+          "type": "object", "required": ["all"], "additionalProperties": false,
+          "properties": { "all": { "type": "array", "items": { "oneOf": [
+            { "$ref": "#/definitions/condition_leaf" }, { "$ref": "#/definitions/condition_group" }
+          ] } } }
+        },
+        {
+          "type": "object", "required": ["any"], "additionalProperties": false,
+          "properties": { "any": { "type": "array", "items": { "oneOf": [
+            { "$ref": "#/definitions/condition_leaf" }, { "$ref": "#/definitions/condition_group" }
+          ] } } }
+        }
+      ]
+    }
+  }
+}

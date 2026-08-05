@@ -1,0 +1,29 @@
+{
+  "concept_id": "ctr",
+  "name_cn": "点击率",
+  "name_en": "Click-Through Rate",
+  "layer": "L5",
+  "tier": "derived",
+  "caliber": "platform",
+  "definition": "点击次数与展示次数之比，用于衡量广告素材或投放计划的吸引力。",
+  "formula": "clicks / impressions",
+  "unit": "ratio",
+  "source": "平台数据计算",
+  "source_field": null,
+  "value_type": "number",
+  "value_range": [0, 1],
+  "baseline": { "type": "account_mean", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "daily",
+    "entity": "campaign",
+    "aggregation": "recompute",
+    "requires_full_batch": false
+  },
+  "dimensions": ["campaign"],
+  "related_concepts": [
+    { "target": "clicks", "relation": "depends_on", "strength": "strong" },
+    { "target": "impressions", "relation": "depends_on", "strength": "strong" },
+    { "target": "acos", "relation": "input_to", "strength": "medium" }
+  ]
+}

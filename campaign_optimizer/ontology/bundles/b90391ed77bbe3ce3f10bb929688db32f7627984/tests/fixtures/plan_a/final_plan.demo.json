@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0",
+  "plan_id": "plan_demo_001",
+  "source": "DEMO_OPTIMIZER_STUB",
+  "source_version": "1.0",
+  "is_optimized": true,
+  "period": {
+    "type": "next_14_days",
+    "start_date": "2026-08-01",
+    "end_date": "2026-08-14"
+  },
+  "items": [
+    {
+      "plan_item_id": "plan_item_001",
+      "entity_type": "campaign",
+      "entity_id": "Sponsored Products",
+      "action": "increase_budget",
+      "delta_pct": 10,
+      "current_budget": 1000,
+      "recommended_budget": 1100,
+      "currency": "USD"
+    }
+  ],
+  "decision_evidence": [
+    {
+      "fact_id": "decision_fact_001",
+      "plan_item_id": "plan_item_001",
+      "entity_type": "campaign",
+      "entity_id": "Sponsored Products",
+      "name": "predicted_roas",
+      "value": 4.2,
+      "unit": "ratio",
+      "period": "next_14_days",
+      "source": "demo_prediction_output",
+      "scope": "public_output"
+    }
+  ],
+  "review_evidence": [
+    {
+      "fact_id": "review_fact_001",
+      "plan_item_id": "plan_item_001",
+      "entity_type": "campaign",
+      "entity_id": "Sponsored Products",
+      "name": "contribution_share",
+      "value": 0.08,
+      "unit": "ratio",
+      "period": "current_snapshot",
+      "source": "demo_mta_output",
+      "scope": "ontology_review"
+    },
+    {
+      "fact_id": "review_fact_002",
+      "plan_item_id": "plan_item_001",
+      "entity_type": "campaign",
+      "entity_id": "Sponsored Products",
+      "name": "spend_share",
+      "value": 0.28,
+      "unit": "ratio",
+      "period": "current_snapshot",
+      "source": "demo_platform_output",
+      "scope": "ontology_review"
+    },
+    {
+      "fact_id": "review_fact_003",
+      "plan_item_id": "plan_item_001",
+      "entity_type": "campaign",
+      "entity_id": "Sponsored Products",
+      "name": "attribution_divergence",
+      "value": 0.03,
+      "unit": "ratio",
+      "period": "current_snapshot",
+      "source": "demo_mta_comparison",
+      "scope": "ontology_review"
+    }
+  ]
+}

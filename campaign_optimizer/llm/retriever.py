@@ -97,10 +97,8 @@ class LocalRuleRetriever:
         versions = _normalize_expected_versions(ids, expected_version)
         results: list[RetrievalResult] = []
         for rule_id in ids:
-            card = self._load_card(rule_id)
+            card = self._load_card_version(rule_id, versions[rule_id])
             version = latest_rule_version(card)
-            if version != versions[rule_id]:
-                raise RetrievalError(RetrievalErrorCode.VERSION_MISMATCH, rule_id=rule_id)
             status = card["status"]
             if status == "RETIRED":
                 raise RetrievalError(RetrievalErrorCode.RETIRED_RULE, rule_id=rule_id)
@@ -139,6 +137,31 @@ class LocalRuleRetriever:
         if any(self._validator.iter_errors(value)):
             raise RetrievalError(RetrievalErrorCode.INVALID_RULE, rule_id=rule_id)
         return value
+
+    def _load_card_version(self, rule_id: str, expected_version: str) -> dict[str, Any]:
+        current = self._load_card(rule_id)
+        if latest_rule_version(current) == expected_version:
+            return current
+        return self._load_historical_card(rule_id, expected_version)
+
+    def _load_historical_card(self, rule_id: str, expected_version: str) -> dict[str, Any]:
+        history_dir = self._rules_dir.parent / 'history' / 'rules'
+        for path in sorted(history_dir.glob(f'{rule_id}.*.json')):
+            try:
+                candidate = self._loader(path)
+            except (OSError, json.JSONDecodeError):
+                continue
+            if not isinstance(candidate, dict) or candidate.get('rule_id') != rule_id:
+                continue
+            if any(self._validator.iter_errors(candidate)):
+                continue
+            try:
+                version = latest_rule_version(candidate)
+            except ContractValidationError:
+                continue
+            if version == expected_version:
+                return candidate
+        raise RetrievalError(RetrievalErrorCode.VERSION_MISMATCH, rule_id=rule_id)
 
 
 def _load_json(path: Path) -> Any:

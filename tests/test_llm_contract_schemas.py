@@ -16,7 +16,10 @@ from campaign_optimizer.contracts.validation import validate_contract_bundle
 ROOT = Path(__file__).parent.parent
 SCHEMAS_DIR = ROOT / "campaign_optimizer" / "schemas"
 FIXTURES_DIR = ROOT / "tests" / "fixtures" / "plan_a"
-R5_PATH = ROOT / "campaign_optimizer" / "ontology" / "rules" / "R5.json"
+R5_PATH = (
+    ROOT / 'campaign_optimizer' / 'ontology' / 'history' / 'rules'
+    / 'R5.touchpoint.1.3-contract-hardening.json'
+)
 
 SCHEMA_FILES = {
     "final_plan": "final_plan.schema.json",
@@ -204,7 +207,7 @@ def test_bundle_rejects_claim_value_tampering(fixtures):
         )
 
 
-def test_r5_fixture_matches_current_review_only_rule(fixtures):
+def test_r5_fixture_matches_immutable_historical_review_only_rule(fixtures):
     r5 = _load(R5_PATH)
     review_item = fixtures["ontology_review"]["items"][0]
     latest_version = r5["version_history"][-1]["version"]

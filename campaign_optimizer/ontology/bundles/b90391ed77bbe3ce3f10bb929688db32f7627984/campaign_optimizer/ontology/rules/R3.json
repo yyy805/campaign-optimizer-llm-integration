@@ -1,0 +1,44 @@
+{
+  "rule_id": "R3",
+  "name": "高ROAS渠道预算小幅上调",
+  "evaluation_grain": {"time": "snapshot", "entity": "touchpoint"},
+  "attribution_model": "markov",
+  "trigger_condition": {
+    "all": [
+      {"concept": "mta_roas", "op": ">", "ref": "baseline*1.5"}
+    ]
+  },
+  "diagnosis": "该触点在当前 MTA 归因快照中的 ROAS 显著高于账户基准，可作为审核增加预算方案的支持依据。",
+  "match_inputs": [
+    { "concept": "mta_roas", "role": "trigger_signal", "required": true }
+  ],
+  "reference_action": {"type": "budget_increase", "param": {"pct": 10}},
+  "confidence_model": { "source": ["ab_tested", "historical_pattern"], "thresholds": { "high": 0.7, "minimum_usable": 0.5 } },
+  "review_policy": { "mode": "review_only", "supported_plan_actions": ["increase_budget"], "conflicting_plan_actions": ["decrease_budget"], "otherwise": "NOT_APPLICABLE" },
+  "confidence": 0.84,
+  "risk_level": "LOW",
+  "evidence_type": "ab_tested",
+  "validation_count": 12,
+  "rejection_count": 0,
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2026-08-02",
+      "author": "contract_migration",
+      "change": "补齐权威规则发布所需的初始版本元数据，不改变触发条件、诊断或动作逻辑"
+    },
+    {
+      "version": "1.1-review-only",
+      "date": "2026-08-03",
+      "author": "ontology_team",
+      "change": "对齐 MTA 交付口径：改用 mta_roas、snapshot 粒度和 Markov 模型，并增加 review-only 动作映射。"
+    },
+    { "version": "1.2-contract-hardening", "date": "2026-08-03", "author": "ontology_team", "change": "将参考动作重命名为不可执行的reference_action；baseline必须来自可追溯事实。" }
+  ],
+  "causal_annotation": "相关性证据，非因果证明",
+  "status": "ACTIVE",
+  "known_limitations": [
+    "baseline*1.5 为 Demo 规则阈值，生产部署前必须重新标定。",
+    "MTA snapshot 与下一14天方案存在时间粒度差异，评价中必须披露。"
+  ]
+}

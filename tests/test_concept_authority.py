@@ -24,7 +24,7 @@ def _load(path: Path) -> dict:
 def test_every_rule_concept_has_an_authoritative_concept_card(path):
     rule = _load(path)
     concept_ids = collect_rule_concepts(rule["trigger_condition"])
-    if rule["status"] == "RETIRED":
+    if rule["status"] in {"RETIRED", "PENDING_HUMAN_REVIEW"}:
         assert concept_ids == set()
         return
     assert concept_ids

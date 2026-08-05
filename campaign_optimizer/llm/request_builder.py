@@ -18,7 +18,12 @@ from campaign_optimizer.contracts.validation import (
     validate_contract_bundle,
     validate_contract_object,
 )
-
+from .release_pin import (
+    BUNDLE_ROOT,
+    load_verified_manifests,
+    release_identity,
+    verify_consumer_manifest,
+)
 from .retriever import Retriever
 
 EXPLAIN_INTENTS = frozenset({"EXPLAIN_PLAN", "EXPLAIN_REVIEW", "EXPLAIN_RULE"})
@@ -59,6 +64,8 @@ class RequestBuilder:
         clock: Callable[[], datetime] | None = None,
         request_id_factory: Callable[[], str] | None = None,
         rules_dir: Path = RULES_DIR,
+        ontology_manifest: Mapping[str, Any] | None = None,
+        ontology_root: Path | None = None,
     ) -> None:
         self._retriever = retriever
         self._versions = versions or LLMVersions()
@@ -67,6 +74,13 @@ class RequestBuilder:
             lambda: f"request_{uuid.uuid4().hex}"
         )
         self._rules_dir = rules_dir
+        self._ontology_root = ontology_root or BUNDLE_ROOT
+        if ontology_manifest is None:
+            self._ontology_manifests = load_verified_manifests(root=self._ontology_root)
+        else:
+            manifest = copy.deepcopy(dict(ontology_manifest))
+            verify_consumer_manifest(manifest, root=self._ontology_root)
+            self._ontology_manifests = {manifest['package_checksum']: manifest}
 
     def build(
         self,
@@ -77,12 +91,29 @@ class RequestBuilder:
         question: str,
         resolved_intent: str,
         server_chat_history: Sequence[Mapping[str, str]] = (),
+        review_package_checksum: str | None = None,
     ) -> RequestArtifacts:
         plan_snapshot = copy.deepcopy(dict(plan))
         review_snapshot = copy.deepcopy(dict(review))
         validate_contract_object("final_plan", plan_snapshot)
         validate_contract_object("ontology_review", review_snapshot)
         _validate_mode_intent(mode, resolved_intent)
+        identity = review_snapshot['release_identity']
+        checksum = identity['package_checksum']
+        manifest = self._ontology_manifests.get(checksum)
+        if manifest is None or identity != release_identity(manifest):
+            raise ContractValidationError(
+                'review release identity does not match a pinned ontology bundle'
+            )
+        if review_snapshot['ontology_version'] != identity['ontology_version']:
+            raise ContractValidationError(
+                'review ontology_version does not match its release identity'
+            )
+        if review_package_checksum is not None and review_package_checksum != checksum:
+            raise ContractValidationError(
+                'review package checksum argument conflicts with release identity'
+            )
+        _validate_manifest_rule_version(review_snapshot, manifest['rule_version'])
 
         context_id = _context_id(plan_snapshot, review_snapshot)
         rule_versions = _rule_versions(review_snapshot)
@@ -253,6 +284,21 @@ def _rule_versions(review: dict[str, Any]) -> dict[str, str]:
         if previous != version:
             raise ContractValidationError("one rule ID cannot use multiple versions")
     return versions
+
+
+def _validate_manifest_rule_version(review: dict[str, Any], pinned: str) -> None:
+    versions = _rule_versions(review)
+    if not versions:
+        if review['overall_verdict'] != 'UNVERIFIED':
+            raise ContractValidationError(
+                'a rule-bearing review must identify its pinned rule version'
+            )
+        return
+    actual = {f'{rule_id}@{version}' for rule_id, version in versions.items()}
+    if actual != {pinned}:
+        raise ContractValidationError(
+            'review rule versions do not match the pinned ontology bundle'
+        )
 
 
 def _context_id(plan: dict[str, Any], review: dict[str, Any]) -> str:

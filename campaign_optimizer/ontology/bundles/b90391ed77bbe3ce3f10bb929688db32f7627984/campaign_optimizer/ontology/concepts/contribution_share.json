@@ -1,0 +1,29 @@
+{
+  "concept_id": "contribution_share",
+  "name_cn": "贡献份额",
+  "name_en": "Contribution Share",
+  "layer": "L5",
+  "tier": "mta",
+  "caliber": "mta",
+  "definition": "基于 MTA 模型（Markov / Shapley）对转化贡献进行量化的份额，表示某触点在归因模型下分配到的收入/价值比例。两法共有、可比字段，同一 attribution_model 下各触点求和恒为 1。",
+  "formula": null,
+  "unit": "ratio",
+  "source": "MTA 模型输出（Markov 与 Shapley 归因结果表）",
+  "source_field": "contribution_share",
+  "value_type": "number",
+  "value_range": [0, 1],
+  "baseline": { "type": "model_output_mean", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "snapshot",
+    "entity": "touchpoint",
+    "aggregation": "none",
+    "requires_full_batch": true
+  },
+  "dimensions": ["touchpoint", "attribution_model"],
+  "related_concepts": [
+    { "target": "mta_roas", "relation": "input_to", "strength": "strong" },
+    { "target": "attributed_revenue", "relation": "input_to", "strength": "strong" },
+    { "target": "attribution_divergence", "relation": "compared_with", "strength": "strong" }
+  ]
+}

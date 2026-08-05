@@ -1,0 +1,149 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://campaign-optimizer.local/schemas/llm_context.schema.json",
+  "title": "LLM Context",
+  "description": "Python后端从已验证方案和审核快照生成的只读LLM上下文。前端不得自行拼接。",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "context_id",
+    "context_created_at",
+    "plan_context",
+    "review_context",
+    "allowed_rule_ids",
+    "allowed_plan_item_ids",
+    "allowed_fact_ids",
+    "public_rule_context"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "context_id": {
+      "type": "string",
+      "pattern": "^context_[A-Za-z0-9_-]+$"
+    },
+    "context_created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "plan_context": {
+      "$ref": "final_plan.schema.json"
+    },
+    "review_context": {
+      "$ref": "ontology_review.schema.json"
+    },
+    "allowed_rule_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^R[0-9]+$"
+      }
+    },
+    "allowed_plan_item_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^plan_item_[A-Za-z0-9_-]+$"
+      }
+    },
+    "allowed_fact_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^(decision|review)_fact_[A-Za-z0-9_-]+$"
+      }
+    },
+    "public_rule_context": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/definitions/public_rule" }
+    }
+  },
+  "definitions": {
+    "public_rule": {
+      "type": "object",
+      "required": [
+        "rule_id",
+        "rule_version",
+        "status",
+        "name",
+        "definition",
+        "applicable_scope",
+        "review_policy",
+        "limitations"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "rule_id": {
+          "type": "string",
+          "pattern": "^R[0-9]+$"
+        },
+        "rule_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "SUSPENDED",
+            "PENDING_HUMAN_REVIEW",
+            "RETIRED"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "definition": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "applicable_scope": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "review_policy": {
+          "type": "object",
+          "required": ["mode", "supported_plan_actions", "conflicting_plan_actions", "otherwise"],
+          "additionalProperties": false,
+          "properties": {
+            "mode": { "const": "review_only" },
+            "supported_plan_actions": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": { "enum": ["increase_budget", "decrease_budget", "keep_budget"] }
+            },
+            "conflicting_plan_actions": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": { "enum": ["increase_budget", "decrease_budget", "keep_budget"] }
+            },
+            "otherwise": { "const": "NOT_APPLICABLE" }
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        }
+      }
+    }
+  }
+}

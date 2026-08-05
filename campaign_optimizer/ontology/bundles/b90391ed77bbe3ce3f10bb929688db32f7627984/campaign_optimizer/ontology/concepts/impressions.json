@@ -1,0 +1,28 @@
+{
+  "concept_id": "impressions",
+  "name_cn": "展示量",
+  "name_en": "Impressions",
+  "layer": "L3",
+  "tier": "base",
+  "caliber": "platform",
+  "definition": "广告展示次数，来自平台报表中的 impressions 字段，是计算 CTR 和曝光增长率的基础数据。",
+  "formula": null,
+  "unit": "count",
+  "source": "Amazon Ads spend report / 平台广告展示数据",
+  "source_field": "impressions",
+  "value_type": "number",
+  "value_range": [0, null],
+  "baseline": { "type": "account_mean", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "daily",
+    "entity": "campaign",
+    "aggregation": "sum",
+    "requires_full_batch": false
+  },
+  "dimensions": ["campaign"],
+  "related_concepts": [
+    { "target": "ctr", "relation": "input_to", "strength": "strong" },
+    { "target": "impressions_growth", "relation": "input_to", "strength": "strong" }
+  ]
+}

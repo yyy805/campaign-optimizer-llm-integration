@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://campaign-optimizer.local/schemas/feedback_policy.schema.json",
+  "title": "Feedback Confidence Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "policy_id", "policy_version", "environment", "demo_only", "effective_from",
+    "approved_by", "good_delta", "fine_delta", "bad_delta", "confidence_floor",
+    "confidence_cap", "bad_count_review_threshold", "consecutive_bad_review_threshold"
+  ],
+  "properties": {
+    "policy_id": { "type": "string", "minLength": 1 },
+    "policy_version": { "type": "string", "minLength": 1 },
+    "environment": { "enum": ["DEMO", "PRODUCTION"] },
+    "demo_only": { "type": "boolean" },
+    "effective_from": { "type": "string", "format": "date-time" },
+    "approved_by": { "type": "string", "minLength": 1 },
+    "good_delta": { "type": "number", "minimum": 0 },
+    "fine_delta": { "const": 0 },
+    "bad_delta": { "type": "number", "maximum": 0 },
+    "confidence_floor": { "type": "number", "minimum": 0, "maximum": 1 },
+    "confidence_cap": { "type": "number", "minimum": 0, "maximum": 1 },
+    "bad_count_review_threshold": { "type": "integer", "minimum": 1 },
+    "consecutive_bad_review_threshold": { "type": "integer", "minimum": 1 }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "demo_only": { "const": true } } },
+      "then": { "properties": { "environment": { "const": "DEMO" } } },
+      "else": { "properties": { "environment": { "const": "PRODUCTION" } } }
+    }
+  ]
+}

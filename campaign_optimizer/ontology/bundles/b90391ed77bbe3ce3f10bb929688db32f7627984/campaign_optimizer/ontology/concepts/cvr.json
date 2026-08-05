@@ -1,0 +1,29 @@
+{
+  "concept_id": "cvr",
+  "name_cn": "转化率",
+  "name_en": "Conversion Rate",
+  "layer": "L5",
+  "tier": "derived",
+  "caliber": "platform",
+  "definition": "转化次数与点击次数之比，用于衡量广告点击后转化的效率。",
+  "formula": "conversions / clicks",
+  "unit": "ratio",
+  "source": "平台数据计算",
+  "source_field": null,
+  "value_type": "number",
+  "value_range": [0, 1],
+  "baseline": { "type": "account_mean", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "daily",
+    "entity": "campaign",
+    "aggregation": "recompute",
+    "requires_full_batch": false
+  },
+  "dimensions": ["campaign"],
+  "related_concepts": [
+    { "target": "clicks", "relation": "depends_on", "strength": "strong" },
+    { "target": "conversions", "relation": "depends_on", "strength": "strong" },
+    { "target": "roas", "relation": "input_to", "strength": "medium" }
+  ]
+}
