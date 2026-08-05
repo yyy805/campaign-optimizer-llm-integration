@@ -1,0 +1,38 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "candidate_id",
+    "packet_digest",
+    "decision",
+    "violation_codes",
+    "evidence_source_ids",
+    "revision_actions"
+  ],
+  "properties": {
+    "schema_version": {"type": "string", "enum": ["1.0"]},
+    "candidate_id": {"type": "string"},
+    "packet_digest": {"type": "string"},
+    "decision": {"type": "string", "enum": ["PASS", "REVISE", "REJECT"]},
+    "violation_codes": {
+      "type": "array",
+      "items": {"type": "string", "enum": ["UNSUPPORTED_CLAIM", "UNSUPPORTED_GUARANTEE", "MISSING_LIMITATION", "ID_OR_VALUE_MISMATCH", "INTENT_MISMATCH", "NEW_FACT", "SAFETY_VIOLATION", "UNRESOLVABLE_CONFLICT"]}
+    },
+    "evidence_source_ids": {"type": "array", "items": {"type": "string"}},
+    "revision_actions": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["operation", "target_claim_id", "source_id"],
+        "properties": {
+          "operation": {"type": "string", "enum": ["REMOVE_UNSUPPORTED_CLAIM", "REMOVE_UNSUPPORTED_GUARANTEE", "ADD_REQUIRED_LIMITATION", "CORRECT_CLAIM_TO_SOURCE"]},
+          "target_claim_id": {"type": ["string", "null"]},
+          "source_id": {"type": "string"}
+        }
+      }
+    }
+  }
+}
