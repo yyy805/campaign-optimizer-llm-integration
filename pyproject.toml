@@ -8,6 +8,7 @@ dependencies = [
     "jsonschema>=4.26.0",
     "rfc3339-validator>=0.1.4",
     "sqlalchemy>=2.0.51",
+    "streamlit>=1.61.1",
 ]
 
 [dependency-groups]
