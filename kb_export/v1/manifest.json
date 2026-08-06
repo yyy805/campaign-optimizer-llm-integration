@@ -1,0 +1,63 @@
+{
+  "documents": [
+    {
+      "file": "R1.md",
+      "rule_id": "R1",
+      "rule_version": "1.2-contract-hardening",
+      "sha256": "8ce91e12bb3284ddcb39ff2019ce21619b89a253ebbc4e4b265f561fb882cfc1",
+      "status": "ACTIVE"
+    },
+    {
+      "file": "R2.md",
+      "rule_id": "R2",
+      "rule_version": "1.2-contract-hardening",
+      "sha256": "098dc09d667d66b47c80585c604d93a55a3f7f5791e1834091652f1575aa3d09",
+      "status": "ACTIVE"
+    },
+    {
+      "file": "R3.md",
+      "rule_id": "R3",
+      "rule_version": "1.2-contract-hardening",
+      "sha256": "a0c0799ab8f642dca4f1ee8b5df9af720912df4a27631c4f838ead1a80ea491d",
+      "status": "ACTIVE"
+    },
+    {
+      "file": "R4.md",
+      "rule_id": "R4",
+      "rule_version": "1.3-contract-hardening",
+      "sha256": "3d8944e4eaa0ebe35408bedb953a0a7f6324444abda75376f3742ce5ba9212ac",
+      "status": "ACTIVE"
+    },
+    {
+      "file": "R5.md",
+      "rule_id": "R5",
+      "rule_version": "2.0-campaign-pending",
+      "sha256": "e4b2e1d5f15e59d2a6f787ecf0a082b6dd9eeb730dd06a08ffc30e5ba2c82768",
+      "status": "PENDING_HUMAN_REVIEW"
+    },
+    {
+      "file": "R6.md",
+      "rule_id": "R6",
+      "rule_version": "1.2-contract-hardening",
+      "sha256": "e148cba97ececd0fbe112936fcd241b86d5502e4d88d6e539c6a9067cf39201d",
+      "status": "ACTIVE"
+    },
+    {
+      "file": "R7.md",
+      "rule_id": "R7",
+      "rule_version": "1.3-contract-hardening",
+      "sha256": "5a20d37f1e2f51bd3ab4a55f7a8c787d4a407d3020405961c9ff8fec46fd7b60",
+      "status": "RETIRED"
+    }
+  ],
+  "release_identity": {
+    "engine_version": "2.0",
+    "ontology_version": "2.0-campaign-pending",
+    "package_checksum": "626cfbdedc954f41c7a335cf6178886c8c5cc3c71b2c1b7400ed6f87595d3513",
+    "rule_version": "R5@2.0-campaign-pending",
+    "schema_version": "1.1",
+    "source_commit": "a83ff2b4f63a7e24da276a034b39d3360b6fccc3"
+  },
+  "schema_version": "1.0",
+  "suite_id": "kb-export-v1"
+}
