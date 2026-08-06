@@ -30,6 +30,10 @@ Frozen labels for the Reviewer business-judgment question: can the Reviewer deci
 
 All content is synthetic demo data. Never add API keys, real prompts/responses, customer or campaign data, production IDs, or confidential rule text. Denied markers are checked by the validator.
 
+## Amendments
+
+- 2026-08-06: `pending_revise_causal_claim` acceptable codes extended with `UNSUPPORTED_GUARANTEE`. A causal assertion also guarantees the effect; two measured v9 runs used UNSUPPORTED_CLAIM and/or UNSUPPORTED_GUARANTEE for this case. Decision labels unchanged.
+
 ## Validate
 
 ```powershell

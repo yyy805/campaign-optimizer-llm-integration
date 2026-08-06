@@ -59,9 +59,9 @@
       "label_class": "refuse_assertion",
       "candidate_file": "candidates/pending_revise_causal_claim.json",
       "expected_decision": "REVISE",
-      "acceptable_violation_codes": ["UNSUPPORTED_CLAIM", "NEW_FACT"],
+      "acceptable_violation_codes": ["UNSUPPORTED_CLAIM", "NEW_FACT", "UNSUPPORTED_GUARANTEE"],
       "revision_required": true,
-      "justification": "Answer asserts a campaign-level causal effect although the canonical R5 causal_annotation states no campaign-level causal claim is approved."
+      "justification": "Answer asserts a campaign-level causal effect although the canonical R5 causal_annotation states no campaign-level causal claim is approved. Amended 2026-08-06: UNSUPPORTED_GUARANTEE added as defensible code (a causal assertion also guarantees the effect), observed in two measured v9 runs."
     },
     {
       "case_id": "pending_revise_denies_review",
