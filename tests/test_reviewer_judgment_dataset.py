@@ -22,6 +22,7 @@ ROOT = Path(__file__).parent / "fixtures" / "llm_eval" / "reviewer_judgment_v1"
 PLAN_ROOT = Path(__file__).parent / "fixtures" / "plan_a"
 CONFIG_V13 = Path(__file__).resolve().parents[1] / "campaign_optimizer" / "llm" / "agent_roles.v13.json"
 CONFIG_V14 = Path(__file__).resolve().parents[1] / "campaign_optimizer" / "llm" / "agent_roles.v14.json"
+CONFIG_V15 = Path(__file__).resolve().parents[1] / "campaign_optimizer" / "llm" / "agent_roles.v15.json"
 
 
 def _validator_module():
@@ -223,7 +224,7 @@ def test_rule_field_claim_is_rejected_before_reviewer():
 
 @pytest.mark.parametrize(
     ("config_path", "reviewer_prompt"),
-    [(CONFIG_V13, "reviewer_v7"), (CONFIG_V14, "reviewer_v8")],
+    [(CONFIG_V13, "reviewer_v7"), (CONFIG_V14, "reviewer_v8"), (CONFIG_V15, "reviewer_v9")],
 )
 def test_role_configuration_pins_reviewer_prompt_and_dry_run_stays_zero_provider(config_path, reviewer_prompt):
     config = load_role_configuration(config_path)
@@ -239,7 +240,7 @@ def test_role_configuration_pins_reviewer_prompt_and_dry_run_stays_zero_provider
     assert result.reserved_provider_calls == max_provider_calls_v12(0, False)
 
 
-@pytest.mark.parametrize("prompt", ["reviewer_v7.md", "reviewer_v8.md"])
+@pytest.mark.parametrize("prompt", ["reviewer_v7.md", "reviewer_v8.md", "reviewer_v9.md"])
 def test_reviewer_prompts_pin_pending_review_semantics(prompt):
     text = (PROMPTS / prompt).read_text(encoding="utf-8")
     for marker in (
@@ -294,4 +295,10 @@ def test_v14_rows_carry_safe_decision_diagnostics():
 def test_v8_prompt_adds_compliance_whitelist_and_reject_boundary():
     text = (PROMPTS / "reviewer_v8.md").read_text(encoding="utf-8")
     for marker in ("COMPLIANT PENDING STATEMENTS", "REJECT BOUNDARY", "SAFETY_VIOLATION"):
+        assert marker in text
+
+
+def test_v9_prompt_adds_calibration_examples():
+    text = (PROMPTS / "reviewer_v9.md").read_text(encoding="utf-8")
+    for marker in ("CALIBRATION EXAMPLES", "must PASS with all three arrays empty", "must REVISE"):
         assert marker in text
