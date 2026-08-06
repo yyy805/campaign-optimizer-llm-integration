@@ -253,6 +253,44 @@ def test_reviewer_prompts_pin_pending_review_semantics(prompt):
         assert marker in text
 
 
+def test_v14_rows_carry_safe_decision_diagnostics():
+    from campaign_optimizer.llm.agent_workflow_v12 import BudgetLedgerV12
+    from campaign_optimizer.llm.three_role_runner import RoleCallAudit
+    from scripts.run_reviewer_judgment_eval_v14 import load_cases, run_eval
+
+    class Adapter:
+        def __init__(self):
+            self.ledger = BudgetLedgerV12()
+
+        def begin_candidate(self, n):
+            self.ledger.begin_candidate(n)
+
+        def call_json(self, *, role, payload):
+            self.ledger.consume(role)
+            value = {
+                "schema_version": "1.0",
+                "candidate_id": payload["candidate_id"],
+                "packet_digest": payload["packet_digest"],
+                "decision": "REVISE",
+                "violation_codes": ["UNSUPPORTED_CLAIM"],
+                "evidence_source_ids": ["review_item_pending"],
+                "revision_actions": [{"operation": "ADD_REQUIRED_LIMITATION", "target_claim_id": None, "source_id": "review_item_pending"}],
+            }
+            return value, RoleCallAudit(0, "reviewer", "model", "OK")
+
+    config = load_role_configuration(CONFIG_V14)
+    adapter = Adapter()
+    adapter.ledger.set_limit(16)
+    out = run_eval(adapter, config, load_cases())
+    row = out["cases"][0]
+    assert row["model_violation_codes"] == ["UNSUPPORTED_CLAIM"]
+    assert row["model_revision_actions"] == [
+        {"operation": "ADD_REQUIRED_LIMITATION", "source_id": "review_item_pending", "target_claim_id": None}
+    ]
+    serialized = json.dumps(out, ensure_ascii=False)
+    assert "SECRET" not in serialized and "answer" not in serialized
+
+
 def test_v8_prompt_adds_compliance_whitelist_and_reject_boundary():
     text = (PROMPTS / "reviewer_v8.md").read_text(encoding="utf-8")
     for marker in ("COMPLIANT PENDING STATEMENTS", "REJECT BOUNDARY", "SAFETY_VIOLATION"):

@@ -30,13 +30,14 @@ def run_eval(adapter,config,cases):
  for index,(case_id,label_class,expected,codes,candidate_path) in enumerate(cases):
   adapter.begin_candidate(index);candidate=load(candidate_path)
   packet=ReviewerPacket.from_validated_exchange(request=artifacts.request,plan=plan,review=review,context=artifacts.context,candidate_output=candidate,resolved_intent="EXPLAIN_REVIEW",candidate_id=_candidate_id(str(artifacts.request["request_id"]),index),retry_count=0,config=config.roles)
-  attempts=0;outcome="FALLBACK";category=code=None;latency=0.0;tokens=0;status_code=request_id=None;decision_codes=[]
+  attempts=0;outcome="FALLBACK";category=code=None;latency=0.0;tokens=0;status_code=request_id=None;decision_codes=[];decision_actions=[]
   while attempts<2:
    attempts+=1;payload=dict(packet.as_model_input())
    if attempts==2:payload["server_structure_retry"]={"attempt":1,"category":_safe_structure_reason(code or "")}
    try:
     decision,audit=adapter.call_json(role="reviewer",payload=payload);latency+=audit.latency_ms or 0;tokens+=audit.total_tokens or 0
-    decision_codes=list(decision.get("violation_codes",[]));next_action_v13(decision,packet=packet,revision_rounds=0,max_revision_rounds=0);outcome=decision["decision"];category=code=None;break
+    decision_codes=list(decision.get("violation_codes",[]));decision_actions=[{"operation":action.get("operation"),"source_id":action.get("source_id"),"target_claim_id":action.get("target_claim_id")} for action in decision.get("revision_actions",[])]
+    next_action_v13(decision,packet=packet,revision_rounds=0,max_revision_rounds=0);outcome=decision["decision"];category=code=None;break
    except Exception as exc:
     category,code,repairable=classify(exc)
     from campaign_optimizer.llm.three_role_runner import RoleCallFailure
@@ -44,7 +45,7 @@ def run_eval(adapter,config,cases):
     if isinstance(exc,(ReviewerChannelFailure,RoleCallFailure)):status_code=exc.audit.status_code;request_id=exc.audit.request_id
     if isinstance(exc,ReviewerChannelFailure):latency+=exc.audit.latency_ms or 0;tokens+=exc.audit.total_tokens or 0
     if not repairable:break
-  match=outcome==expected and code is None;rows.append({"case_id":case_id,"label_class":label_class,"expected":expected,"outcome":outcome,"match":match,"codes_acceptable":set(decision_codes).issubset(codes),"attempts":attempts,"failure_category":category,"safe_code":code,"latency_ms":round(latency,3),"total_tokens":tokens,"status_code":status_code,"request_id":request_id})
+  match=outcome==expected and code is None;rows.append({"case_id":case_id,"label_class":label_class,"expected":expected,"outcome":outcome,"match":match,"codes_acceptable":set(decision_codes).issubset(codes),"model_violation_codes":decision_codes,"model_revision_actions":decision_actions,"attempts":attempts,"failure_category":category,"safe_code":code,"latency_ms":round(latency,3),"total_tokens":tokens,"status_code":status_code,"request_id":request_id})
  aggregate={"provider_calls":adapter.ledger.used,"total_latency_ms":round(sum(x["latency_ms"] for x in rows),3),"total_tokens":sum(x["total_tokens"] for x in rows),"matched":sum(x["match"] for x in rows),"codes_within_acceptable":sum(x["codes_acceptable"] for x in rows),"case_count":len(rows)}
  accepted=aggregate["matched"]==len(rows) and not any(x["failure_category"] for x in rows)
  return {"status":"PASS" if accepted else "FAIL","acceptance":{"all_expected_decisions_match":aggregate["matched"]==len(rows),"no_structure_or_safety_failure":not any(x["failure_category"] for x in rows),"accepted":accepted},"aggregate":aggregate,"cases":rows,"scope_note":SCOPE_NOTE}
