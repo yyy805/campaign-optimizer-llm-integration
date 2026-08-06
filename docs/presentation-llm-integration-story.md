@@ -111,7 +111,7 @@
 ### 第 8 步 · 交付（让别人能接手）
 **做了什么**：演示网页、Docker 镜像配方、给本体团队的交接文档、ECS 开通。
 **为什么**：只有作者能跑的系统不是交付品。
-**产出**：`app.py`（Streamlit，dry-run 默认）、`Dockerfile`/`.dockerignore`、`docs/handoff-ontology-team-2026-08-06.md`（架构红线+部署清单+R5 转正重发布流程）、ECS 实例（47.102.115.250）。
+**产出**：`app.py`（Streamlit，dry-run 默认）、`Dockerfile`/`.dockerignore`、`docs/handoff-ontology-team-2026-08-06.md`（架构红线+部署清单+R5 转正重发布流程）、上海 ECS 实例（标识符见内部台账）。
 **验收**：网页侧边栏显示版本锁与 v9 提示词；dry-run 零调用；全部推送 GitHub。
 
 ## 三、总产出清单（一页盘点）
