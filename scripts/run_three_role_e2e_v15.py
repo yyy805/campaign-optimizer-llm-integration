@@ -18,8 +18,8 @@ def pending_chain(mode,question):
  artifacts=RequestBuilder(LocalRuleRetriever(),versions=versions).build(plan,review,mode=mode,question=question,resolved_intent="EXPLAIN_REVIEW")
  return plan,review,artifacts
 def main():
- p=argparse.ArgumentParser(description=__doc__);p.add_argument("--real",action="store_true");p.add_argument("--chat",action="store_true",help="use chat mode so triage runs too");a=p.parse_args()
- config=load_role_configuration(CONFIG_V15);question=DEFAULT_QUESTION
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument("--real",action="store_true");p.add_argument("--chat",action="store_true",help="use chat mode so triage runs too");p.add_argument("--question",default=DEFAULT_QUESTION);a=p.parse_args()
+ config=load_role_configuration(CONFIG_V15);question=a.question
  plan,review,artifacts=pending_chain("chat" if a.chat else "initial_render",question)
  triage=a.chat;limit=max_provider_calls_v12(0,triage)
  if not a.real:print(json.dumps({"status":"DRY_RUN","mode":"chat" if triage else "initial_render","revision_profile":"baseline","provider_call_limit":limit,"reviewer_prompt":config.roles.prompt_versions["reviewer"]},sort_keys=True));return 0
