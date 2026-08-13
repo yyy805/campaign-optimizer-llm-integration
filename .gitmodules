@@ -1,0 +1,3 @@
+[submodule "MTA-strategy-optimizer"]
+	path = MTA-strategy-optimizer
+	url = https://github.com/Trance-0/MTA-strategy-optimizer
