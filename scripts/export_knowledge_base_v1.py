@@ -28,7 +28,7 @@ def export_documents():
  return identity,documents
 def build_manifest(identity,documents):
  import hashlib
- return {"schema_version":"1.0","suite_id":"kb-export-v1","release_identity":identity,"documents":[{"file":d["file"],"rule_id":d["rule_id"],"rule_version":d["rule_version"],"status":d["status"],"sha256":hashlib.sha256(d["content"].encode("utf-8")).hexdigest()} for d in documents]}
+ return {"schema_version":"1.0","suite_id":"kb-export-v1","similarity_threshold":0.6,"release_identity":identity,"documents":[{"file":d["file"],"rule_id":d["rule_id"],"rule_version":d["rule_version"],"status":d["status"],"sha256":hashlib.sha256(d["content"].encode("utf-8")).hexdigest()} for d in documents]}
 def main():
  p=argparse.ArgumentParser(description=__doc__);p.add_argument("--write",action="store_true");p.add_argument("--out",default=str(ROOT/"kb_export"/"v1"));a=p.parse_args()
  identity,documents=export_documents();manifest=build_manifest(identity,documents)

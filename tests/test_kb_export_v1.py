@@ -41,6 +41,7 @@ def test_manifest_pins_current_release_identity_and_checksums():
     manifest = build_manifest(identity, documents)
     current = next(v for v in load_verified_manifests().values() if v["ontology_version"] == "2.0-campaign-pending")
     assert manifest["release_identity"] == release_identity(current)
+    assert manifest["similarity_threshold"] == 0.6
     for entry, doc in zip(manifest["documents"], documents):
         assert entry["sha256"] == hashlib.sha256(doc["content"].encode("utf-8")).hexdigest()
 

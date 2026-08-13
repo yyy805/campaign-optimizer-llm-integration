@@ -59,5 +59,6 @@
     "source_commit": "a83ff2b4f63a7e24da276a034b39d3360b6fccc3"
   },
   "schema_version": "1.0",
+  "similarity_threshold": 0.6,
   "suite_id": "kb-export-v1"
 }
