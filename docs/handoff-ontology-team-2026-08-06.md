@@ -4,7 +4,7 @@
 
 ## 1. 当前状态
 
-`main`（推送至 `891faf2`）包含完整可部署 demo：三角色 Agent（Executor/Reviewer/Triage，Function Calling v13）、Reviewer v9 提示词（冻结测评集验收关闭：两轮+补证零判断错误）、Streamlit demo（`app.py`）、Dockerfile、轻量 RAG 导出与百炼知识库发布（ID `eeirxr7djz`，检索验收通过）。
+`main`（推送至 `891faf2`）包含完整可部署 demo：三角色 Agent（Executor/Reviewer/Triage，Function Calling v13）、Reviewer v9 提示词（冻结测评集验收关闭：两轮+补证零判断错误）、Streamlit demo（`app.py`）、ECS 直跑部署配方（**不用 Docker**，2026-08-10 与老师确认；`Dockerfile` 保留为备选）、轻量 RAG 导出与百炼知识库发布（ID `eeirxr7djz`，检索验收通过）。
 
 ## 2. 架构不变式（修改任何部分前必读）
 
@@ -18,19 +18,22 @@
 
 | 路径 | 用途 |
 |---|---|
-| `Dockerfile` / `.dockerignore` | 镜像构建（python:3.14-slim + uv frozen；含 `.ontology_bundles` 以通过 release-pin 校验） |
+| `Dockerfile` / `.dockerignore` | 备选交付物（未经验证；正式方案为 ECS 直跑，见 §4） |
 | `app.py` | Streamlit demo（dry-run 默认；真实调用需环境变量） |
 | `kb_export/v1/` | 知识库导出快照（7 文档 + manifest）；`scripts/export_knowledge_base_v1.py` 重新生成 |
 | `docs/knowledge-base-publications.md` | 发布版本台账 |
 | `tests/fixtures/kb_retrieval_v1/questions.json` | 冻结检索验收题（12 条，关键 5 条已真实验收） |
 | `scripts/run_reviewer_judgment_eval_v14.py` / `run_three_role_e2e_v15.py` | 真实评测入口（默认 dry，`--real` 才调用） |
 
-## 4. 部署清单（ECS/ACR）
+## 4. 部署清单（ECS 直跑，不用 Docker）
 
-1. 构建：`docker build -t <acr>/<repo>:<tag> .`（Dockerfile 内 `uv sync --frozen` 需能访问 PyPI）
-2. 运行环境变量：`DASHSCOPE_API_KEY`、`DASHSCOPE_WORKSPACE_ID`（北京区域），可选 `LLM_TIMEOUT_SECONDS`
-3. 启动：容器默认 `python -m streamlit run app.py --server.headless true`，暴露 8501；安全组按需开放
-4. 冒烟：UI 侧边栏应显示 `R5@2.0-campaign-pending` 与 `reviewer_v9`；dry-run 运行零调用
+1. SSH 上 ECS（Ubuntu 22.04）；安装 Python 3.14 + uv
+2. 仓库获取：ECS 直接 `git clone`（或本地 `git archive` 后 scp）
+3. 依赖：`uv sync --frozen`（中国网络走阿里云索引：UV_INDEX_URL / pip -i mirrors.aliyun）
+4. 环境变量经 systemd EnvironmentFile 外置：`DASHSCOPE_API_KEY`、`DASHSCOPE_WORKSPACE_ID`（北京区域），可选 `LLM_TIMEOUT_SECONDS`；不入库
+5. systemd 服务跑 `python -m streamlit run app.py --server.headless true --server.port 8501`，开机自启/崩溃自拉
+6. nginx 反代（可选）；安全组开 8501
+7. 冒烟：UI 侧边栏应显示 `R5@2.0-campaign-pending` 与 `reviewer_v9`；dry-run 零调用；release-pin 自校验通过（仓库自带 `.ontology_bundles` 与 `tests/fixtures`）
 
 ## 5. 需本体团队确认/协作
 

@@ -109,9 +109,9 @@
 **验收**：5 硬门全过——"查 R5 只返回 R5"、R5 带"待人工审核"标记、R7 带"已退役"、恶意提问无结果。关键发现：默认阈值 0.20 会捞回噪声，调到 **0.60** 才过——该阈值已写入台账，成为发布配置的一部分。
 
 ### 第 8 步 · 交付（让别人能接手）
-**做了什么**：演示网页、Docker 镜像配方、给本体团队的交接文档、ECS 开通。
+**做了什么**：演示网页、ECS 直接部署配方（与老师确认不用 Docker）、给本体团队的交接文档、ECS 开通。
 **为什么**：只有作者能跑的系统不是交付品。
-**产出**：`app.py`（Streamlit，dry-run 默认）、`Dockerfile`/`.dockerignore`、`docs/handoff-ontology-team-2026-08-06.md`（架构红线+部署清单+R5 转正重发布流程）、上海 ECS 实例（标识符见内部台账）。
+**产出**：`app.py`（Streamlit，dry-run 默认）、ECS 部署配方（`Dockerfile` 保留为备选交付物）、`docs/handoff-ontology-team-2026-08-06.md`（架构红线+部署清单+R5 转正重发布流程）、上海 ECS 实例（标识符见内部台账）。
 **验收**：网页侧边栏显示版本锁与 v9 提示词；dry-run 零调用；全部推送 GitHub。
 
 ## 三、总产出清单（一页盘点）
@@ -123,7 +123,7 @@
 | Agent | 三角色 runner + 提示词谱系 + 钉死配置 | `llm/three_role_runner_*`、`llm/prompts/`、`llm/agent_roles.v15.json` |
 | 考卷 | 判断考卷 8 题 + 路由卷 50 题 + 检索卷 12 题 | `tests/fixtures/llm_eval/`、`tests/fixtures/kb_retrieval_v1/` |
 | 知识库 | 7 文档快照 + 百炼库 + 台账 | `kb_export/v1/`、`docs/knowledge-base-publications.md` |
-| 交付 | 网页、镜像配方、交接文档、汇报文档 | `app.py`、`Dockerfile`、`docs/handoff-*`、`docs/presentation-*` |
+| 交付 | 网页、ECS 部署配方（不用 Docker）、交接文档、汇报文档 | `app.py`、`docs/handoff-*`、`docs/presentation-*`（`Dockerfile` 备选保留） |
 | 测试 | 离线 587 项全绿 | `tests/` |
 
 ## 四、老师可能追问的问题
