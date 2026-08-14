@@ -1,0 +1,142 @@
+<style>
+  :root{
+    --bg:#f4f6f8; --card:#ffffff; --ink:#1a2230; --muted:#5b6472; --line:#d8dee6;
+    --ont:#b45309; --ont-bg:#fff7ec; --llm:#1d4ed8; --llm-bg:#eef4ff;
+    --del:#047857; --del-bg:#ecfdf5; --kb:#6b7280; --kb-bg:#f3f4f6;
+    --pin:#be123c; --pin-bg:#fff1f2;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.65 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;}
+  .wrap{max-width:1080px;margin:0 auto;padding:32px 20px 64px}
+  header h1{font-size:26px;margin:0 0 6px}
+  header p{margin:0;color:var(--muted)}
+  .principle{margin:14px 0 0;padding:10px 14px;border-left:4px solid var(--pin);
+    background:var(--pin-bg);border-radius:0 8px 8px 0;font-weight:600}
+  .flow{display:flex;flex-direction:column;align-items:stretch;gap:0;margin-top:26px}
+  .layer{background:var(--card);border:1px solid var(--line);border-radius:12px;
+    overflow:hidden;box-shadow:0 1px 3px rgba(16,24,40,.06)}
+  .layer>summary{list-style:none;cursor:pointer;padding:14px 18px;display:flex;
+    align-items:baseline;gap:10px;flex-wrap:wrap}
+  .layer>summary::-webkit-details-marker{display:none}
+  .layer>summary h2{font-size:17px;margin:0}
+  .layer>summary .tag{font-size:12px;color:var(--muted)}
+  .layer>summary .caret{margin-left:auto;color:var(--muted);transition:transform .2s}
+  .layer[open]>summary .caret{transform:rotate(90deg)}
+  .layer .body{padding:4px 18px 18px}
+  .l-ont{border-top:4px solid var(--ont)} .l-ont h2{color:var(--ont)}
+  .l-llm{border-top:4px solid var(--llm)} .l-llm h2{color:var(--llm)}
+  .l-del{border-top:4px solid var(--del)} .l-del h2{color:var(--del)}
+  .mods{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+  .mod{border:1px solid var(--line);border-radius:8px;padding:8px 12px;background:#fff}
+  .mod code{font-family:ui-monospace,Consolas,monospace;font-size:13px;font-weight:700}
+  .mod p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+  .l-ont .mod code{color:var(--ont)} .l-llm .mod code{color:var(--llm)} .l-del .mod code{color:var(--del)}
+  .connector{display:flex;flex-direction:column;align-items:center;padding:6px 0}
+  .connector .shaft{width:2px;height:26px;background:var(--line)}
+  .connector .label{max-width:640px;text-align:center;font-size:13px;padding:6px 14px;
+    border-radius:999px;border:1px dashed}
+  .c-pin .label{color:var(--pin);border-color:var(--pin);background:var(--pin-bg);font-weight:600}
+  .c-plain .label{color:var(--muted);border-color:var(--line);background:#fff}
+  .kb-note{margin-top:12px;padding:10px 14px;border:1px dashed var(--kb);border-radius:8px;
+    background:var(--kb-bg);font-size:13px;color:var(--muted)}
+  h3{font-size:16px;margin:34px 0 10px}
+  table{width:100%;border-collapse:collapse;background:var(--card);
+    border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:13.5px}
+  th,td{padding:8px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+  th{background:#eef1f5}
+  tr:last-child td{border-bottom:none}
+  td code{font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
+  .invariants{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin-top:12px}
+  .inv{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 14px}
+  .inv b{display:block;margin-bottom:2px}
+  .inv p{margin:0;font-size:13px;color:var(--muted)}
+  footer{margin-top:36px;color:var(--muted);font-size:12.5px}
+</style>
+
+<div class="wrap">
+<header>
+  <h1>🛡️ Campaign Optimizer 审查 Demo · 细分架构图</h1>
+  <p>截至 2026-08-06 · main = 2724f02 · 发布身份 package_checksum 626cfbde…</p>
+  <div class="principle">核心原则：规则负责判断，大模型负责解释，一切按版本可追溯。</div>
+</header>
+
+<div class="flow">
+
+  <details class="layer l-ont" open>
+    <summary><h2>① 规则源层（本体）</h2><span class="tag">文件形态 · git 版本化 · 改规则 = 发新版本</span><span class="caret">▸</span></summary>
+    <div class="body"><div class="mods">
+      <div class="mod"><code>concepts/*.json</code><p>24 个指标概念（ROAS、花费、CTR 等）</p></div>
+      <div class="mod"><code>rules/R1–R7</code><p>7 条决策规则（R7 已停用，带状态导出）</p></div>
+      <div class="mod"><code>guardrails/G1–G2</code><p>安全护栏（如平台最低预算证据）</p></div>
+      <div class="mod"><code>schemas/ · clients/</code><p>JSON Schema 格式约束 · 演示客户配置</p></div>
+      <div class="mod"><code>condition_evaluator.py</code><p><b>规则条件确定性匹配</b>——指标代入条件的纯函数评估</p></div>
+      <div class="mod"><code>review_engine.py / review_workflow.py</code><p><b>判定编排</b>：匹配 → 多规则冲突处理 → 三类判定（MATCH / CONFLICT / NO_COVERAGE）→ 持久化</p></div>
+      <div class="mod"><code>db.py</code><p>SQLite 运行时持久化：review、反馈、置信度修订、re-review 关联。<b>不存规则</b></p></div>
+      <div class="mod"><code>publication.py</code><p>生成 / 校验发布 manifest（逐文件哈希）</p></div>
+      <div class="mod"><code>publication_manifest.json</code><p>发布身份：6 字段（ontology/rule/engine/schema 版本 + source commit + checksum）+ 逐文件 sha256/size</p></div>
+      <div class="mod"><code>.ontology_bundles/&lt;commit&gt;/</code><p>冻结发布快照——消费方唯一可信来源</p></div>
+    </div></div>
+  </details>
+
+  <div class="connector c-pin"><div class="shaft"></div>
+    <div class="label">release_pin.py · 消费侧强制验真：身份 checksum → 逐文件 sha256/size → 任一不符即 PackageDriftError 拒绝运行（fail-closed）；历史 review 只能用其当代 manifest 解析</div>
+    <div class="shaft"></div>
+  </div>
+
+  <details class="layer l-llm" open>
+    <summary><h2>② 解释层（大模型）</h2><span class="tag">只解释 · 不裁决 · 调用有预算</span><span class="caret">▸</span></summary>
+    <div class="body"><div class="mods">
+      <div class="mod"><code>retriever.py</code><p>权威规则投影检索：UNKNOWN_RULE / RETIRED_RULE 硬门，"查 R5 只返回 R5"</p></div>
+      <div class="mod"><code>intent_policy.py</code><p>Triage 路由策略：3 个解释意图，不确定即弃权 fail-closed</p></div>
+      <div class="mod"><code>request_builder.py</code><p>组装 LLM 请求与权威上下文</p></div>
+      <div class="mod"><code>orchestrator.py / agent_workflow_v12.py</code><p>工作流编排 + 调用预算（超限即停）</p></div>
+      <div class="mod"><code>three_role_runner_v13.py</code><p>三角色执行 Triage→Executor→Reviewer；Reviewer 强制函数调用、temperature=0、关思考</p></div>
+      <div class="mod"><code>reviewer_binding_v13.py / output_guard.py</code><p>结构化输出绑定 + 安全护栏</p></div>
+      <div class="mod"><code>qwen_function_client_v13.py</code><p>Qwen Function Calling 客户端</p></div>
+      <div class="mod"><code>agent_roles.v15.json</code><p>角色 / 提示词哈希钉死配置（改语义必须升版复验）</p></div>
+    </div></div>
+  </details>
+
+  <div class="connector c-plain"><div class="shaft"></div>
+    <div class="label">解释与状态输出 · review 对象由引擎预判定，LLM 只生成人话解释</div>
+    <div class="shaft"></div>
+  </div>
+
+  <details class="layer l-del" open>
+    <summary><h2>③ 呈现 / 服务 / 检索层</h2><span class="tag">demo · HTTP 服务 · 补充检索</span><span class="caret">▸</span></summary>
+    <div class="body"><div class="mods">
+      <div class="mod"><code>app.py</code><p>Streamlit demo：dry-run 默认零调用；侧边栏显示 R5@2.0-campaign-pending 与 reviewer_v9</p></div>
+      <div class="mod"><code>ontology review api/</code><p>Hannah：FastAPI 服务版（反馈、治理任务状态机、Alembic 迁移、Docker 配置；集成分支待合并）</p></div>
+      <div class="mod"><code>export_knowledge_base_v1.py → 百炼 KB eeirxr7djz</code><p>7 篇规则卡快照；阈值 0.60 随发布走；12 条冻结检索题验收</p></div>
+    </div>
+    <div class="kb-note">️ 混合 RAG 不变式：知识库<b>只是补充检索通道</b>，检索结果被视为不可信数据，<b>永不参与裁决</b>；权威通道始终是 release-pin 确定性投影。</div>
+    </div>
+  </details>
+</div>
+
+<h3>📜 脚本清单（scripts/，20 个）</h3>
+<table>
+  <tr><th style="width:130px">类别</th><th>脚本</th><th>职责</th></tr>
+  <tr><td rowspan="4">检查类<br>（离线零调用）</td><td><code>check_mta_data.py</code></td><td>校验 MTA 输入数据格式</td></tr>
+  <tr><td><code>check_ontology_package.py</code></td><td>校验本体规则包完整性</td></tr>
+  <tr><td><code>check_review_contract.py</code></td><td>校验 review 交换契约</td></tr>
+  <tr><td><code>init_db.py</code></td><td>初始化 SQLite 运行时库</td></tr>
+  <tr><td>导出类</td><td><code>export_knowledge_base_v1.py</code></td><td>规则库 → 知识库快照（→ 百炼发布）</td></tr>
+  <tr><td rowspan="4">真实评测入口<br>（默认 dry，<code>--real</code> 才调用）</td><td><code>run_reviewer_judgment_eval_v14.py</code></td><td>Reviewer 冻结测评集（8 病例）验收</td></tr>
+  <tr><td><code>run_three_role_e2e_v15.py</code></td><td>三角色端到端真实跑</td></tr>
+  <tr><td><code>run_llm_eval.py</code></td><td>通用 LLM 评测入口</td></tr>
+  <tr><td><code>smoke_qwen.py</code></td><td>Qwen 连通冒烟</td></tr>
+  <tr><td>迭代化石</td><td><code>run_three_role_smoke_v6–v12</code>、<code>run_reviewer_function_pilot_v12/13</code>、<code>run_reviewer_capability_smoke_v13</code></td><td>保留测量演进史：版本号递增、不原地编辑</td></tr>
+</table>
+
+<h3>🔒 四条不变式</h3>
+<div class="invariants">
+  <div class="inv"><b>判断与解释分离</b><p>裁决权归规则引擎，表达权归大模型；LLM 永不生成判定。</p></div>
+  <div class="inv"><b>版本钉扎</b><p>镜像、知识库、本体发布三者同一身份（626cfbde…），台账可查。</p></div>
+  <div class="inv"><b>fail-closed</b><p>校验不过拒绝运行，拿不准拒绝回答，预算超限即停。</p></div>
+  <div class="inv"><b>反馈 ≠ 修改</b><p>用户反馈只记录；正式改规则 = 人工审批 + 新版本发布 + 回滚点。</p></div>
+</div>
+
+<footer>本体 × 大模型整合 · 进度汇报配套图 · 生成于 2026-08-06</footer>
+</div>

@@ -1,0 +1,120 @@
+<style>
+  :root{--bg:#f5f6f8;--card:#fff;--ink:#1a2230;--mut:#5b6472;--line:#dfe4ea;
+    --pm:#b45309;--pm-bg:#fff7ec;--ar:#1d4ed8;--ar-bg:#eef4ff;--ok:#047857;--ok-bg:#ecfdf5;
+    --wait:#6b7280;--wait-bg:#f3f4f6;--pin:#be123c;--pin-bg:#fff1f2;}
+  *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);
+    font:14px/1.7 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif}
+  .wrap{max-width:1060px;margin:0 auto;padding:28px 18px 60px}
+  h1{font-size:24px;margin:0 0 4px}h2{font-size:17px;margin:30px 0 10px}
+  .sub{color:var(--mut);margin:0 0 18px}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:720px){.cards{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .card h3{margin:0 0 6px;font-size:15px}
+  .pm{border-top:4px solid var(--pm)}.pm h3{color:var(--pm)}
+  .ar{border-top:4px solid var(--ar)}.ar h3{color:var(--ar)}
+  .num{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .chip{font-size:12px;padding:2px 10px;border-radius:999px;border:1px solid var(--line);background:#fff}
+  .chip.ok{color:var(--ok);border-color:var(--ok);background:var(--ok-bg)}
+  .chip.wait{color:var(--wait);background:var(--wait-bg)}
+  .chip.pin{color:var(--pin);border-color:var(--pin);background:var(--pin-bg)}
+  .flow{display:flex;flex-direction:column;gap:0}
+  .step{display:flex;gap:12px;align-items:flex-start;padding:8px 0}
+  .dot{flex:0 0 26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:700;color:#fff;background:var(--pm);margin-top:2px}
+  .dot.ar{background:var(--ar)}.dot.ok{background:var(--ok)}.dot.wait{background:var(--wait)}
+  .step .body{flex:1}
+  .step .t{font-weight:700}
+  .step .d{color:var(--mut);font-size:13px}
+  .gate{margin:2px 0 2px 38px;font-size:12px;color:var(--pin);background:var(--pin-bg);
+    border:1px dashed var(--pin);border-radius:8px;padding:3px 10px;display:inline-block}
+  .shaft{width:2px;height:10px;background:var(--line);margin-left:12px}
+  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);font-size:13px}
+  th,td{padding:6px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#eef1f5}tr:last-child td{border-bottom:0}
+  .soul{border:2px solid var(--ok);border-radius:12px;background:var(--ok-bg);padding:10px 14px;margin:10px 0}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:720px){.cols{grid-template-columns:1fr}}
+  footer{margin-top:34px;color:var(--mut);font-size:12px}
+</style>
+<div class="wrap">
+<h1>📊 本周进度图 · 本体侧（2026-08-10 → 08-14）</h1>
+<p class="sub">两条主线：📋 回溯式正式化流水线（17 步闭环）＋ 🏗️ SQLite→阿里云 PG 换库演练（1–5 步全绿）。配套解释文档：weekly-progress-explainer-2026-08-14.md</p>
+
+<div class="cards">
+  <div class="card pm"><h3>📋 线 1 · 回溯流水线</h3>
+    把已做完的系统用工程方法论重走一遍，补齐证据链。
+    <div class="num"><span class="chip">17 步</span><span class="chip">8 轮审查</span><span class="chip">31 需求</span><span class="chip">32 故事</span><span class="chip">29 测试编号</span><span class="chip ok">闭环</span></div>
+  </div>
+  <div class="card ar"><h3>🏗️ 线 2 · PG 换库演练</h3>
+    老师提议换云库；原则"验证过地转"：排练厅体检→真库空表→空搬→双跑→（切换随部署）。
+    <div class="num"><span class="chip ok">体检 1 passed</span><span class="chip ok">13 表齐</span><span class="chip ok">空搬对账 OK</span><span class="chip ok">双跑 16/16 PASS</span><span class="chip wait">切换+台账随部署</span></div>
+  </div>
+</div>
+
+<h2>📋 线 1 · 流水线 17 步（🔴 = 审查门，决断全记录）</h2>
+<div class="flow">
+  <div class="step"><div class="dot">1</div><div class="body"><div class="t">需求文档 PRD</div><div class="d">31 功能需求 / 8 非功能 / 5 不变式</div></div></div>
+  <div class="gate">🔴 review① 13 项 → 人工决断</div>
+  <div class="step"><div class="dot">3</div><div class="body"><div class="t">架构脊 + 十二节草稿</div><div class="d">17 条架构决策；范式"确定性核心、不受信边缘"</div></div></div>
+  <div class="gate">🔴 review② 13 项</div>
+  <div class="step"><div class="dot">5</div><div class="body"><div class="t">史诗与故事</div><div class="d">7 epic / 32 story（含换库演练 epic、合并门 epic）</div></div></div>
+  <div class="gate">🔴 review③ 11 项</div>
+  <div class="step"><div class="dot">7</div><div class="body"><div class="t">就绪门</div><div class="d">CONDITIONAL PASS，条件全清</div></div></div>
+  <div class="step"><div class="dot">8</div><div class="body"><div class="t">测试设计三件</div><div class="d">T-01..T-29；风险→测试对齐</div></div></div>
+  <div class="gate">🔴 review④ 7 项</div>
+  <div class="step"><div class="dot">10</div><div class="body"><div class="t">sprint 状态板</div><div class="d">三态诚实标签：recorded 11 / pending-merge 10 / pending-exec 4</div></div></div>
+  <div class="gate">🔴 review⑤ 3 项</div>
+  <div class="step"><div class="dot">12</div><div class="body"><div class="t">实现记录</div><div class="d">逐故事挂证据指针</div></div></div>
+  <div class="gate">🔴 review⑥ 4 项</div>
+  <div class="step"><div class="dot">14</div><div class="body"><div class="t">追溯矩阵</div><div class="d">FR 31/31 全映射，无孤儿测试</div></div></div>
+  <div class="gate">🔴 review⑦ 4 项</div>
+  <div class="step"><div class="dot">16</div><div class="body"><div class="t">技术规范终稿</div><div class="d">十二节 + 四附录；排查表收齐全部真实坑</div></div></div>
+  <div class="gate">🔴 review⑧ 5 项 → 闭环</div>
+</div>
+
+<h2>🏗️ 线 2 · 换库演练七步</h2>
+<div class="flow">
+  <div class="step"><div class="dot ok">0</div><div class="body"><div class="t">凭据安全存放</div><div class="d">.env.pg（git 忽略）；不进聊天/截图/提交</div></div></div>
+  <div class="step"><div class="dot ok">1</div><div class="body"><div class="t">探路</div><div class="d">白名单/SSL/权限小步验证 → 路通</div></div></div>
+  <div class="step"><div class="dot ok">2</div><div class="body"><div class="t">体检（排练厅 mta_data_test）</div><div class="d">Hannah 验收题八步：建表/写入/幂等/防篡改/重启读回 → 1 passed</div></div></div>
+  <div class="step"><div class="dot ok">3</div><div class="body"><div class="t">真库建表</div><div class="d">先 5 后 8（外键父子）；方言分菜修正（SQLite batch / PG 逐条）</div></div></div>
+  <div class="step"><div class="dot ok">4</div><div class="body"><div class="t">空搬 + 对账</div><div class="d">源库无真数据（服务未正式运行）；机制验证全 OK；台账表不搬</div></div></div>
+  <div class="soul"><b>第 5 步 · 双跑（灵魂步）PASS</b><br>同一标准案子两库各跑：审查编号 / 总判定 / 完整返回 / 四表行哈希 —— 16 项跨库一致。行数对账只证明"搬过去"，双跑才证明"同一输入同一结论"。</div>
+  <div class="step"><div class="dot wait">6-7</div><div class="body"><div class="t">切换 + 台账（随部署执行）</div><div class="d">配置指 PG + 冒烟三件套；旧库留两周兜底；台账记一行</div></div></div>
+</div>
+
+<h2>🧗 本周真实踩坑 10 个（每个都在成本最低的步骤暴露并修复）</h2>
+<table>
+<tr><th>坑</th><th>暴露于</th><th>收获</th></tr>
+<tr><td>PowerShell 记钥匙要用 $env: 不是 set</td><td>步1</td><td>进终稿排查表</td></tr>
+<tr><td>密码含 @ 须 %40 转义</td><td>步1</td><td>进排查表</td></tr>
+<tr><td>普通账号无 CREATEDB</td><td>步2前</td><td>控制台授权；RDS 账号分层是安全设计</td></tr>
+<tr><td>alembic 老解析器把 % 当占位符</td><td>步3</td><td>密码改走 PGPASSWORD（更安全）</td></tr>
+<tr><td>缺 connect_timeout 服务会崩</td><td>步2</td><td>连接串规范补参数</td></tr>
+<tr><td>SQLite/PG 方言口味相反</td><td>步3</td><td>迁移按方言分菜，随合并门并入</td></tr>
+<tr><td>被外键引用的约束 PG 不许拆</td><td>步3</td><td>同上</td></tr>
+<tr><td>alembic_version 台账不该搬</td><td>步4</td><td>搬迁脚本排除清单</td></tr>
+<tr><td>服务吞错只报代号</td><td>步2</td><td>写探针脚本让真错误现形</td></tr>
+<tr><td>粘贴连行 --yesuv</td><td>步4</td><td>操作侧坑进排查表</td></tr>
+</table>
+
+<h2>🔒 为什么可信（四条证据链）</h2>
+<div class="cols">
+  <div class="card"><h3>证据指针</h3>每条 recorded 声明指向具体测试文件或实测输出，不空口。</div>
+  <div class="card"><h3>诚实标签</h3>pending-merge / pending-exec 明示"哪里还没做"，比全绿更可信。</div>
+  <div class="card"><h3>双重过审</h3>对抗审查挑刺 + 人工逐项决断，八轮记录可审计。</div>
+  <div class="card"><h3>端到端验证</h3>双跑 16/16 PASS 站在所有修复肩膀上，是端到端证据。</div>
+</div>
+
+<h2>📌 剩余工作（诚实清单）</h2>
+<div class="num" style="margin-top:4px">
+  <span class="chip wait">① 合并门（漂移修到 MANIFEST_OK）</span>
+  <span class="chip wait">② 部署切换+台账</span>
+  <span class="chip wait">③ R5 转正演练</span>
+  <span class="chip pin">④ 密码轮换</span>
+  <span class="chip wait">⑤ ECS 续费决策（09-05）</span>
+</div>
+
+<footer>本体侧审查系统 · 周进度图 · 2026-08-14 · 细节见 weekly-progress-explainer-2026-08-14.md 与 docs/technical-specification-ontology.md</footer>
+</div>
