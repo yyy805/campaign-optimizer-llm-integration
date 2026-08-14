@@ -1,4 +1,8 @@
 * text=auto eol=lf
+campaign_optimizer/ontology/** text eol=lf
+campaign_optimizer/contracts/** text eol=lf
+campaign_optimizer/schemas/** text eol=lf
+tests/fixtures/** text eol=lf
 *.ps1 text eol=crlf
 *.bat text eol=crlf
 *.cmd text eol=crlf

@@ -12,7 +12,7 @@
   "properties": {
     "guardrail_id": { "type": "string", "pattern": "^G[0-9]+$" },
     "name": { "type": "string", "minLength": 1 },
-    "status": { "enum": ["ACTIVE", "RETIRED"] },
+    "status": { "enum": ["ACTIVE", "PENDING_INPUT_CONTRACT", "RETIRED"] },
     "scope": { "enum": ["ad_group", "campaign", "account", "platform"] },
     "applies_to_plan_actions": {
       "type": "array",

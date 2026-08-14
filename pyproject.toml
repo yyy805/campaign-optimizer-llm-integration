@@ -5,6 +5,7 @@ description = "Review-only ontology contracts and LLM integration for the campai
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    'alembic>=1.16.0',
     "jsonschema>=4.26.0",
     "rfc3339-validator>=0.1.4",
     "sqlalchemy>=2.0.51",

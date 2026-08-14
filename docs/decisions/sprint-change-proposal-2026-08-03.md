@@ -38,7 +38,7 @@
 - 已完成卡片、Schema和Gate无需回滚；
 - 需要新增Review Engine和MTA Evidence Adapter；
 - 需要将手写review Fixture升级为自动生成的端到端测试；
-- G1/G2因输入字段不满足而退役，待契约补齐后再激活。
+- G1/G2状态为 `PENDING_INPUT_CONTRACT`，待最终方案契约补齐出价、每日预算等字段后再评估激活。
 
 ## 3. Recommended Approach
 
@@ -87,4 +87,4 @@ Qwen API、翻译/解释Agent、评审Agent、有界回炉、分诊、拒答和F
 - [x] 团队职责边界明确
 - [x] 当前MVP范围重新冻结
 - [!] 尚未建立统一sprint-status.yaml
-- [!] Review Engine与R5纵向切片待实施
+- [x] Review Engine与R5纵向切片已实施（确定性生成、权威复核与离线测试）

@@ -181,3 +181,11 @@ def test_every_guardrail_is_review_only_and_schema_valid():
         card = _load(path)
         jsonschema.validate(instance=card, schema=schema)
         assert card["on_violation"] not in {"block_auto_execution", "reject"}
+
+
+def test_g1_and_g2_wait_for_the_final_plan_input_contract():
+    for guardrail_id in ("G1", "G2"):
+        card = _load(ONTOLOGY_DIR / "guardrails" / f"{guardrail_id}.json")
+        assert card["status"] == "PENDING_INPUT_CONTRACT"
+        assert card["condition"] is None
+        assert card["applies_to_plan_actions"] == []

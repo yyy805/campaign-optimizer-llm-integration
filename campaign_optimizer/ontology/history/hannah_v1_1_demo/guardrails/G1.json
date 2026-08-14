@@ -1,0 +1,13 @@
+{
+  "guardrail_id": "G1",
+  "name": "出价不能超过广告组上限",
+  "scope": "ad_group",
+  "applies_to_action_types": ["bid_adjustment"],
+  "condition": {
+    "concept": "max_cpc",
+    "op": ">=",
+    "against": "recommended_action.param.new_bid"
+  },
+  "on_violation": "block_auto_execution",
+  "message": "本次调整会超过该广告组的出价上限，已转人工审批"
+}

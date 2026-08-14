@@ -158,9 +158,11 @@ final_plan + ontology_review + public_rule_context
 CONFLICT > INSUFFICIENT_EVIDENCE > UNVERIFIED > NOT_APPLICABLE > SUPPORT
 ```
 
-## 6. 护栏为什么暂时退役
+运行时置信度状态也是决定性评价的必要输入。缺少当前 `confidence_state`、状态非ACTIVE或低于最低可用阈值时，统一返回 `INSUFFICIENT_EVIDENCE`，不能回退为规则卡基础置信度。
 
-护栏没有被永久删除。G1、G2退役是因为旧条件无法由当前最终方案契约可靠求值：
+## 6. 护栏为什么等待输入契约
+
+护栏没有被删除或否定。G1、G2标记为 `PENDING_INPUT_CONTRACT`，因为旧条件无法由当前最终方案契约可靠求值：
 
 - G1需要 `new_bid`，当前 `final_plan` 没有出价字段；
 - G2需要“每日预算”，当前方案提供的是下一14天预算，直接比较会造成量纲错误。
@@ -277,5 +279,5 @@ uv run pytest -q
 4. 将confidence_state持久化到SQLite；
 5. 编写本体维护指南；
 6. 补建统一 `sprint-status.yaml`；
-7. 待方案契约提供出价/每日预算字段后重新评估G1/G2；
+7. 待方案契约提供出价/每日预算字段后，将G1/G2从 `PENDING_INPUT_CONTRACT` 转入正式评审流程；
 8. 待真实预测模块交付后，以新规则版本替代R7。

@@ -1,7 +1,7 @@
 {
   "guardrail_id": "G2",
   "name": "预算不能低于平台最低每日预算",
-  "status": "RETIRED",
+  "status": "PENDING_INPUT_CONTRACT",
   "scope": "platform",
   "applies_to_plan_actions": [],
   "condition": null,

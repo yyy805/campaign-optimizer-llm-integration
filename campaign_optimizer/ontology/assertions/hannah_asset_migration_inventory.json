@@ -1,0 +1,450 @@
+{
+  "schema_version": "1.0",
+  "source_repository": "campaign-optimizer-ontology-review",
+  "source_branch": "hannah/ontology-review-api",
+  "source_commit": "24fc72c4e5837c02c9192b1d78f2acd363eeb527",
+  "source_snapshot_version": "v1.1-demo",
+  "runtime_policy": "Historical evidence only; never loaded by the product verdict engine.",
+  "expected_asset_count": 54,
+  "entries": [
+    {
+      "source_path": "docs/ontology/ontology 概念卡/__init__.py",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/__init__.py",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/assertions/assertion.schema.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/assertions/assertion.schema.json",
+      "category": "assertion",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 5055,
+      "sha256": "c4a09ce813ccabfb15fd19797653cf2ff0385d67eb5696031db069d75e8c1634"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/assertions/check_assertions.py",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/assertions/check_assertions.py",
+      "category": "assertion",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 17387,
+      "sha256": "04ece747f9beca485a875149860564e206bd029afff1cb0214405881f0bfd4b9"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/assertions/check_demo_data_adapter.py",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/assertions/check_demo_data_adapter.py",
+      "category": "adapter",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 8020,
+      "sha256": "e0f4bd3f248bb98159b5e84c8f1d30adcbb08e65eda274f6ef51cb0eeabf56bb"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/assertions/check_field_mapping.py",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/assertions/check_field_mapping.py",
+      "category": "mapping",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 10547,
+      "sha256": "4f0fbb60d98e18120124824273c271d8903305cf611a721937d057625435352c"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/assertions/demo_data_adapter.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/assertions/demo_data_adapter.json",
+      "category": "adapter",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 3117,
+      "sha256": "94288597e67ccb323c7ca93487a8f0976dfff55b5008d11cf747f2b1d3c4d315"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/assertions/demo_data_adapter.schema.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/assertions/demo_data_adapter.schema.json",
+      "category": "adapter",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 3524,
+      "sha256": "4498e8a97a35b7ecee1cd27a749b24f0bfe619935442d907621b4a5dfc1799e6"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/assertions/field_mapping.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/assertions/field_mapping.json",
+      "category": "mapping",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 16744,
+      "sha256": "b70cdc69e30552de9363799799a82e9504f1c037c22c31e4e6dead3486cb1689"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/assertions/field_mapping.schema.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/assertions/field_mapping.schema.json",
+      "category": "mapping",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 3467,
+      "sha256": "326889d030c868809007ab7645300d67156db92d11287dcdb3f70d8d04583070"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/assertions/mta_simulated_data_requirements.md",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/assertions/mta_simulated_data_requirements.md",
+      "category": "assertion",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 7701,
+      "sha256": "4b7365c95e1c1f94f22c2769a2ade82e12d68e61f3777e882809c8523a87c350"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/assertions/ontology_demo_simulated_data_change_request.md",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/assertions/ontology_demo_simulated_data_change_request.md",
+      "category": "assertion",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 13433,
+      "sha256": "e1a3e361a77c843e810da7605a4b13e72add51c9bc71e4a938e1e053360c4263"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/assertions/README.md",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/assertions/README.md",
+      "category": "assertion",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 2039,
+      "sha256": "bb149e1c40fda75c2d52468750c1b4062b2b84b240229c9c5e4b4a88e3fa02cd"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/assertions/story_assertions.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/assertions/story_assertions.json",
+      "category": "assertion",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 20799,
+      "sha256": "2ea93c44b7776d0397b43ee9d85c40bc743565537b77856231a143d972305dc5"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/clients/demo_client_001.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/clients/demo_client_001.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 618,
+      "sha256": "559466d2c66c55a955b593160198ee75b41fd87ad73c92d4df6263e10fd84958"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/clients/demo_client_002.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/clients/demo_client_002.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 559,
+      "sha256": "0bbe4fba59193d34eda0874cb8fd0947ebdfed163891b1060ce0813cb57dc13f"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/concepts/acos.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/acos.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 924,
+      "sha256": "c1020e445df5237eb99f3eb464554ff915752cda91742645fd54cc3dff0f991c"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/concepts/attributed_revenue.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/attributed_revenue.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 827,
+      "sha256": "1886a5f9254d6305482339057ba9e1ea10ec8c551be7f4768a138481ca3be3e0"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/concepts/attribution_consistency_status.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/attribution_consistency_status.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 913,
+      "sha256": "70d87464d4013eb91219a81d78205a74efd79226f0b3f501fe044fc6664133cb"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/concepts/attribution_divergence.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/attribution_divergence.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 1175,
+      "sha256": "e8d2e3138c9c70cfd693c188837db79152b90f63f14dfab31f722be4c43ef5e9"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/concepts/clicks.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/clicks.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 856,
+      "sha256": "5d006e2ff875d616a529dba1a03c8c7b10ab98eaaaf36fc766ce09615edcbacb"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/concepts/contribution_share.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/contribution_share.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 1079,
+      "sha256": "e26f1f14c4d91f33c2d3f3d7c1e4804f68c62f3bb4469c4b62d1c2cd21f11cac"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/concepts/conversions.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/conversions.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 944,
+      "sha256": "35d43d14449072719f97107037705f86277557e8d97496b8b4e47850fde6f9a7"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/concepts/ctr.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/ctr.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 900,
+      "sha256": "94dcd19481449c6b0aef52955b7b79384dd7eea14d3a918a46032bf958f6e015"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/concepts/cvr.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/cvr.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 888,
+      "sha256": "18c40863e616616f22ac97f0e1a5501438d85acf6ded1180a5f2449b29157fba"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/concepts/impressions.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/impressions.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 873,
+      "sha256": "eac76afd99d370ced540d184cd1920f92e397f333223e0cdadd204185c710338"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/concepts/impressions_growth.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/impressions_growth.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 1074,
+      "sha256": "13f3d98a6f94a8090ba079c883029e79374e4624083434cc664c6d4f12317e89"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/concepts/impressions_last_period.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/impressions_last_period.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 1019,
+      "sha256": "1e366d694c70a6cbcf5ee6df78b9d6aa735bc2c87de64d7b25fdc5426192e7d5"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/concepts/max_cpc.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/max_cpc.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 919,
+      "sha256": "bd033ece46ac33dedab6cbeb55d5ce7f76e416352a5e73f8d25a9474d96b3228"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/concepts/min_cpc.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/min_cpc.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 919,
+      "sha256": "b4953d32f86a306bd5fa73ce294a6687bd09ecf9bef3c72f7db86f764685cbd2"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/concepts/mta_roas.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/mta_roas.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 1072,
+      "sha256": "92cf8df56a2960a244a28c0a6a53ffada2bfea3b87fff022e551b58bcff3b2b0"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/concepts/predicted_roas.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/predicted_roas.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 878,
+      "sha256": "d6cf49e86859992c47b43191ed9294fc12c95580a45f68c897e9e05a32077d37"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/concepts/recommended_budget_allocation.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/recommended_budget_allocation.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 943,
+      "sha256": "ee3f800693289b7a321b31d4fbf8d3e0a4fcfa589708155c2084b4450cba4501"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/concepts/revenue.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/revenue.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 847,
+      "sha256": "e377a624ab59e8c51b094df4b653988e3d689f66eb1709ddffaf2bc3da323fd8"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/concepts/roas.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/roas.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 1066,
+      "sha256": "969616f292313a5f42990185b2131a6dc1495a419f7e7efc12f00b7d6f7e69c0"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/concepts/roas_decline_alert.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/roas_decline_alert.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 879,
+      "sha256": "07ce597d794fb14b39d8bfc50e10a0bb9425647879e3f535ce35d946aaa55a4b"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/concepts/sp_min_daily_budget.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/sp_min_daily_budget.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 1062,
+      "sha256": "b4e1672ce1216c1dd5eee464da06126ccc67342837560ca78fe61df8d2fdb275"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/concepts/spend.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/spend.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 929,
+      "sha256": "de472e1a0425b0ec8a799a01288c689cb93e9a7c0652f67582c37605d6192dd8"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/concepts/spend_share.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/spend_share.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 1044,
+      "sha256": "f71c27de17afc07376e7428d4042c62beb5ca612a47c20f5cf97746be8dee41b"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/concepts/total_spend.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/concepts/total_spend.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 960,
+      "sha256": "66f31b9ad91cc24fccb35ca12439f3572ab7dc04aa84f1b7782e9e822856ac42"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/db.py",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/db.py",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 4209,
+      "sha256": "77fc7f92dd86e44a8896994875b122b096cc8fd73b0f04022b115c9c1ee1029a"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/diagrams/roas_trend_decision_flow.md",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/diagrams/roas_trend_decision_flow.md",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 752,
+      "sha256": "e20f765d168a2d7f89a2c191be50d81faf6d2f34c33e758ec679d386c181dd97"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/guardrails/G1.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/guardrails/G1.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 388,
+      "sha256": "0e3073b297db34c0cd598f6c4c97653129710562bea0fb445a90c2a4a4550863"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/guardrails/G2.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/guardrails/G2.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 474,
+      "sha256": "ad764344f7ca6a928fc8127d22c2c27cf04a6b6371ee535addbc61b9ea7e17c0"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/rules/R1.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/rules/R1.json",
+      "category": "version_history",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 1683,
+      "sha256": "379ac2a3205e05afbfb274ad35af6cbd261863158df64b65ea218a5d016561cf"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/rules/R2.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/rules/R2.json",
+      "category": "version_history",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 1629,
+      "sha256": "c5ab6aca4a299c023e9dc60c0cc99c5afc49488415fd2b59bfbc29cc995b074a"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/rules/R3.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/rules/R3.json",
+      "category": "version_history",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 1230,
+      "sha256": "4812c2961898c7c57cdad6ad15ed02f44db3e3a407645882067d9cccf1076ce7"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/rules/R4.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/rules/R4.json",
+      "category": "version_history",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 1561,
+      "sha256": "d942c603ce0ad229e4f5de0882eb6a6984cf76ec04f4ee82955e4a1ae5b509ce"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/rules/R5.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/rules/R5.json",
+      "category": "version_history",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 2599,
+      "sha256": "a265f3abef50680bc2025dddabd73f3f114a75c36d618cc365ba27666daba2cd"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/rules/R6.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/rules/R6.json",
+      "category": "version_history",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 1615,
+      "sha256": "e861b2dad58319c666ef2915ea92887810e6b2b858372d17343095859c6d847e"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/rules/R7.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/rules/R7.json",
+      "category": "version_history",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 2053,
+      "sha256": "fa6dc6991e0e47f67f644a289b79838d5b7522c77465136d7c88e10952a029d2"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/schemas/concept.schema.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/schemas/concept.schema.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 4703,
+      "sha256": "27ad7c79cf7afd5734e11e04ff98415b3576ac32343ff86e3014edc0d2eb7f37"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/schemas/guardrail.schema.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/schemas/guardrail.schema.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 2198,
+      "sha256": "c782bb0b40a73d95e8a866c66b4b6c09c16f00e84a30d62339734b967e827d28"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/schemas/rule.schema.json",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/schemas/rule.schema.json",
+      "category": "supporting_ontology_asset",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 4396,
+      "sha256": "9e0e9f48c2ee01854168faf73783e84e1b2e22938a3e0e15c0fb9c1d35e5f0ac"
+    },
+    {
+      "source_path": "docs/ontology/ontology 概念卡/VERSION",
+      "target_path": "campaign_optimizer/ontology/history/hannah_v1_1_demo/VERSION",
+      "category": "version_history",
+      "disposition": "COPIED_EXACT_HISTORICAL_NON_RUNTIME",
+      "size": 10,
+      "sha256": "b710c90ef95ca654cdcf05249480e6d607739deb473eb5fe50fe7c22f915def8"
+    }
+  ],
+  "excluded": [
+    {
+      "source_path": "docs/ontology/ontology 概念卡/assertions/.Rhistory",
+      "reason": "EMPTY_TOOL_HISTORY_NOT_A_BUSINESS_ASSET",
+      "size": 0
+    }
+  ]
+}

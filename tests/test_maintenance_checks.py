@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 from pathlib import Path
+import subprocess
 
 from scripts.check_mta_data import validate_mta_data
 from scripts.check_ontology_package import validate_ontology_package
@@ -27,6 +29,21 @@ def _build_mta_fixture(tmp_path: Path) -> Path:
 
 def test_real_ontology_package_batch_check_passes():
     assert validate_ontology_package(ROOT) == []
+
+
+def test_publication_manifest_entries_match_pinned_git_blobs():
+    manifest = json.loads(
+        (ROOT / 'campaign_optimizer/ontology/publication_manifest.json')
+        .read_text(encoding='utf-8')
+    )
+    source_commit = manifest['source_commit']
+    for entry in manifest['entries']:
+        blob = subprocess.run(
+            ['git', 'show', f"{source_commit}:{entry['path']}"],
+            cwd=ROOT, check=True, capture_output=True,
+        ).stdout
+        assert len(blob) == entry['size'], entry['path']
+        assert hashlib.sha256(blob).hexdigest() == entry['sha256'], entry['path']
 
 
 def test_mta_contract_accepts_all_manifest_files(tmp_path):
