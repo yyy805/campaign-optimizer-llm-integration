@@ -61,7 +61,10 @@ def release_identity(manifest: Mapping[str, Any]) -> dict[str, str]:
 
 
 def bundle_root(manifest: Mapping[str, Any]) -> Path:
-    return BUNDLES_ROOT / str(manifest['source_commit'])
+    try:
+        return BUNDLES_ROOT / str(manifest['source_commit'])
+    except KeyError as exc:
+        raise PackageDriftError('pinned ontology manifest has an invalid shape') from exc
 
 
 def load_verified_manifests(

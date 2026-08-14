@@ -46,10 +46,14 @@ st.title("🛡️ Campaign Optimizer 解释演示")
 st.caption("Reviewer v9 · canonical R5@2.0-campaign-pending · fail-closed gates")
 
 config = _config()
-manifest = next(
+_manifest_matches = [
     value for value in load_verified_manifests().values()
     if value["ontology_version"] == "2.0-campaign-pending"
-)
+]
+if len(_manifest_matches) != 1:
+    st.error("发布清单匹配不唯一，按 AD-3 fail-closed。请联系维护者。")
+    st.stop()
+manifest = _manifest_matches[0]
 
 with st.sidebar:
     st.header("系统状态")

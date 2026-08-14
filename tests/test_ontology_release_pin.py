@@ -7,7 +7,7 @@ import pytest
 
 from campaign_optimizer.contracts.validation import ContractValidationError
 from campaign_optimizer.llm.request_builder import RequestBuilder
-from campaign_optimizer.llm.release_pin import load_verified_manifests
+from campaign_optimizer.llm.release_pin import bundle_root, load_verified_manifests
 from campaign_optimizer.llm.retriever import LocalRuleRetriever
 from campaign_optimizer.ontology.publication import (
     PackageDriftError,
@@ -148,3 +148,8 @@ def test_historical_review_resolves_only_its_exact_manifest():
     public = artifacts.context['public_rule_context'][0]
     assert public['rule_version'] == '1.3-contract-hardening'
     assert public['status'] == 'ACTIVE'
+
+
+def test_bundle_root_on_malformed_manifest_raises_drift_error():
+    with pytest.raises(PackageDriftError):
+        bundle_root({})
