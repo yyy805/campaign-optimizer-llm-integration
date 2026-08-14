@@ -21,5 +21,7 @@ jobs:
         run: uv sync --frozen
       - name: Validate ontology package
         run: uv run python scripts/check_ontology_package.py --project-root .
-      - name: Run offline tests
-        run: uv run pytest -q
+      - name: Run root offline tests
+        run: uv run pytest -q tests
+      - name: Run Ontology Review API tests
+        run: uv run --project "ontology review api" --extra test --locked pytest -q "ontology review api/tests"

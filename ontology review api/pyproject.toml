@@ -1,0 +1,33 @@
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ontology-review-api"
+version = "0.1.0"
+description = "Deterministic, auditable Ontology Review API"
+requires-python = ">=3.12,<3.15"
+dependencies = [
+  "alembic==1.16.5",
+  "fastapi==0.116.1",
+  "jsonschema==4.25.1",
+  "pydantic-settings==2.10.1",
+  "psycopg[binary]==3.3.4",
+  "sqlalchemy==2.0.43",
+  "uvicorn[standard]==0.35.0",
+]
+
+[project.optional-dependencies]
+test = [
+  "httpx==0.28.1",
+  "pytest==8.4.1",
+  "pytest-cov==6.2.1",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+pythonpath = [".."]

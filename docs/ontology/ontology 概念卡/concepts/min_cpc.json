@@ -1,0 +1,26 @@
+{
+  "concept_id": "min_cpc",
+  "name_cn": "出价下限",
+  "name_en": "Min CPC",
+  "layer": "L6",
+  "tier": "base",
+  "caliber": "platform",
+  "definition": "该广告组允许的最低单次点击出价；任何建议动作把出价调整到低于这个数，都不该被自动执行",
+  "formula": null,
+  "unit": "currency",
+  "source": "客户投放系统在 Amazon 官方 ad_group 结构之上自行扩展的字段，非 Amazon 官方定义（详见 ontology-concept-nodes-v1.md L1 AdGroup 节）",
+  "source_field": "ad_group.min_cpc",
+  "value_range": [0, null],
+  "baseline": {"type": "not_applicable", "value": null},
+  "threshold": null,
+  "granularity": {
+    "time": "snapshot",
+    "entity": "ad_group",
+    "aggregation": "none",
+    "requires_full_batch": false
+  },
+  "dimensions": ["ad_group"],
+  "related_concepts": [
+    {"target": "max_cpc", "relation": "paired_bound", "strength": "strong"}
+  ]
+}

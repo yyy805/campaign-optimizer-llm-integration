@@ -1,0 +1,54 @@
+{
+  "rule_id": "R4",
+  "name": "ROAS持续走低暂停渠道",
+  "evaluation_grain": { "time": "14day", "entity": "campaign" },
+  "attribution_model": null,
+  "trigger_condition": {
+    "all": [
+      { "concept": "roas", "op": "<", "ref": 1, "window_days": 14 }
+    ]
+  },
+  "diagnosis": "该campaign的ROAS连续14天低于1（广告投入产出为负），建议暂停投放并转人工审批",
+  "recommended_action": {
+    "type": "pause_campaign",
+    "param": {}
+  },
+  "match_inputs": [
+    { "concept": "roas", "role": "trigger_signal", "required": true }
+  ],
+  "confidence_model": {
+    "source": ["historical_pattern", "data_quality"],
+    "thresholds": { "auto": 0.7, "review": 0.5 }
+  },
+  "risk_model": {
+    "impact_score": 0.85,
+    "formula": "impact_score * (1 - confidence)",
+    "auto_execute_threshold": 0.25,
+    "review_threshold": 0.6
+  },
+  "execution_policy": {
+    "mode": "review",
+    "reason": "暂停投放影响大，必须复核"
+  },
+  "confidence": 0.75,
+  "risk_level": "HIGH",
+  "evidence_type": "historical_pattern",
+  "validation_count": 0,
+  "rejection_count": 0,
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2026-07-07",
+      "author": "human_expert",
+      "change": "初始版本，评估窗口7天"
+    },
+    {
+      "version": "1.1",
+      "date": "2026-07-15",
+      "author": "human_expert",
+      "change": "评估窗口由7天订正为14天，对齐campaign效果评估的统一窗口约定"
+    }
+  ],
+  "causal_annotation": "相关性证据，非因果证明",
+  "status": "ACTIVE"
+}
