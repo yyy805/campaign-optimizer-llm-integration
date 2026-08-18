@@ -27,6 +27,11 @@ def _sha256(raw: bytes) -> str:
     return hashlib.sha256(raw).hexdigest()
 
 
+def canonical_asset_bytes(path: Path) -> bytes:
+    """Return platform-independent bytes for governed text assets."""
+    return path.read_bytes().replace(b"\r\n", b"\n")
+
+
 def _asset_paths(root: Path) -> list[Path]:
     return sorted(
         (
@@ -68,12 +73,12 @@ def build_publication_manifest(
     entries = [
         {
             "path": path.relative_to(root).as_posix(),
-            "sha256": _sha256(path.read_bytes()),
+            "sha256": _sha256(canonical_asset_bytes(path)),
         }
         for path in _bundle_asset_paths(root)
     ]
     for entry, path in zip(entries, _bundle_asset_paths(root), strict=True):
-        entry['size'] = len(path.read_bytes())
+        entry['size'] = len(canonical_asset_bytes(path))
     identity = {
         "manifest_version": "1.0",
         "source_commit": source_commit,

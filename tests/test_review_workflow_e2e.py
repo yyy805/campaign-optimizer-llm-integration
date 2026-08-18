@@ -23,6 +23,7 @@ from campaign_optimizer.ontology.db import (
 from campaign_optimizer.ontology.publication import (
     PackageDriftError,
     build_publication_manifest,
+    canonical_asset_bytes,
     verify_publication_manifest,
 )
 from campaign_optimizer.ontology.review_workflow import ReviewRelease, ReviewWorkflow
@@ -199,7 +200,7 @@ def test_manifest_is_deterministic_and_detects_drift(tmp_path):
         root=tmp_path,
     )
     verify_publication_manifest(manifest, root=tmp_path)
-    assert manifest["entries"][0]["size"] == asset.stat().st_size
+    assert manifest["entries"][0]["size"] == len(canonical_asset_bytes(asset))
     asset.write_text('{"a":2}\n', encoding="utf-8")
     with pytest.raises(PackageDriftError):
         verify_publication_manifest(manifest, root=tmp_path)

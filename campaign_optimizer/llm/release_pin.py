@@ -7,7 +7,10 @@ from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
-from campaign_optimizer.ontology.publication import PackageDriftError
+from campaign_optimizer.ontology.publication import (
+    PackageDriftError,
+    canonical_asset_bytes,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CURRENT_MANIFEST = PROJECT_ROOT / 'campaign_optimizer/ontology/publication_manifest.json'
@@ -49,7 +52,7 @@ def verify_consumer_manifest(manifest: Mapping[str, Any], *, root: Path) -> None
         seen.add(entry['path'])
         path = root / relative
         try:
-            raw = path.read_bytes()
+            raw = canonical_asset_bytes(path)
         except OSError as exc:
             raise PackageDriftError('pinned ontology asset is unavailable') from exc
         if len(raw) != entry['size'] or hashlib.sha256(raw).hexdigest() != entry['sha256']:
