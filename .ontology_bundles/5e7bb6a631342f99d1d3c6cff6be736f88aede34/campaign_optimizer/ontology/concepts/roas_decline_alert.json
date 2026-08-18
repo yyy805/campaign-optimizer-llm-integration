@@ -1,0 +1,28 @@
+{
+  "concept_id": "roas_decline_alert",
+  "name_cn": "ROAS下滑预警",
+  "name_en": "ROAS Decline Alert",
+  "layer": "L5",
+  "tier": "mock",
+  "caliber": "mock",
+  "definition": "预测模型对某campaign未来ROAS下滑趋势直接给出的成型预警判断（是否应提前预警），供本体审核预测置信度后决定是否采纳；本体不再自己拿 predicted_roas 原始值和阈值比较、自己判断趋势。⚠️待确认：'预测模型'这个组件本身当前仍是 mock 占位，不属于 MTA 组产出，需要另外确认由团队里谁负责、是否已开工——这个字段的确认对象不是 MTA 组，是预测模型的负责人（如果还没定，这本身就是要先解决的空缺）。",
+  "formula": null,
+  "unit": "boolean",
+  "source": "预测模型输出（假设，mock占位，负责人待定）",
+  "source_field": null,
+  "value_type": "boolean",
+  "value_range": null,
+  "baseline": { "type": "not_applicable", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "mock",
+    "entity": "campaign",
+    "aggregation": "none",
+    "requires_full_batch": false
+  },
+  "dimensions": ["campaign"],
+  "related_concepts": [
+    { "target": "prediction_confidence", "relation": "accompanies", "strength": "strong" },
+    { "target": "predicted_roas", "relation": "depends_on", "strength": "strong" }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "concept_id": "contribution_share",
+  "name_cn": "贡献份额",
+  "name_en": "Contribution Share",
+  "layer": "L5",
+  "tier": "mta",
+  "caliber": "mta",
+  "definition": "基于 MTA 推荐归因结果中指定 outcome 的 official_share，表示某触点在该 outcome 下的贡献份额。R5 Demo 固定使用 revenue outcome；同一批次、窗口、outcome 与 attribution_model 下各触点求和恒为 1。",
+  "formula": null,
+  "unit": "ratio",
+  "source": "MTA recommended_attribution 输出",
+  "source_field": "official_share",
+  "value_range": [0, 1],
+  "baseline": { "type": "model_output_mean", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "snapshot",
+    "entity": "touchpoint",
+    "aggregation": "none",
+    "requires_full_batch": true
+  },
+  "dimensions": ["batch_id", "report_window", "touchpoint", "outcome", "attribution_model"],
+  "related_concepts": [
+    { "target": "mta_roas", "relation": "input_to", "strength": "strong" },
+    { "target": "attribution_divergence", "relation": "compared_with", "strength": "strong" }
+  ]
+}

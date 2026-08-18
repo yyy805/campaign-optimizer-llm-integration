@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "suite_id": "llm-local-e2e-synthetic-v1",
+  "fixtures": {
+    "plan": "../plan_a/final_plan.demo.json",
+    "review": "../plan_a/ontology_review.demo.json",
+    "valid_output": "../plan_a/llm_workflow_output.demo.json"
+  },
+  "cases": [
+    {"case_id": "initial_success", "category": "initial", "scenario": "initial_success", "expected_status": "OK", "expected_provider_calls": 1},
+    {"case_id": "chat_success", "category": "chat", "scenario": "chat_success", "expected_status": "OK", "expected_provider_calls": 1},
+    {"case_id": "forbidden_internal", "category": "refusal", "scenario": "forbidden_internal", "expected_status": "REFUSED", "expected_provider_calls": 0},
+    {"case_id": "prompt_injection", "category": "injection", "scenario": "prompt_injection", "expected_status": "REFUSED", "expected_provider_calls": 0},
+    {"case_id": "invalid_json_repaired", "category": "repair", "scenario": "invalid_json_repaired", "expected_status": "OK", "expected_provider_calls": 2},
+    {"case_id": "invalid_json_twice", "category": "repair", "scenario": "invalid_json_twice", "expected_status": "FALLBACK", "expected_provider_calls": 2},
+    {"case_id": "tamper_numeric", "category": "tamper", "scenario": "tamper_numeric", "expected_status": "FALLBACK", "expected_provider_calls": 2},
+    {"case_id": "tamper_plan_id", "category": "tamper", "scenario": "tamper_plan_id", "expected_status": "FALLBACK", "expected_provider_calls": 2},
+    {"case_id": "tamper_fact_id", "category": "tamper", "scenario": "tamper_fact_id", "expected_status": "FALLBACK", "expected_provider_calls": 2},
+    {"case_id": "tamper_rule_id", "category": "tamper", "scenario": "tamper_rule_id", "expected_status": "FALLBACK", "expected_provider_calls": 2},
+    {"case_id": "tamper_verdict", "category": "tamper", "scenario": "tamper_verdict", "expected_status": "FALLBACK", "expected_provider_calls": 2},
+    {"case_id": "tamper_limitations", "category": "tamper", "scenario": "tamper_limitations", "expected_status": "FALLBACK", "expected_provider_calls": 2},
+    {"case_id": "provider_timeout", "category": "provider", "scenario": "provider_timeout", "expected_status": "FALLBACK", "expected_provider_calls": 1},
+    {"case_id": "provider_auth", "category": "provider", "scenario": "provider_auth", "expected_status": "FALLBACK", "expected_provider_calls": 1},
+    {"case_id": "provider_rate_limit", "category": "provider", "scenario": "provider_rate_limit", "expected_status": "FALLBACK", "expected_provider_calls": 1},
+    {"case_id": "provider_network", "category": "provider", "scenario": "provider_network", "expected_status": "FALLBACK", "expected_provider_calls": 1},
+    {"case_id": "no_key", "category": "configuration", "scenario": "no_key", "expected_status": "FALLBACK", "expected_provider_calls": 0}
+  ]
+}

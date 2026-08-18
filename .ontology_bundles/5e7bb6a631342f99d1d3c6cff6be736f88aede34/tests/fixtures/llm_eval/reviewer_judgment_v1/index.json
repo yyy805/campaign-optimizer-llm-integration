@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0",
+  "collection_id": "reviewer-judgment-v1",
+  "datasets": [
+    {"dataset_type": "reviewer_judgment", "file": "cases.json", "case_count": 8}
+  ],
+  "plan_fixture": "../../plan_a/final_plan.demo.json",
+  "review_fixture": "ontology_review.pending.json"
+}

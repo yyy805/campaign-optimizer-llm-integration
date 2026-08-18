@@ -1,0 +1,20 @@
+{
+  "client_id": "demo_client_002",
+  "name": "示例客户B（保守型投放）",
+  "risk_tolerance": {
+    "max_auto_budget_change_pct": 0.05,
+    "max_auto_bid_change_pct": 0.08,
+    "preferred_approval_threshold": "LOW"
+  },
+  "custom_baselines": {
+    "ACoS_target": 0.22,
+    "calibrated_from": "demo_config_placeholder"
+  },
+  "ontology_version_locked": "v1.0-demo",
+  "campaign_kpi": {
+    "primary_kpi": "acos",
+    "secondary_kpi": "roas",
+    "target_value": 0.22
+  },
+  "_status": "占位模拟值，待模型组给出更准确数值后更新"
+}

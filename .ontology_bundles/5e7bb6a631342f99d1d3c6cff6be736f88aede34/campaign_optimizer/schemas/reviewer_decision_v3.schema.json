@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://campaign-optimizer.local/schemas/reviewer_decision_v3.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "candidate_id", "packet_digest", "decision", "violation_codes", "evidence_source_ids", "revision_actions"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "candidate_id": {"type": "string", "pattern": "^candidate_[A-Za-z0-9_-]+$"},
+    "packet_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "decision": {"enum": ["PASS", "REVISE", "REJECT"]},
+    "violation_codes": {"type": "array", "uniqueItems": true, "items": {"enum": ["UNSUPPORTED_CLAIM", "UNSUPPORTED_GUARANTEE", "MISSING_LIMITATION", "ID_OR_VALUE_MISMATCH", "INTENT_MISMATCH", "NEW_FACT", "SAFETY_VIOLATION", "UNRESOLVABLE_CONFLICT"]}},
+    "evidence_source_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^(plan_item|review_item|decision_fact|review_fact|R)[A-Za-z0-9_-]+$"}},
+    "revision_actions": {"type": "array", "maxItems": 5, "items": {"type": "object", "additionalProperties": false, "required": ["operation", "target_claim_id", "source_id"], "properties": {"operation": {"enum": ["REMOVE_UNSUPPORTED_CLAIM", "REMOVE_UNSUPPORTED_GUARANTEE", "ADD_REQUIRED_LIMITATION", "CORRECT_CLAIM_TO_SOURCE"]}, "target_claim_id": {"type": ["string", "null"], "pattern": "^claim_[A-Za-z0-9_-]+$"}, "source_id": {"type": "string", "pattern": "^(plan_item|review_item|decision_fact|review_fact|R)[A-Za-z0-9_-]+$"}}}}
+  },
+  "allOf": [
+    {"if": {"properties": {"decision": {"const": "PASS"}}}, "then": {"properties": {"violation_codes": {"maxItems": 0}, "evidence_source_ids": {"maxItems": 0}, "revision_actions": {"maxItems": 0}}}},
+    {"if": {"properties": {"decision": {"const": "REVISE"}}}, "then": {"properties": {"violation_codes": {"minItems": 1}, "evidence_source_ids": {"minItems": 1}, "revision_actions": {"minItems": 1}}}},
+    {"if": {"properties": {"decision": {"const": "REJECT"}}}, "then": {"properties": {"violation_codes": {"minItems": 1}, "revision_actions": {"maxItems": 0}}}}
+  ]
+}

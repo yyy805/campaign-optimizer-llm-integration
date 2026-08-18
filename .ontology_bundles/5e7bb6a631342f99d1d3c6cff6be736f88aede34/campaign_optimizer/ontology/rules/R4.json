@@ -1,0 +1,50 @@
+{
+  "rule_id": "R4",
+  "name": "ROAS持续走低暂停渠道",
+  "evaluation_grain": { "time": "14day", "entity": "campaign" },
+  "attribution_model": null,
+  "trigger_condition": {
+    "all": [
+      { "concept": "roas", "op": "<", "ref": 1, "window_days": 14 }
+    ]
+  },
+  "diagnosis": "该campaign的ROAS连续14天低于1（广告投入产出为负），建议暂停投放并转人工审批",
+  "match_inputs": [
+    { "concept": "roas", "role": "trigger_signal", "required": true }
+  ],
+  "reference_action": {
+    "type": "pause_campaign",
+    "param": {}
+  },
+  "confidence_model": { "source": ["historical_pattern", "data_quality"], "thresholds": { "high": 0.7, "minimum_usable": 0.5 } },
+  "review_policy": { "mode": "review_only", "supported_plan_actions": [], "conflicting_plan_actions": ["increase_budget", "keep_budget"], "otherwise": "NOT_APPLICABLE" },
+  "confidence": 0.75,
+  "risk_level": "HIGH",
+  "evidence_type": "historical_pattern",
+  "validation_count": 0,
+  "rejection_count": 0,
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2026-07-07",
+      "author": "human_expert",
+      "change": "初始版本，评估窗口7天"
+    },
+    {
+      "version": "1.1",
+      "date": "2026-07-15",
+      "author": "human_expert",
+      "change": "评估窗口由7天订正为14天，对齐campaign效果评估的统一窗口约定"
+    },
+    {
+      "version": "1.2-review-only",
+      "date": "2026-08-03",
+      "author": "ontology_team",
+      "change": "增加 review-only 动作映射；暂停投放仍需用户接受方案，本体不会自动执行。"
+    },
+    { "version": "1.3-contract-hardening", "date": "2026-08-03", "author": "ontology_team", "change": "将参考动作重命名为不可执行的reference_action；触发条件由运行时真实求值。" }
+  ],
+  "causal_annotation": "相关性证据，非因果证明",
+  "status": "ACTIVE",
+  "known_limitations": ["当前最终方案契约没有 pause_campaign 动作，因此规则只能冲突标注增加或维持预算，不能替代小模型生成暂停方案。"]
+}

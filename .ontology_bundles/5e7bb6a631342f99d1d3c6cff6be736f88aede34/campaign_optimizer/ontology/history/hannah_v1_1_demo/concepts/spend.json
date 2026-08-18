@@ -1,0 +1,28 @@
+{
+  "concept_id": "spend",
+  "name_cn": "花费",
+  "name_en": "Spend",
+  "layer": "L3",
+  "tier": "base",
+  "caliber": "platform",
+  "definition": "平台广告花费，通常来自 Amazon Ads 报表中的 cost 字段，用于后续 ROAS、ACoS、花费占比等指标的计算。",
+  "formula": null,
+  "unit": "currency",
+  "source": "Amazon Ads spend report / 平台广告花费",
+  "source_field": "cost",
+  "value_range": [0, null],
+  "baseline": { "type": "account_mean", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "daily",
+    "entity": "campaign",
+    "aggregation": "sum",
+    "requires_full_batch": false
+  },
+  "dimensions": ["campaign"],
+  "related_concepts": [
+    { "target": "roas", "relation": "input_to", "strength": "strong" },
+    { "target": "acos", "relation": "input_to", "strength": "strong" },
+    { "target": "spend_share", "relation": "input_to", "strength": "strong" }
+  ]
+}

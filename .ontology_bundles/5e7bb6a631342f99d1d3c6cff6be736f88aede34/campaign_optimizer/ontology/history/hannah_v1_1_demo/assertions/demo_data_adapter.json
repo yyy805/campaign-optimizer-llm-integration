@@ -1,0 +1,49 @@
+{
+  "adapter_id": "ontology_demo_mta_adapter",
+  "version": "1.0.0",
+  "scope": "DEMO_ONLY_NOT_PRODUCTION",
+  "batch_manifest": {
+    "batch_id": "amc_mta_simulated_2026_full_year_v1",
+    "report_start_date": "2026-01-01",
+    "report_end_date": "2026-12-31",
+    "timezone": "UTC",
+    "source": "ontology_wrapper_over_current_mta_fixture",
+    "interpretation": "full_report_window_touchpoint_snapshot"
+  },
+  "campaign_adapter": {
+    "strategy": "explicit_touchpoint_to_demo_campaign_lookup",
+    "production_evidence": false,
+    "mappings": [
+      {"touchpoint":"AMAZON_DSP:AUDIO:UNSPECIFIED:UNSPECIFIED:IMPRESSION","demo_campaign_id":"campaign_dsp_001"},
+      {"touchpoint":"AMAZON_DSP:DISPLAY:UNSPECIFIED:IMAGE:IMPRESSION","demo_campaign_id":"campaign_dsp_001"},
+      {"touchpoint":"AMAZON_DSP:ONLINE_VIDEO:UNSPECIFIED:VIDEO:IMPRESSION","demo_campaign_id":"campaign_dsp_001"},
+      {"touchpoint":"AMAZON_DSP:STREAMING_TV:UNSPECIFIED:VIDEO:IMPRESSION","demo_campaign_id":"campaign_dsp_001"},
+      {"touchpoint":"SPONSORED_BRANDS:COMPONENT:TOP_OF_SEARCH:IMAGE:CLICK","demo_campaign_id":"campaign_sb_001"},
+      {"touchpoint":"SPONSORED_BRANDS:COMPONENT:TOP_OF_SEARCH:IMAGE:IMPRESSION","demo_campaign_id":"campaign_sb_001"},
+      {"touchpoint":"SPONSORED_BRANDS:DISPLAY:REST_OF_SEARCH:IMAGE:IMPRESSION","demo_campaign_id":"campaign_sb_001"},
+      {"touchpoint":"SPONSORED_BRANDS:VIDEO:TOP_OF_SEARCH:VIDEO:CLICK","demo_campaign_id":"campaign_sb_001"},
+      {"touchpoint":"SPONSORED_BRANDS:VIDEO:TOP_OF_SEARCH:VIDEO:IMPRESSION","demo_campaign_id":"campaign_sb_001"},
+      {"touchpoint":"SPONSORED_DISPLAY:DISPLAY:PRODUCT_PAGE:IMAGE:CLICK","demo_campaign_id":"campaign_sd_001"},
+      {"touchpoint":"SPONSORED_DISPLAY:DISPLAY:PRODUCT_PAGE:IMAGE:IMPRESSION","demo_campaign_id":"campaign_sd_001"},
+      {"touchpoint":"SPONSORED_DISPLAY:DISPLAY:PRODUCT_PAGE:VIDEO:IMPRESSION","demo_campaign_id":"campaign_sd_001"},
+      {"touchpoint":"SPONSORED_DISPLAY:VIDEO:PRODUCT_PAGE:VIDEO:CLICK","demo_campaign_id":"campaign_sd_001"},
+      {"touchpoint":"SPONSORED_PRODUCTS:PRODUCT_AD:PRODUCT_PAGE:UNSPECIFIED:CLICK","demo_campaign_id":"campaign_sp_001"},
+      {"touchpoint":"SPONSORED_PRODUCTS:PRODUCT_AD:REST_OF_SEARCH:UNSPECIFIED:CLICK","demo_campaign_id":"campaign_sp_001"},
+      {"touchpoint":"SPONSORED_PRODUCTS:PRODUCT_AD:TOP_OF_SEARCH:UNSPECIFIED:CLICK","demo_campaign_id":"campaign_sp_001"},
+      {"touchpoint":"SPONSORED_PRODUCTS:PRODUCT_AD:TOP_OF_SEARCH:UNSPECIFIED:IMPRESSION","demo_campaign_id":"campaign_sp_001"}
+    ]
+  },
+  "consistency_contract": {
+    "required_outcomes": ["converted_users", "purchase_count", "revenue"],
+    "consistent_when": "all_required_outcomes_have_calculation_valid_and_data_support_sufficient_and_models_consistent",
+    "missing_outcome_behavior": "unknown_and_do_not_trigger_R5",
+    "production_evidence": false
+  },
+  "mock_contracts": [],
+  "fallback_policy": {
+    "zero_denominator": "null_and_do_not_trigger",
+    "incomplete_window": "null_and_do_not_trigger",
+    "unknown_field": "fail_validation",
+    "grain_mismatch": "block_mapping_never_coerce"
+  }
+}

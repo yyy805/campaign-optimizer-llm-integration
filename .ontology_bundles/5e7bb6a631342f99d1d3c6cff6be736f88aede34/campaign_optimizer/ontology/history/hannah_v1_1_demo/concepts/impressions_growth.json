@@ -1,0 +1,28 @@
+{
+  "concept_id": "impressions_growth",
+  "name_cn": "展示增长率",
+  "name_en": "Impressions Growth",
+  "layer": "L5",
+  "tier": "derived",
+  "caliber": "platform",
+  "definition": "当前展示量相对上一周期展示量的变化率，用于判断广告曝光是否进入增长阶段。7 天周环比口径，独立于 14 天 campaign 效果评估窗口。",
+  "formula": "(impressions - impressions_last_period) / impressions_last_period",
+  "unit": "ratio",
+  "source": "平台数据计算",
+  "source_field": null,
+  "value_range": [null, null],
+  "baseline": { "type": "account_mean", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "7day",
+    "entity": "campaign",
+    "aggregation": "recompute",
+    "requires_full_batch": false
+  },
+  "dimensions": ["campaign"],
+  "related_concepts": [
+    { "target": "impressions", "relation": "depends_on", "strength": "strong" },
+    { "target": "impressions_last_period", "relation": "depends_on", "strength": "strong" },
+    { "target": "ctr", "relation": "related", "strength": "medium" }
+  ]
+}

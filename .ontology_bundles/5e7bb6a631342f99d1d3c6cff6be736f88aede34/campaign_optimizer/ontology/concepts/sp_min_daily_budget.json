@@ -1,0 +1,27 @@
+{
+  "concept_id": "sp_min_daily_budget",
+  "name_cn": "SP最低每日预算",
+  "name_en": "Sponsored Products Minimum Daily Budget",
+  "layer": "L1",
+  "tier": "base",
+  "caliber": "platform",
+  "definition": "Amazon 平台对 Sponsored Products 广告设定的每日预算硬性下限，全平台统一、不随客户或广告组变化；任何建议动作把预算调整到低于这个数，campaign 会被平台自动暂停，不该被自动执行",
+  "formula": null,
+  "unit": "currency",
+  "source": "Amazon Ads 官方规则（网络检索多方转述一致，未读到官方页面原文，权威性标注为中等——详见 fact-check 记录，2026-07-17）",
+  "source_field": null,
+  "value_type": "number",
+  "value_range": [0, null],
+  "baseline": {"type": "platform_constant", "value": 1.0},
+  "threshold": null,
+  "granularity": {
+    "time": "snapshot",
+    "entity": "platform",
+    "aggregation": "none",
+    "requires_full_batch": false
+  },
+  "dimensions": [],
+  "related_concepts": [
+    {"target": "spend", "relation": "lower_bound_of", "strength": "strong"}
+  ]
+}

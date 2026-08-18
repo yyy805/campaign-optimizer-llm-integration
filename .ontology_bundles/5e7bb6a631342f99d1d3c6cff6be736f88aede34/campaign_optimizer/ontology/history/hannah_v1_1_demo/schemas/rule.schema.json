@@ -1,0 +1,132 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://campaign-optimizer.local/schemas/rule.schema.json",
+  "title": "Rule Card",
+  "description": "规则卡模板，字段定义与理由见 _bmad-output/planning-artifacts/card-template-field-guide.md",
+  "type": "object",
+  "required": [
+    "rule_id", "name", "evaluation_grain", "attribution_model",
+    "trigger_condition", "diagnosis", "recommended_action",
+    "confidence", "risk_level", "evidence_type",
+    "validation_count", "rejection_count", "version_history",
+    "causal_annotation", "status"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "rule_id": { "type": "string", "pattern": "^R[0-9]+$" },
+    "name": { "type": "string", "minLength": 1 },
+    "evaluation_grain": {
+      "type": "object",
+      "required": ["time", "entity"],
+      "additionalProperties": false,
+      "properties": {
+        "time": {
+          "type": "string",
+          "enum": ["daily", "7day", "14day", "snapshot", "mock"]
+        },
+        "entity": {
+          "type": "string",
+          "enum": ["touchpoint", "campaign", "account", "path"]
+        }
+      }
+    },
+    "attribution_model": {
+      "type": ["string", "null"],
+      "enum": ["markov", "shapley", null],
+      "description": "仅 caliber=mta 的规则需要填；平台口径规则一律 null"
+    },
+    "trigger_condition": { "type": "object" },
+    "diagnosis": {
+      "type": "string",
+      "minLength": 1,
+      "description": "只写通用诊断逻辑，不写具体剧情案例"
+    },
+    "recommended_action": {
+      "type": "object",
+      "required": ["type", "param"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string" },
+        "param": { "type": "object" }
+      }
+    },
+    "confidence": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "match_inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["concept", "role"],
+        "additionalProperties": false,
+        "properties": {
+          "concept": { "type": "string" },
+          "role": {
+            "type": "string",
+            "enum": ["trigger_signal", "comparison_signal", "context_signal", "confidence_signal", "action_signal"]
+          },
+          "required": { "type": "boolean" }
+        }
+      }
+    },
+    "confidence_model": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "thresholds": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "auto": { "type": "number", "minimum": 0, "maximum": 1 },
+            "review": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        }
+      }
+    },
+    "risk_model": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "impact_score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "formula": { "type": "string" },
+        "auto_execute_threshold": { "type": "number", "minimum": 0, "maximum": 1 },
+        "review_threshold": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "execution_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": { "type": "string", "enum": ["auto", "review", "manual"] },
+        "reason": { "type": "string" }
+      }
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": ["LOW", "MEDIUM", "HIGH"]
+    },
+    "evidence_type": {
+      "type": "string",
+      "enum": ["human_expert", "historical_pattern", "model_based", "ab_tested", "user_validated"]
+    },
+    "validation_count": { "type": "integer", "minimum": 0 },
+    "rejection_count": { "type": "integer", "minimum": 0 },
+    "version_history": { "type": "array" },
+    "causal_annotation": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["ACTIVE", "SUSPENDED", "PENDING_HUMAN_REVIEW", "RETIRED"]
+    },
+    "known_limitations": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "可选。记录这条规则当前已知但尚未解决的缺口（如触发条件里某个 ref 数值待外部确认），不要把这类状态说明塞进 trigger_condition 或其他字段"
+    }
+  }
+}

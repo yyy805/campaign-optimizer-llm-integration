@@ -1,0 +1,29 @@
+{
+  "concept_id": "attributed_revenue",
+  "name_cn": "归因收入",
+  "name_en": "Attributed Revenue",
+  "layer": "L5",
+  "tier": "mta",
+  "caliber": "mta",
+  "definition": "按 MTA 归因模型分配到各触点的收入金额，是 MTA ROAS 的分子，也是 R5 重分配金额的依据。",
+  "formula": "contribution_share * revenue",
+  "unit": "currency",
+  "source": "MTA 模型输出 / 归因结果表",
+  "source_field": "attributed_revenue",
+  "value_type": "number",
+  "value_range": [0, null],
+  "baseline": { "type": "period_total", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "snapshot",
+    "entity": "touchpoint",
+    "aggregation": "none",
+    "requires_full_batch": false
+  },
+  "dimensions": ["touchpoint", "attribution_model"],
+  "related_concepts": [
+    { "target": "contribution_share", "relation": "depends_on", "strength": "strong" },
+    { "target": "revenue", "relation": "depends_on", "strength": "strong" },
+    { "target": "mta_roas", "relation": "input_to", "strength": "strong" }
+  ]
+}

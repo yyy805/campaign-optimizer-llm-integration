@@ -1,0 +1,29 @@
+{
+  "concept_id": "spend_share",
+  "name_cn": "花费占比",
+  "name_en": "Spend Share",
+  "layer": "L5",
+  "tier": "derived",
+  "caliber": "platform",
+  "definition": "某触点在同一 MTA 报告窗口内的广告花费占全部触点总花费的比重，用于 R5 判断花费与归因贡献是否失衡。",
+  "formula": "spend / total_spend",
+  "unit": "ratio",
+  "source": "平台数据计算",
+  "source_field": null,
+  "value_range": [0, 1],
+  "baseline": { "type": "account_mean", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "snapshot",
+    "entity": "touchpoint",
+    "aggregation": "recompute",
+    "requires_full_batch": true
+  },
+  "dimensions": ["touchpoint"],
+  "related_concepts": [
+    { "target": "spend", "relation": "depends_on", "strength": "strong" },
+    { "target": "total_spend", "relation": "depends_on", "strength": "strong" },
+    { "target": "acos", "relation": "related", "strength": "weak" },
+    { "target": "contribution_share", "relation": "comparable", "strength": "strong" }
+  ]
+}

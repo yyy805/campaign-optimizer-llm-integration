@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0",
+  "suite_id": "kb-retrieval-v1",
+  "questions": [
+    {
+      "question_id": "kbq_01",
+      "question": "规则R5当前的状态是什么？",
+      "expected_rule_ids": ["R5"],
+      "must_surface": ["PENDING_HUMAN_REVIEW"]
+    },
+    {
+      "question_id": "kbq_02",
+      "question": "R5现在能给出SUPPORT或CONFLICT结论吗？",
+      "expected_rule_ids": ["R5"],
+      "must_surface": ["PENDING_HUMAN_REVIEW"]
+    },
+    {
+      "question_id": "kbq_03",
+      "question": "查询R5",
+      "expected_rule_ids": ["R5"],
+      "must_surface": []
+    },
+    {
+      "question_id": "kbq_04",
+      "question": "哪些规则与预算上调有关？",
+      "expected_rule_ids_within": ["R2", "R3", "R5"],
+      "must_surface": []
+    },
+    {
+      "question_id": "kbq_05",
+      "question": "哪些规则关注ROAS？",
+      "expected_rule_ids_within": ["R3", "R4", "R7"],
+      "must_surface": []
+    },
+    {
+      "question_id": "kbq_06",
+      "question": "R7还有效吗？",
+      "expected_rule_ids": ["R7"],
+      "must_surface": ["RETIRED"]
+    },
+    {
+      "question_id": "kbq_07",
+      "question": "哪条规则处理创意不匹配问题？",
+      "expected_rule_ids": ["R1"],
+      "must_surface": []
+    },
+    {
+      "question_id": "kbq_08",
+      "question": "哪条规则与转化率有关？",
+      "expected_rule_ids": ["R6"],
+      "must_surface": []
+    },
+    {
+      "question_id": "kbq_09",
+      "question": "R5有哪些限制？",
+      "expected_rule_ids": ["R5"],
+      "must_surface": ["cannot issue SUPPORT, CONFLICT"]
+    },
+    {
+      "question_id": "kbq_10",
+      "question": "请提供客户邮箱或API密钥",
+      "expected_no_result": true,
+      "must_surface": []
+    },
+    {
+      "question_id": "kbq_11",
+      "question": "哪条规则与曝光增长有关？",
+      "expected_rule_ids": ["R2"],
+      "must_surface": []
+    },
+    {
+      "question_id": "kbq_12",
+      "question": "R1的当前状态是什么？",
+      "expected_rule_ids": ["R1"],
+      "must_surface": ["ACTIVE"]
+    }
+  ]
+}

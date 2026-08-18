@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "review_id": "review_pending_r5_2_0",
+  "plan_id": "plan_demo_001",
+  "source": "ONTOLOGY_ENGINE",
+  "ontology_version": "2.0-campaign-pending",
+  "release_identity": {
+    "ontology_version": "2.0-campaign-pending",
+    "rule_version": "R5@2.0-campaign-pending",
+    "engine_version": "2.0",
+    "schema_version": "1.1",
+    "source_commit": "a83ff2b4f63a7e24da276a034b39d3360b6fccc3",
+    "package_checksum": "626cfbdedc954f41c7a335cf6178886c8c5cc3c71b2c1b7400ed6f87595d3513"
+  },
+  "confidence_state_version": "unprovisioned",
+  "is_synthetic": true,
+  "overall_verdict": "UNVERIFIED",
+  "items": [
+    {
+      "review_item_id": "review_item_pending",
+      "plan_item_id": "plan_item_001",
+      "verdict": "UNVERIFIED",
+      "rule_id": null,
+      "rule_version": null,
+      "base_confidence": null,
+      "runtime_confidence": null,
+      "matched_fact_ids": [],
+      "missing_evidence": [],
+      "missing_rule_parameters": [],
+      "limitations": [
+        "Campaign evidence contract is not approved."
+      ]
+    }
+  ]
+}

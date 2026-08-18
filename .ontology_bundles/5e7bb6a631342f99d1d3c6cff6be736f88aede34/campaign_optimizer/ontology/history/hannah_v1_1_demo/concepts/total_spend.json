@@ -1,0 +1,27 @@
+{
+  "concept_id": "total_spend",
+  "name_cn": "总花费",
+  "name_en": "Total Spend",
+  "layer": "L5",
+  "tier": "derived",
+  "caliber": "platform",
+  "definition": "同一 MTA 报告批次和结果窗口内全部触点 cost 的汇总，用作计算触点花费份额的分母。不同批次、窗口或币种不得混合。",
+  "formula": "sum(spend)",
+  "unit": "currency",
+  "source": "MTA 归因结果表 cost 按同一报告批次和窗口聚合",
+  "source_field": null,
+  "value_range": [0, null],
+  "baseline": { "type": "account_mean", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "snapshot",
+    "entity": "touchpoint",
+    "aggregation": "sum",
+    "requires_full_batch": true
+  },
+  "dimensions": ["batch_id", "report_window", "currency"],
+  "related_concepts": [
+    { "target": "spend", "relation": "depends_on", "strength": "strong" },
+    { "target": "spend_share", "relation": "input_to", "strength": "strong" }
+  ]
+}

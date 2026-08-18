@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "workflow_version": "not-published",
+  "prompt_version": "draft-1.0",
+  "knowledge_base_version": "not-published",
+  "status": "OK",
+  "intent": "EXPLAIN_REVIEW",
+  "answer": "本次方案建议将Sponsored Products预算从1000美元提高到1100美元，即增加10%。公开预测ROAS为4.2。本体审核结论为UNVERIFIED：证据契约尚未批准，当前不能出具最终裁决，需等待人工审核完成后再判定方案与规则的关系。本说明仅解释现状，不替代本体裁决。限制：Campaign evidence contract is not approved.",
+  "claims": [
+    {
+      "claim_id": "claim_001",
+      "claim_type": "PLAN_FIELD",
+      "source_id": "plan_item_001",
+      "field": "entity_id",
+      "value": "Sponsored Products"
+    },
+    {
+      "claim_id": "claim_002",
+      "claim_type": "PLAN_FIELD",
+      "source_id": "plan_item_001",
+      "field": "delta_pct",
+      "value": 10
+    },
+    {
+      "claim_id": "claim_003",
+      "claim_type": "PLAN_FIELD",
+      "source_id": "plan_item_001",
+      "field": "current_budget",
+      "value": 1000
+    },
+    {
+      "claim_id": "claim_004",
+      "claim_type": "PLAN_FIELD",
+      "source_id": "plan_item_001",
+      "field": "recommended_budget",
+      "value": 1100
+    },
+    {
+      "claim_id": "claim_005",
+      "claim_type": "REVIEW_FIELD",
+      "source_id": "review_item_pending",
+      "field": "verdict",
+      "value": "UNVERIFIED"
+    },
+    {
+      "claim_id": "claim_006",
+      "claim_type": "REVIEW_FIELD",
+      "source_id": "review_item_pending",
+      "field": "limitations",
+      "value": "Campaign evidence contract is not approved."
+    },
+    {
+      "claim_id": "claim_007",
+      "claim_type": "FACT_VALUE",
+      "source_id": "decision_fact_001",
+      "field": "value",
+      "value": 4.2
+    }
+  ],
+  "facts_used": [
+    "decision_fact_001"
+  ],
+  "rule_ids_used": [],
+  "plan_item_ids_used": [
+    "plan_item_001"
+  ],
+  "limitations_included": true,
+  "retry_count": 0,
+  "fallback_used": false
+}

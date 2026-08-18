@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://campaign-optimizer.local/schemas/guardrail.schema.json",
+  "title": "Guardrail Card",
+  "description": "护栏卡：凌驾于所有规则之上的硬性约束（客户/广告组/平台设的边界），不是诊断规则——没有 confidence/evidence_type，因为它不是我们系统的判断，是不可协商的事实。由执行门控在任何建议动作自动执行前逐条读取、通用判断，不是每条护栏各写一段专属代码。condition 复用规则卡 trigger_condition 的同一套结构化条件写法，两边共用同一个条件求值器。",
+  "type": "object",
+  "required": [
+    "guardrail_id", "name", "scope", "applies_to_action_types",
+    "condition", "on_violation", "message"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "guardrail_id": {
+      "type": "string",
+      "pattern": "^G[0-9]+$"
+    },
+    "name": { "type": "string", "minLength": 1 },
+    "scope": {
+      "type": "string",
+      "enum": ["ad_group", "campaign", "account", "platform"],
+      "description": "这条护栏在哪个层级生效，对应它引用的 concept 的 granularity.entity"
+    },
+    "applies_to_action_types": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "description": "只对这些 recommended_action.type 生效，避免预算护栏被拿去检查出价动作这类张冠李戴"
+    },
+    "condition": {
+      "type": "object",
+      "required": ["concept", "op", "against"],
+      "additionalProperties": false,
+      "description": "必须为真才算合规；求值器与规则卡 trigger_condition 复用同一套逻辑",
+      "properties": {
+        "concept": { "type": "string" },
+        "op": { "type": "string", "enum": [">", ">=", "<", "<=", "==", "!="] },
+        "against": {
+          "type": "string",
+          "description": "从 recommended_action 里取哪个值来比较，如 recommended_action.param.new_bid"
+        }
+      }
+    },
+    "on_violation": {
+      "type": "string",
+      "enum": ["block_auto_execution", "reject", "warn_only"]
+    },
+    "message": { "type": "string", "minLength": 1 }
+  }
+}

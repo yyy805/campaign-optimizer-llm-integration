@@ -1,0 +1,29 @@
+{
+  "concept_id": "contribution_share",
+  "name_cn": "贡献份额",
+  "name_en": "Contribution Share",
+  "layer": "L5",
+  "tier": "mta",
+  "caliber": "mta",
+  "definition": "MTA 推荐归因输出中某触点在指定 outcome 下的官方贡献份额，直接取 official_share，且 official_model=MARKOV。报告窗口不在推荐归因行内，必须从同批次的模型比较汇总或受治理的来源快照继承；official_share 为空、缺少来源快照或官方模型不是 MARKOV 时返回 NO_COVERAGE。",
+  "formula": null,
+  "unit": "ratio",
+  "source": "MTA amc_mta_recommended_attribution.csv；报告窗口继承自同批次模型比较汇总或来源快照",
+  "source_field": "official_share",
+  "value_type": "number",
+  "value_range": [0, 1],
+  "baseline": { "type": "model_output_mean", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "snapshot",
+    "entity": "touchpoint",
+    "aggregation": "none",
+    "requires_full_batch": true
+  },
+  "dimensions": ["report_window", "touchpoint", "outcome", "official_model"],
+  "related_concepts": [
+    { "target": "mta_roas", "relation": "input_to", "strength": "strong" },
+    { "target": "attributed_revenue", "relation": "input_to", "strength": "strong" },
+    { "target": "attribution_divergence", "relation": "compared_with", "strength": "strong" }
+  ]
+}
