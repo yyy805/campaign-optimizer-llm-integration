@@ -33,7 +33,7 @@ def test_pending_campaign_review_is_schema_valid_persisted_and_fetchable(client)
     assert created.status_code == 201, created.text
     body = created.json()
     assert body["source"] == "ONTOLOGY_ENGINE"
-    assert body["ontology_version"] == "2.0-campaign-pending"
+    assert body["ontology_version"] == "2.1-campaign-pending"
     assert body["overall_verdict"] == "UNVERIFIED"
     assert body["items"][0]["rule_id"] is None
     schema = json.loads(REVIEW_SCHEMA.read_text(encoding="utf-8"))
@@ -116,7 +116,7 @@ def test_audit_record_uses_core_version_and_checksum(client):
             "SELECT ontology_version, ontology_checksum, original_request_json, "
             "normalized_request_json FROM plan_reviews"
         )).mappings().one()
-    assert row["ontology_version"] == "2.0-campaign-pending"
+    assert row["ontology_version"] == "2.1-campaign-pending"
     assert len(row["ontology_checksum"]) == 64
     assert json.loads(row["original_request_json"])["plan_id"] == "plan_demo_001"
     assert json.loads(row["normalized_request_json"])["plan_id"] == "plan_demo_001"

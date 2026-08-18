@@ -11,7 +11,7 @@ from campaign_optimizer.ontology.publication import PackageDriftError
 from app.services.plan_review_service import PlanReviewService
 
 
-PINNED_CHECKSUM = "626cfbdedc954f41c7a335cf6178886c8c5cc3c71b2c1b7400ed6f87595d3513"
+PINNED_CHECKSUM = "f10e335d47387b527044e9429a2b316d99fcda7af0ae2495ba0ff138eafa9d0c"
 
 
 def test_plan_review_service_binds_identity_and_assets_to_frozen_bundle(tmp_path: Path):

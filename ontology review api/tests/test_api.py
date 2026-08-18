@@ -22,7 +22,7 @@ def test_health_readiness_version_and_docs(client: TestClient):
     assert client.get("/health").json() == {"status": "alive"}
     ready = client.get("/ready")
     assert ready.status_code == 200
-    assert ready.json()["ontology_version"] == "2.0-campaign-pending"
+    assert ready.json()["ontology_version"] == "2.1-campaign-pending"
     assert ready.json()["ontology_checksum"] == (
         client.app.state.product_review_service.package_checksum
     )
