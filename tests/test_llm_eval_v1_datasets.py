@@ -155,7 +155,7 @@ def test_validator_rejects_key_mutations(tmp_path, mutation):
         VALIDATOR.validate_all(destination)
 
 
-def test_generation_pair_configs_and_candidate_guard_fixtures():
+def test_generation_pair_configs_and_historical_candidates_fail_closed():
     generation = _load(ROOT / "generation.json")
     common = generation["common_executor_configs"]["executor_01"]
     assert {
@@ -184,17 +184,16 @@ def test_generation_pair_configs_and_candidate_guard_fixtures():
         )
         candidate_meta = fixtures[case["candidate_id"]]
         candidate = _load(ROOT / candidate_meta["file"])
-        validated = guard.validate(
-            json.dumps(candidate),
-            request=artifacts.request,
-            plan=artifacts.context["plan_context"],
-            review=artifacts.context["review_context"],
-            context=artifacts.context,
-            retry_count=0,
-        )
+        with pytest.raises(ContractValidationError):
+            guard.validate(
+                json.dumps(candidate),
+                request=artifacts.request,
+                plan=artifacts.context["plan_context"],
+                review=artifacts.context["review_context"],
+                context=artifacts.context,
+                retry_count=0,
+            )
         assert candidate_meta["expected_guard"] == "PASS", case["case_id"]
-        assert validated["status"] == "OK", case["case_id"]
-        assert validated["intent"] == frozen["expected_intent"], case["case_id"]
         expectation = case["arm_expectation"]
         assert expectation["provider_calls"] == case["expected_provider_calls"]
         assert expectation["status"] == case["expected_status"]

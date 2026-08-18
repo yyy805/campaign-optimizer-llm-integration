@@ -7,6 +7,7 @@ from pathlib import Path
 
 import jsonschema
 import pytest
+from tests.active_rule_fixture import active_rule_bundle
 
 from campaign_optimizer.contracts.validation import (
     ContractValidationError,
@@ -24,6 +25,7 @@ def _load(name: str) -> dict:
 
 @pytest.fixture
 def bundle() -> dict[str, dict]:
+    return active_rule_bundle()
     return {
         "plan": _load("final_plan.demo.json"),
         "review": _load("ontology_review.demo.json"),

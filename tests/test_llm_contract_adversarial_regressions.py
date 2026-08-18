@@ -7,6 +7,7 @@ from pathlib import Path
 
 import jsonschema
 import pytest
+from tests.active_rule_fixture import active_rule_bundle
 
 from campaign_optimizer.contracts.validation import (
     ContractValidationError,
@@ -24,6 +25,7 @@ def _load(name: str) -> dict:
 
 @pytest.fixture
 def bundle() -> dict[str, dict]:
+    return active_rule_bundle()
     return {
         "plan": _load("final_plan.demo.json"),
         "review": _load("ontology_review.demo.json"),
@@ -149,7 +151,7 @@ def test_used_ids_must_be_backed_by_claims(bundle):
     bundle["output"]["claims"] = [
         claim
         for claim in bundle["output"]["claims"]
-        if claim["source_id"] != "review_fact_003"
+        if claim["source_id"] != "review_fact_002"
     ]
 
     with pytest.raises(ContractValidationError, match="facts_used必须严格等于"):

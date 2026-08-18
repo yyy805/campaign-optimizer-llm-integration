@@ -54,6 +54,9 @@ def test_postgres_migration_persistence_and_idempotent_replay():
     review_id: str | None = None
     try:
         with TestClient(create_app(settings)) as client:
+            assert client.app.state.database is not None, (
+                f"database startup failed: {client.app.state.startup_errors}"
+            )
             assert client.app.state.database.engine.dialect.name == "postgresql"
             assert client.get("/ready").status_code == 200
             first = client.post(

@@ -5,7 +5,7 @@
   "layer": "L5",
   "tier": "derived",
   "caliber": "platform",
-  "definition": "某个实体的广告花费占该层级总花费的比重，用于判断花费是否与贡献、表现等指标匹配。R5 引用时口径为 MTA 快照粒度、R7 引用时为占位 mock 数据，两者分母粒度可能不同，已知限制，待 R7 从 mock 换成真实预测模型时重新核定。",
+  "definition": "某个 Campaign 的每日广告花费占同层级总花费的比重，用于一般平台分析。该现有卡尚未批准作为 R5 证据：R5 所需的同窗口生产者、Campaign Group 分母、币种一致性、成本守恒和缺失值规则均未形成合同；在这些条件获批前，R5 对 spend_share 必须返回 NO_COVERAGE。",
   "formula": "spend / total_spend",
   "unit": "ratio",
   "source": "平台数据计算",

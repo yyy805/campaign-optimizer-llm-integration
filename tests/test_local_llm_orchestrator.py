@@ -131,7 +131,7 @@ def test_request_builder_derives_backend_ids_versions_and_history(plan_review):
     assert artifacts.request["allowed_intents"] == ["EXPLAIN_PLAN"]
     assert artifacts.request["expected_versions"] == LLMVersions().as_dict()
     assert artifacts.request["chat_history"][0]["content"] == "server-owned"
-    assert artifacts.context["allowed_rule_ids"] == ["R5"]
+    assert artifacts.context["allowed_rule_ids"] == []
     assert artifacts.context["allowed_plan_item_ids"] == ["plan_item_001"]
 
 

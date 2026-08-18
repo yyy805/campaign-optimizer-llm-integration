@@ -139,15 +139,12 @@ def test_every_release_identity_field_is_pinned(field):
 
 
 def test_historical_review_resolves_only_its_exact_manifest():
-    plan = json.loads(open('tests/fixtures/plan_a/final_plan.demo.json', encoding='utf-8').read())
-    review = json.loads(open('tests/fixtures/plan_a/ontology_review.demo.json', encoding='utf-8').read())
-    artifacts = RequestBuilder(LocalRuleRetriever()).build(
-        plan, review, mode='initial_render', question='Explain review.',
-        resolved_intent='EXPLAIN_REVIEW',
-    )
-    public = artifacts.context['public_rule_context'][0]
-    assert public['rule_version'] == '1.3-contract-hardening'
-    assert public['status'] == 'ACTIVE'
+    manifests = load_verified_manifests()
+    checksum = 'b55acbd631edaa26b0df947c29ed37605e30f1d16c97198e45b6ce993a830d8f'
+    historical = manifests[checksum]
+    assert historical['source_commit'] == 'b90391ed77bbe3ce3f10bb929688db32f7627984'
+    assert historical['rule_version'] == 'R5@1.3-contract-hardening'
+    assert bundle_root(historical).is_dir()
 
 
 def test_bundle_root_on_malformed_manifest_raises_drift_error():

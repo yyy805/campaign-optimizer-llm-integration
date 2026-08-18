@@ -197,7 +197,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                     "database_ready": db_ready,
                     "auth_ready": auth_ready,
                     "contracts_ready": contracts_ready,
-                    "migration": "unavailable" if database is None else "applied",
+                    "migration": "unavailable" if database is None else "incomplete",
                     "errors": [{"component": item["component"], "code": f"{item['component'].upper()}_UNAVAILABLE"} for item in request.app.state.startup_errors],
                 },
             )

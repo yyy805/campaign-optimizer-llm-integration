@@ -13,7 +13,8 @@ from sqlalchemy.orm import Session, sessionmaker
 
 class Database:
     MIGRATION_LOCK_ID = 6_038_024_217_952_623_953
-    REQUIRED_TABLES = {"alembic_version", "reviews", "plan_reviews", "idempotency_records"}
+    ALEMBIC_VERSION_TABLE = "api_alembic_version"
+    REQUIRED_TABLES = {ALEMBIC_VERSION_TABLE, "reviews", "plan_reviews", "idempotency_records"}
     REQUIRED_COLUMNS = {
         "plan_reviews": {"id", "plan_id", "tenant", "original_request_json", "normalized_request_json", "response_json", "ontology_checksum"},
         "idempotency_records": {"principal_id", "endpoint", "idempotency_key", "request_hash", "response_json", "review_id"},
@@ -85,7 +86,12 @@ class Database:
                 review_id_type = {item["name"]: item for item in inspect(connection).get_columns("idempotency_records")}["review_id"]["type"]
                 if getattr(review_id_type, "length", 0) is not None and getattr(review_id_type, "length", 0) < 64:
                     return False
-                current_heads = set(MigrationContext.configure(connection).get_current_heads())
+                current_heads = set(
+                    MigrationContext.configure(
+                        connection,
+                        opts={"version_table": self.ALEMBIC_VERSION_TABLE},
+                    ).get_current_heads()
+                )
                 expected_heads = set(ScriptDirectory.from_config(self._alembic_config()).get_heads())
                 if current_heads != expected_heads:
                     return False

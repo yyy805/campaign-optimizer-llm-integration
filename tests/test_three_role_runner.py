@@ -22,7 +22,7 @@ class Client:
    if outcome=="bad":return response("not-json")
    out=fixture("llm_workflow_output.demo.json");out["retry_count"]=json.loads(messages[1]["content"])["server_task_manifest"]["retry_count"];return response(out)
   p=json.loads(messages[1]["content"]);reviewer=self.state.get("reviewer","PASS");n=self.state.get("reviewer_n",0);self.state["reviewer_n"]=n+1;d=reviewer[min(n,len(reviewer)-1)] if isinstance(reviewer,list) else reviewer;out={"schema_version":"1.0","candidate_id":p["candidate_id"],"packet_digest":p["packet_digest"],"decision":d,"violation_codes":[],"evidence_source_ids":[],"revision_actions":[]}
-  if d=="REVISE":out.update({"violation_codes":["MISSING_LIMITATION"],"evidence_source_ids":["review_item_001"],"revision_actions":[{"operation":"ADD_REQUIRED_LIMITATION","target_claim_id":None,"source_id":"review_item_001"}]})
+  if d=="REVISE":out.update({"violation_codes":["MISSING_LIMITATION"],"evidence_source_ids":["review_item_pending"],"revision_actions":[{"operation":"ADD_REQUIRED_LIMITATION","target_claim_id":None,"source_id":"review_item_pending"}]})
   return response(out)
 def runner(state):
  c=load_role_configuration();return ThreeRoleRunner(role_calls=RoleCallAdapter(c,client_factory=lambda role,_:Client(role,state)))

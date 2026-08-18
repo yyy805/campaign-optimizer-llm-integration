@@ -30,7 +30,7 @@ def _packet(*, retry_count: int = 0, candidate_retry_count: int | None = None) -
 def _decision(packet: ReviewerPacket, decision: str, *, operation: str = "ADD_REQUIRED_LIMITATION", target: str | None = None) -> dict:
     result = {"schema_version": "1.0", "candidate_id": packet.candidate_id, "packet_digest": packet.packet_digest, "decision": decision, "violation_codes": [], "evidence_source_ids": [], "revision_actions": []}
     if decision == "REVISE":
-        result.update({"violation_codes": ["MISSING_LIMITATION"], "evidence_source_ids": ["review_item_001"], "revision_actions": [{"operation": operation, "target_claim_id": target, "source_id": "review_item_001"}]})
+        result.update({"violation_codes": ["MISSING_LIMITATION"], "evidence_source_ids": ["review_item_pending"], "revision_actions": [{"operation": operation, "target_claim_id": target, "source_id": "review_item_pending"}]})
     if decision == "REJECT":
         result["violation_codes"] = ["UNRESOLVABLE_CONFLICT"]
     return result

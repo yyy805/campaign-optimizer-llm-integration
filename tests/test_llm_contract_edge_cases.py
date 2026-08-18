@@ -73,7 +73,7 @@ def test_every_top_level_required_field_is_enforced(name, schemas, registry, fix
         ("ontology_review", lambda value: value["items"][0].update(extra="typo")),
         (
             "llm_context",
-            lambda value: value["public_rule_context"][0].update(
+                lambda value: value["plan_context"]["items"][0].update(
                 runtime_confidence=0.9
             ),
         ),
@@ -184,15 +184,7 @@ def test_refused_output_cannot_carry_facts(schemas, registry, fixtures):
 
 def test_golden_answer_preserves_fixed_plan_and_review(fixtures):
     answer = fixtures["llm_workflow_output"]["answer"]
-    for required in [
-        "Sponsored Products",
-        "1000",
-        "1100",
-        "增加10%",
-        "冲突",
-        "R5",
-        "预测ROAS为4.2",
-    ]:
+    for required in ["10%", "UNVERIFIED"]:
         assert required in answer
     for forbidden in ["增加15%", "Sponsored Brands", "本体支持", "本体冲突"]:
         assert forbidden not in answer

@@ -13,7 +13,7 @@ def fixture(n):return json.loads((FIX/n).read_text(encoding="utf-8"))
 def qwen(v):return QwenResponse(v if isinstance(v,str) else json.dumps(v),"req","resp","mock",QwenUsage(total_tokens=7),"stop",1.0)
 def decision(p,k="PASS"):
  v={"schema_version":"1.0","candidate_id":p["candidate_id"],"packet_digest":p["packet_digest"],"decision":k,"violation_codes":[],"evidence_source_ids":[],"revision_actions":[]}
- if k=="REVISE":v.update({"violation_codes":["MISSING_LIMITATION"],"evidence_source_ids":["review_item_001"],"revision_actions":[{"operation":"ADD_REQUIRED_LIMITATION","target_claim_id":None,"source_id":"review_item_001"}]})
+ if k=="REVISE":v.update({"violation_codes":["MISSING_LIMITATION"],"evidence_source_ids":["review_item_pending"],"revision_actions":[{"operation":"ADD_REQUIRED_LIMITATION","target_claim_id":None,"source_id":"review_item_pending"}]})
  if k=="REJECT":v["violation_codes"]=["UNRESOLVABLE_CONFLICT"]
  return v
 def fresp(p,k="PASS",content=None,calls=None,args=None,latency=2,tokens=5):

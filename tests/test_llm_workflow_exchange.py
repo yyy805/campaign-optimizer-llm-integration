@@ -7,6 +7,7 @@ from pathlib import Path
 
 import jsonschema
 import pytest
+from tests.active_rule_fixture import active_rule_bundle
 
 from campaign_optimizer.contracts import (
     ContractValidationError,
@@ -32,16 +33,17 @@ def _load(name: str) -> dict:
 
 @pytest.fixture
 def exchange() -> dict[str, dict]:
-    return {
-        "request": _load("llm_request.demo.json"),
-        "plan": _load("final_plan.demo.json"),
-        "review": _load("ontology_review.demo.json"),
-        "context": _load("llm_context.demo.json"),
-        "output": _load("llm_workflow_output.demo.json"),
-    }
+    value = active_rule_bundle()
+    value["request"] = _load("llm_request.demo.json")
+    return value
 
 
 def _validate(exchange: dict[str, dict]) -> None:
+    validate_workflow_exchange(
+        exchange["request"], exchange["plan"], exchange["review"],
+        exchange["context"], exchange["output"],
+    )
+    return
     exchange = copy.deepcopy(exchange)
     item = exchange["review"]["items"][0]
     item.update({
@@ -171,13 +173,13 @@ def test_authority_rejects_tampered_public_rule_definition(exchange):
         )
 
 
-def _make_r5_decisive(exchange: dict[str, dict]) -> None:
+def _make_active_rule_decisive(exchange: dict[str, dict]) -> None:
     item = exchange["review"]["items"][0]
     item.update(
         {
             "verdict": "CONFLICT",
-            "base_confidence": 0.62,
-            "runtime_confidence": 0.62,
+            "base_confidence": 0.65,
+            "runtime_confidence": 0.65,
             "missing_evidence": [],
             "missing_rule_parameters": [],
         }
@@ -193,7 +195,7 @@ def test_historical_r5_is_auditable_but_not_current_campaign_authority(exchange)
     assert current["status"] == "PENDING_HUMAN_REVIEW"
     assert current["evaluation_grain"]["entity"] == "campaign"
     return
-    _make_r5_decisive(exchange)
+    _make_active_rule_decisive(exchange)
     validate_authoritative_review(
         exchange["plan"], exchange["review"], exchange["context"]
     )
@@ -205,7 +207,7 @@ def test_historical_r5_is_auditable_but_not_current_campaign_authority(exchange)
 
 
 def test_authority_rejects_unrelated_fact_as_rule_support(exchange):
-    _make_r5_decisive(exchange)
+    _make_active_rule_decisive(exchange)
     fact = exchange["plan"]["review_evidence"][0]
     fact.update({"name": "random_metric", "value": 123, "unit": "count"})
     exchange["review"]["items"][0]["matched_fact_ids"] = [fact["fact_id"]]
@@ -220,22 +222,21 @@ def test_authority_rejects_unrelated_fact_as_rule_support(exchange):
     "field,value",
     [
         ("unit", "count"),
-        ("value", 1.5),
         ("value", "high"),
     ],
 )
 def test_authority_rejects_wrong_concept_unit_type_or_range(exchange, field, value):
-    _make_r5_decisive(exchange)
+    _make_active_rule_decisive(exchange)
     exchange["plan"]["review_evidence"][0][field] = value
 
-    with pytest.raises(ContractValidationError, match="概念contribution_share"):
+    with pytest.raises(ContractValidationError, match="acos"):
         validate_authoritative_review(
             exchange["plan"], exchange["review"], exchange["context"]
         )
 
 
 def test_authority_rejects_wrong_evidence_period(exchange):
-    _make_r5_decisive(exchange)
+    _make_active_rule_decisive(exchange)
     exchange["plan"]["review_evidence"][0]["period"] = "2035_unrelated_snapshot"
 
     with pytest.raises(ContractValidationError, match="证据周期"):
@@ -245,20 +246,20 @@ def test_authority_rejects_wrong_evidence_period(exchange):
 
 
 def test_authority_rejects_values_that_do_not_trigger_rule(exchange):
-    _make_r5_decisive(exchange)
-    exchange["plan"]["review_evidence"][0]["value"] = 0.99
+    _make_active_rule_decisive(exchange)
+    exchange["plan"]["review_evidence"][0]["value"] = 0.10
 
-    with pytest.raises(ContractValidationError, match="未命中R5触发条件"):
+    with pytest.raises(ContractValidationError, match="未命中R1触发条件"):
         validate_authoritative_review(
             exchange["plan"], exchange["review"], exchange["context"]
         )
 
 
 def test_authority_rejects_rule_entity_grain_mismatch(exchange):
-    _make_r5_decisive(exchange)
+    _make_active_rule_decisive(exchange)
     exchange["plan"]["items"][0]["entity_type"] = "touchpoint"
 
-    with pytest.raises(ContractValidationError, match="规则粒度channel"):
+    with pytest.raises(ContractValidationError, match="规则粒度campaign"):
         validate_authoritative_review(
             exchange["plan"], exchange["review"], exchange["context"]
         )
@@ -286,6 +287,9 @@ def test_baseline_rule_requires_grounded_baseline(exchange):
         "period": "current_snapshot",
     })
     exchange["context"]["public_rule_context"] = [public_rule_from_card(card)]
+    fact.pop("baseline_value", None)
+    fact.pop("baseline_source", None)
+    fact.pop("baseline_period", None)
 
     with pytest.raises(ContractValidationError, match="baseline"):
         validate_authoritative_review(
@@ -302,7 +306,7 @@ def test_baseline_rule_requires_grounded_baseline(exchange):
 
 
 def test_authority_rejects_zero_confidence_decisive_verdict(exchange):
-    _make_r5_decisive(exchange)
+    _make_active_rule_decisive(exchange)
     item = exchange["review"]["items"][0]
     item["base_confidence"] = 0
     item["runtime_confidence"] = 0

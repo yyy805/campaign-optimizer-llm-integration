@@ -11,6 +11,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from campaign_optimizer.contracts.authority import RULES_DIR
 from campaign_optimizer.contracts.validation import (
     ContractValidationError,
     validate_contract_object,
@@ -86,9 +87,16 @@ class ReviewRelease:
 class ReviewWorkflow:
     """Own the SQLite publication boundary; LLM work starts after return."""
 
-    def __init__(self, engine: Engine, release: ReviewRelease) -> None:
+    def __init__(
+        self,
+        engine: Engine,
+        release: ReviewRelease,
+        *,
+        rules_dir: Path = RULES_DIR,
+    ) -> None:
         self.engine = engine
         self.release = release
+        self.rules_dir = rules_dir
 
     def archive_model_artifact(
         self, *, client_id: str, payload: dict[str, Any]
@@ -221,6 +229,7 @@ class ReviewWorkflow:
             confidence_state_version=confidence_version,
             confidence_states=states,
             release_identity=self.release.identity(),
+            rules_dir=self.rules_dir,
             enabled_rule_ids=enabled_rule_ids,
         )
         if parent_review_id is not None:

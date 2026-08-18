@@ -5,11 +5,11 @@
   "layer": "L5",
   "tier": "mta",
   "caliber": "mta",
-  "definition": "衡量同一触点在不同归因方法（Markov 与 Shapley）下 contribution_share 的差异程度，用于判断 R5 是否可以触发——分歧过大时两模型结论不一致，不应强行下结论。formula 只能引用 contribution_share（两法共有可比字段），禁止引用任何单一方法专有、量纲不通用的字段。",
-  "formula": "abs(contribution_share[attribution_model=markov] - contribution_share[attribution_model=shapley])",
+  "definition": "衡量同一触点、同一 outcome 在 Markov 与 Shapley 下的绝对份额差异。上游 gap_pp 的单位是百分点，本概念换算为 ratio；它只描述触点级模型分歧，不得跨实体粒度使用，也不代表因果有效性。报告窗口从同批次模型比较汇总或来源快照继承。",
+  "formula": "gap_pp / 100",
   "unit": "ratio",
-  "source": "比较 Markov 与 Shapley 模型输出的 contribution_share 列",
-  "source_field": null,
+  "source": "MTA amc_mta_model_comparison_touchpoints.csv",
+  "source_field": "gap_pp",
   "value_type": "number",
   "value_range": [0, 1],
   "baseline": { "type": "historical_diff_mean", "value": null },
@@ -20,7 +20,7 @@
     "aggregation": "compare",
     "requires_full_batch": true
   },
-  "dimensions": ["touchpoint"],
+  "dimensions": ["report_window", "touchpoint", "outcome"],
   "related_concepts": [
     { "target": "contribution_share", "relation": "compared_with", "strength": "strong" }
   ]

@@ -1,40 +1,31 @@
 {
   "schema_version": "1.0",
-  "review_id": "review_demo_001",
+  "review_id": "review_pending_r5_2_0",
   "plan_id": "plan_demo_001",
-  "source": "DEMO_ONTOLOGY_STUB",
-  "ontology_version": "ontology-demo-2026-08-03-review-only",
+  "source": "ONTOLOGY_ENGINE",
+  "ontology_version": "2.0-campaign-pending",
   "release_identity": {
-    "ontology_version": "ontology-demo-2026-08-03-review-only",
-    "rule_version": "R5@1.3-contract-hardening",
-    "engine_version": "1.3",
-    "schema_version": "1.0",
-    "source_commit": "b90391ed77bbe3ce3f10bb929688db32f7627984",
-    "package_checksum": "b55acbd631edaa26b0df947c29ed37605e30f1d16c97198e45b6ce993a830d8f"
+    "ontology_version": "2.0-campaign-pending",
+    "rule_version": "R5@2.0-campaign-pending",
+    "engine_version": "2.0",
+    "schema_version": "1.1",
+    "source_commit": "a83ff2b4f63a7e24da276a034b39d3360b6fccc3",
+    "package_checksum": "626cfbdedc954f41c7a335cf6178886c8c5cc3c71b2c1b7400ed6f87595d3513"
   },
-  "confidence_state_version": "feedback-demo-v1",
+  "confidence_state_version": "unprovisioned",
   "is_synthetic": true,
-  "overall_verdict": "CONFLICT",
-  "items": [
-    {
-      "review_item_id": "review_item_001",
-      "plan_item_id": "plan_item_001",
-      "verdict": "CONFLICT",
-      "rule_id": "R5",
-      "rule_version": "1.3-contract-hardening",
-      "base_confidence": 0.62,
-      "runtime_confidence": 0.62,
-      "matched_fact_ids": [
-        "review_fact_001",
-        "review_fact_002",
-        "review_fact_003"
-      ],
-      "missing_evidence": [],
-      "missing_rule_parameters": [],
-      "limitations": [
-        "R5的10%、20%和5%均为Demo占位阈值，生产部署前必须重新标定",
-        "R5使用MTA快照数据，而方案面向下一14天，时间粒度尚未完全对齐"
-      ]
-    }
-  ]
+  "overall_verdict": "UNVERIFIED",
+  "items": [{
+    "review_item_id": "review_item_pending",
+    "plan_item_id": "plan_item_001",
+    "verdict": "UNVERIFIED",
+    "rule_id": null,
+    "rule_version": null,
+    "base_confidence": null,
+    "runtime_confidence": null,
+    "matched_fact_ids": [],
+    "missing_evidence": [],
+    "missing_rule_parameters": [],
+    "limitations": ["Campaign evidence contract is not approved."]
+  }]
 }

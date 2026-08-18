@@ -108,7 +108,7 @@ def _r1_plan() -> dict:
 
 def _stub_review_engine(
     plan, *, ontology_version, confidence_state_version, release_identity,
-    confidence_states, enabled_rule_ids,
+    confidence_states, rules_dir, enabled_rule_ids,
 ):
     state = confidence_states["R1"]
     item = {

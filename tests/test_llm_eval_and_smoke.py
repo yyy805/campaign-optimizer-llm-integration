@@ -7,8 +7,12 @@ from pathlib import Path
 from types import SimpleNamespace
 
 from campaign_optimizer.llm.eval_runner import run_offline_eval
+from campaign_optimizer.llm import eval_runner
 from campaign_optimizer.llm.qwen_client import QwenUsage
 from scripts import run_llm_eval, smoke_qwen
+
+
+PLAN_FIXTURES = Path(__file__).parent / "fixtures" / "plan_a"
 
 
 def test_fixed_offline_eval_suite_passes_without_sensitive_content():
@@ -44,6 +48,66 @@ def test_eval_suite_covers_required_l5_cases():
         "provider_network",
         "no_key",
     } == case_ids
+
+
+@pytest.mark.parametrize(
+    "scenario,assert_mutation",
+    [
+        (
+            "tamper_fact_id",
+            lambda output: any(
+                claim.get("claim_type") == "FACT_VALUE"
+                and claim.get("source_id") == "decision_fact_intruder"
+                for claim in output["claims"]
+            )
+            and "decision_fact_intruder" in output["facts_used"],
+        ),
+        (
+            "tamper_rule_id",
+            lambda output: any(
+                claim.get("claim_type") == "RULE_FIELD"
+                and claim.get("source_id") == "R1"
+                for claim in output["claims"]
+            )
+            and output["rule_ids_used"] == ["R1"],
+        ),
+        (
+            "tamper_limitations",
+            lambda output: any(
+                claim.get("claim_type") == "REVIEW_FIELD"
+                and claim.get("field") == "limitations"
+                and claim.get("value") == "limitation removed"
+                for claim in output["claims"]
+            ),
+        ),
+    ],
+)
+def test_named_tamper_scenarios_mutate_their_semantic_target(
+    scenario, assert_mutation
+):
+    output = json.loads(
+        (PLAN_FIXTURES / "llm_workflow_output.demo.json").read_text(
+            encoding="utf-8"
+        )
+    )
+
+    eval_runner._tamper(output, scenario)
+
+    assert assert_mutation(output)
+
+
+@pytest.mark.parametrize(
+    "case_id", ["tamper_fact_id", "tamper_rule_id", "tamper_limitations"]
+)
+def test_named_tamper_scenarios_fail_closed_after_retry(case_id):
+    result = {
+        item["case_id"]: item for item in run_offline_eval()["results"]
+    }[case_id]
+
+    assert result["passed"] is True
+    assert result["actual_status"] == "FALLBACK"
+    assert result["provider_calls"] == 2
+    assert result["repair_used"] is True
 
 
 class _SafeFakeClient:

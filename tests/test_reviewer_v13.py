@@ -76,7 +76,7 @@ def binding_packet():
  return ReviewerPacket.from_validated_exchange(request=request,plan=load("final_plan.demo.json"),review=load("ontology_review.demo.json"),context=load("llm_context.demo.json"),candidate_output=load("llm_workflow_output.demo.json"),resolved_intent="EXPLAIN_REVIEW",candidate_id=_candidate_id(str(request["request_id"]),0),retry_count=0,config=c.roles)
 
 def valid_binding_decision(packet):
- return {"schema_version":"1.0","candidate_id":packet.candidate_id,"packet_digest":packet.packet_digest,"decision":"REVISE","violation_codes":["MISSING_LIMITATION"],"evidence_source_ids":["review_item_001"],"revision_actions":[{"operation":"ADD_REQUIRED_LIMITATION","target_claim_id":None,"source_id":"review_item_001"}]}
+ return {"schema_version":"1.0","candidate_id":packet.candidate_id,"packet_digest":packet.packet_digest,"decision":"REVISE","violation_codes":["MISSING_LIMITATION"],"evidence_source_ids":["review_item_pending"],"revision_actions":[{"operation":"ADD_REQUIRED_LIMITATION","target_claim_id":None,"source_id":"review_item_pending"}]}
 
 @pytest.mark.parametrize("kind",list(ReviewerBindingCode))
 def test_each_binding_subcode_is_safe_and_value_free(kind):
@@ -85,7 +85,7 @@ def test_each_binding_subcode_is_safe_and_value_free(kind):
  elif kind is ReviewerBindingCode.PACKET_DIGEST_MISMATCH:value["packet_digest"]="b"*64
  elif kind is ReviewerBindingCode.EVIDENCE_SOURCE_OUTSIDE_ALLOWLIST:value["evidence_source_ids"]=["review_item_"+sentinel]
  elif kind is ReviewerBindingCode.REVISION_SOURCE_OUTSIDE_ALLOWLIST:value["revision_actions"][0]["source_id"]="review_item_"+sentinel
- elif kind is ReviewerBindingCode.REVISION_TARGET_INVALID:value["revision_actions"][0]={"operation":"REMOVE_UNSUPPORTED_CLAIM","target_claim_id":"claim_"+sentinel,"source_id":"review_item_001"}
+ elif kind is ReviewerBindingCode.REVISION_TARGET_INVALID:value["revision_actions"][0]={"operation":"REMOVE_UNSUPPORTED_CLAIM","target_claim_id":"claim_"+sentinel,"source_id":"review_item_pending"}
  else:value["revision_actions"][0]["target_claim_id"]="claim_001"
  with pytest.raises(ReviewerBindingFailure) as caught:validate_reviewer_binding_v13(value,packet=packet)
  safe=f"REVIEWER_BINDING.{caught.value.code.value}"
@@ -111,8 +111,8 @@ def test_all_five_pilot_expectations_are_contract_reachable():
   packet=ReviewerPacket.from_validated_exchange(request=request,plan=plan,review=review,context=context,candidate_output=candidate,resolved_intent="EXPLAIN_REVIEW",candidate_id=_candidate_id(str(request["request_id"]),index),retry_count=0,config=c.roles)
   value={"schema_version":"1.0","candidate_id":packet.candidate_id,"packet_digest":packet.packet_digest,"decision":expected,"violation_codes":[],"evidence_source_ids":[],"revision_actions":[]}
   if expected=="REVISE":
-   value.update(violation_codes=["UNSUPPORTED_GUARANTEE"],evidence_source_ids=["review_item_001"],revision_actions=[{"operation":"ADD_REQUIRED_LIMITATION","target_claim_id":None,"source_id":"review_item_001"}])
-  elif expected=="REJECT":value.update(violation_codes=["SAFETY_VIOLATION"],evidence_source_ids=["review_item_001"])
+   value.update(violation_codes=["UNSUPPORTED_GUARANTEE"],evidence_source_ids=["review_item_pending"],revision_actions=[{"operation":"ADD_REQUIRED_LIMITATION","target_claim_id":None,"source_id":"review_item_pending"}])
+  elif expected=="REJECT":value.update(violation_codes=["SAFETY_VIOLATION"],evidence_source_ids=["review_item_pending"])
   validate_reviewer_binding_v13(value,packet=packet)
 
 
@@ -124,7 +124,7 @@ def test_pilot_reports_binding_subcode_without_values():
   def __init__(self):self.ledger=BudgetLedgerV12()
   def begin_candidate(self,n):self.ledger.begin_candidate(n)
   def call_json(self,*,role,payload):
-   self.ledger.consume(role);value={"schema_version":"1.0","candidate_id":payload["candidate_id"],"packet_digest":payload["packet_digest"],"decision":"REVISE","violation_codes":["UNSUPPORTED_CLAIM"],"evidence_source_ids":["review_item_001"],"revision_actions":[{"operation":"ADD_REQUIRED_LIMITATION","target_claim_id":None,"source_id":"review_item_SECRET_SENTINEL"}]}
+   self.ledger.consume(role);value={"schema_version":"1.0","candidate_id":payload["candidate_id"],"packet_digest":payload["packet_digest"],"decision":"REVISE","violation_codes":["UNSUPPORTED_CLAIM"],"evidence_source_ids":["review_item_pending"],"revision_actions":[{"operation":"ADD_REQUIRED_LIMITATION","target_claim_id":None,"source_id":"review_item_SECRET_SENTINEL"}]}
    return value,RoleCallAudit(0,"reviewer","model","OK")
  c=load_role_configuration();a=Adapter();a.ledger.set_limit(10);out=run_pilot(a,c);serialized=json.dumps(out)
  assert all(x["safe_code"]=="REVIEWER_BINDING.revision_source_outside_allowlist" for x in out["cases"])
@@ -139,7 +139,7 @@ def test_runner_reports_binding_subcode_without_values():
    if role=="executor":
     from scripts.run_reviewer_function_pilot_v13 import load
     return load("llm_workflow_output.demo.json"),RoleCallAudit(0,"executor","model","OK")
-   value={"schema_version":"1.0","candidate_id":payload["candidate_id"],"packet_digest":payload["packet_digest"],"decision":"REVISE","violation_codes":["UNSUPPORTED_CLAIM"],"evidence_source_ids":["review_item_001"],"revision_actions":[{"operation":"ADD_REQUIRED_LIMITATION","target_claim_id":None,"source_id":"review_item_SECRET_SENTINEL"}]}
+   value={"schema_version":"1.0","candidate_id":payload["candidate_id"],"packet_digest":payload["packet_digest"],"decision":"REVISE","violation_codes":["UNSUPPORTED_CLAIM"],"evidence_source_ids":["review_item_pending"],"revision_actions":[{"operation":"ADD_REQUIRED_LIMITATION","target_claim_id":None,"source_id":"review_item_SECRET_SENTINEL"}]}
    return value,RoleCallAudit(0,"reviewer","model","OK")
  from scripts.run_reviewer_function_pilot_v13 import load
  c=load_role_configuration();result=ThreeRoleRunnerV13(configuration=c,role_calls=Adapter()).run(request=load("llm_request.demo.json"),plan=load("final_plan.demo.json"),review=load("ontology_review.demo.json"),context=load("llm_context.demo.json"),revision_profile="baseline",dry_run=False)

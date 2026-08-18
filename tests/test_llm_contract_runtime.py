@@ -7,6 +7,7 @@ from pathlib import Path
 
 import jsonschema
 import pytest
+from tests.active_rule_fixture import active_rule_bundle
 
 from campaign_optimizer.contracts.validation import (
     ContractValidationError,
@@ -23,6 +24,7 @@ def _load(name: str) -> dict:
 
 @pytest.fixture
 def bundle() -> dict[str, dict]:
+    return active_rule_bundle()
     return {
         "plan": _load("final_plan.demo.json"),
         "review": _load("ontology_review.demo.json"),
@@ -206,7 +208,7 @@ def test_multiple_plan_items_and_mixed_verdict_use_conservative_priority(bundle)
         "review_item_id": "review_item_002",
         "plan_item_id": "plan_item_002",
         "verdict": "CONFLICT",
-        "rule_id": "R1",
+        "rule_id": "R3",
         "rule_version": "1.0-demo",
         "base_confidence": 0.4,
         "runtime_confidence": 0.4,
@@ -220,8 +222,8 @@ def test_multiple_plan_items_and_mixed_verdict_use_conservative_priority(bundle)
     bundle["review"]["items"].append(second_review)
     bundle["review"]["overall_verdict"] = "CONFLICT"
     rules = [
-        _public_rule("R5", "1.3-contract-hardening"),
-        _public_rule("R1", "1.0-demo"),
+        _public_rule("R1", "1.2-contract-hardening"),
+        _public_rule("R3", "1.0-demo"),
     ]
     _rebuild_context(bundle["context"], bundle["plan"], bundle["review"], rules)
     validate_contract_bundle(bundle["plan"], bundle["review"], bundle["context"])
@@ -232,7 +234,7 @@ def test_one_plan_item_can_be_reviewed_by_multiple_rules(bundle):
         "review_item_id": "review_item_002",
         "plan_item_id": "plan_item_001",
         "verdict": "SUPPORT",
-        "rule_id": "R1",
+        "rule_id": "R3",
         "rule_version": "1.0-demo",
         "base_confidence": 0.4,
         "runtime_confidence": 0.4,
@@ -244,8 +246,8 @@ def test_one_plan_item_can_be_reviewed_by_multiple_rules(bundle):
     bundle["review"]["items"].append(second_review)
     bundle["review"]["overall_verdict"] = "CONFLICT"
     rules = [
-        _public_rule("R5", "1.3-contract-hardening"),
-        _public_rule("R1", "1.0-demo"),
+        _public_rule("R1", "1.2-contract-hardening"),
+        _public_rule("R3", "1.0-demo"),
     ]
     _rebuild_context(bundle["context"], bundle["plan"], bundle["review"], rules)
     validate_contract_bundle(bundle["plan"], bundle["review"], bundle["context"])
@@ -271,8 +273,8 @@ def test_same_rule_cannot_have_two_versions_in_one_review(bundle):
 
 def test_golden_output_discloses_version_and_time_grain_limit(bundle):
     answer = bundle["output"]["answer"]
-    assert "R5 1.3-contract-hardening" in answer
-    assert "时间粒度尚未完全对齐" in answer
+    assert "R1 1.2-contract-hardening" in answer
+    assert "Account baselines require production recalibration." in answer
     validate_contract_bundle(
         bundle["plan"],
         bundle["review"],

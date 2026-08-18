@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import shutil
 import subprocess
+from types import SimpleNamespace
 
 import pytest
 from fastapi.testclient import TestClient
@@ -30,6 +31,21 @@ def test_health_readiness_version_and_docs(client: TestClient):
     assert client.get("/api/v1/ontology/version").status_code == 401
     version = client.get("/api/v1/ontology/version", headers=AUTH).json()
     assert version["rules"]["R7"] == "RETIRED"
+
+
+def test_ready_reports_applied_when_all_components_are_ready(client: TestClient):
+    client.app.state.product_review_service = SimpleNamespace(
+        ontology_version="test-ontology",
+        package_checksum="0" * 64,
+        rule_statuses={},
+        guardrail_ids=[],
+    )
+
+    readiness = client.get("/ready")
+
+    assert readiness.status_code == 200
+    assert readiness.json()["database_ready"] is True
+    assert readiness.json()["migration"] == "applied"
 
 
 def test_create_get_list_and_full_provenance(client: TestClient):
@@ -123,7 +139,10 @@ def test_readiness_fails_when_live_schema_is_incomplete(client: TestClient):
     with client.app.state.database.engine.begin() as connection:
         connection.execute(text("DROP TABLE idempotency_records"))
     assert client.get("/health").status_code == 200
-    assert client.get("/ready").status_code == 503
+    readiness = client.get("/ready")
+    assert readiness.status_code == 503
+    assert readiness.json()["database_ready"] is False
+    assert readiness.json()["migration"] == "incomplete"
     create = client.post(
         "/api/v1/reviews",
         headers={**AUTH, "Idempotency-Key": "schema-unavailable"},
@@ -147,6 +166,7 @@ def test_unreachable_postgres_keeps_liveness_and_redacts_credentials(settings, c
         assert "secret-user" not in serialized
         assert "secret-password" not in serialized
         assert readiness.json()["database_ready"] is False
+        assert readiness.json()["migration"] == "unavailable"
     assert "secret-user" not in caplog.text
     assert "secret-password" not in caplog.text
 

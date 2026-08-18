@@ -160,7 +160,7 @@ def test_bundle_rejects_unknown_review_fact(fixtures):
     context = copy.deepcopy(fixtures["llm_context"])
     review["items"][0]["matched_fact_ids"].append("review_fact_999")
     context["review_context"] = review
-    with pytest.raises(ValueError, match="只能引用review_evidence"):
+    with pytest.raises(jsonschema.ValidationError, match="expected to be empty"):
         _validate_bundle(
             fixtures["final_plan"],
             review,
@@ -207,20 +207,14 @@ def test_bundle_rejects_claim_value_tampering(fixtures):
         )
 
 
-def test_r5_fixture_matches_immutable_historical_review_only_rule(fixtures):
+def test_pending_fixture_does_not_claim_the_immutable_historical_rule(fixtures):
     r5 = _load(R5_PATH)
     review_item = fixtures["ontology_review"]["items"][0]
-    latest_version = r5["version_history"][-1]["version"]
-    refs = [
-        condition["ref"]
-        for condition in r5["trigger_condition"]["all"]
-    ]
-    assert review_item["rule_version"] == latest_version
+    assert review_item["rule_id"] is None
+    assert review_item["rule_version"] is None
+    assert review_item["verdict"] == "UNVERIFIED"
+    assert r5["version_history"][-1]["version"] == "1.3-contract-hardening"
     assert r5["status"] == "ACTIVE"
-    assert refs == [0.10, 0.20, 0.05]
-    assert review_item["verdict"] == "CONFLICT"
-    assert review_item["base_confidence"] == 0.62
-    assert review_item["runtime_confidence"] == 0.62
 
 
 def test_expected_explanation_contract_covers_fixed_fidelity_risks():

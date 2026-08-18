@@ -19,3 +19,5 @@ dev = [
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
+# API 子项目有独立 venv 与测试运行方式，主仓收集时排除（2026-08-14 合并后新增）
+norecursedirs = ["ontology review api"]

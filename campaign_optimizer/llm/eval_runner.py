@@ -176,22 +176,65 @@ def _scenario(
 
 def _tamper(output: dict[str, Any], scenario: str) -> None:
     if scenario == "tamper_numeric":
-        output["claims"][1]["value"] = 99
+        _find_claim(output, claim_type="PLAN_FIELD", field="delta_pct")["value"] = 99
     elif scenario == "tamper_plan_id":
-        output["claims"][0]["source_id"] = "plan_item_intruder"
+        _find_claim(output, claim_type="PLAN_FIELD")["source_id"] = (
+            "plan_item_intruder"
+        )
         output["plan_item_ids_used"] = ["plan_item_intruder"]
     elif scenario == "tamper_fact_id":
-        output["claims"][5]["source_id"] = "decision_fact_intruder"
-        output["facts_used"][0] = "decision_fact_intruder"
+        fact_claim = _find_claim(output, claim_type="FACT_VALUE")
+        original_id = fact_claim["source_id"]
+        fact_claim["source_id"] = "decision_fact_intruder"
+        output["facts_used"] = [
+            "decision_fact_intruder" if fact_id == original_id else fact_id
+            for fact_id in output["facts_used"]
+        ]
     elif scenario == "tamper_rule_id":
-        output["claims"][6]["source_id"] = "R1"
+        rule_claims = [
+            claim
+            for claim in output["claims"]
+            if claim.get("claim_type") == "RULE_FIELD"
+        ]
+        if rule_claims:
+            rule_claims[0]["source_id"] = "R1"
+        else:
+            output["claims"].append(
+                {
+                    "claim_id": "claim_intruder_rule",
+                    "claim_type": "RULE_FIELD",
+                    "source_id": "R1",
+                    "field": "status",
+                    "value": "ACTIVE",
+                }
+            )
         output["rule_ids_used"] = ["R1"]
     elif scenario == "tamper_verdict":
-        output["claims"][4]["value"] = "SUPPORT"
+        _find_claim(output, claim_type="REVIEW_FIELD", field="verdict")[
+            "value"
+        ] = "SUPPORT"
     elif scenario == "tamper_limitations":
-        output["claims"][10]["value"] = "limitation removed"
+        _find_claim(output, claim_type="REVIEW_FIELD", field="limitations")[
+            "value"
+        ] = "limitation removed"
     else:
         raise ValueError("unknown synthetic eval scenario")
+
+
+def _find_claim(
+    output: dict[str, Any],
+    *,
+    claim_type: str,
+    field: str | None = None,
+) -> dict[str, Any]:
+    for claim in output.get("claims", []):
+        if claim.get("claim_type") != claim_type:
+            continue
+        if field is not None and claim.get("field") != field:
+            continue
+        return claim
+    selector = claim_type if field is None else f"{claim_type}.{field}"
+    raise ValueError(f"synthetic eval fixture has no {selector} claim")
 
 
 def _load_json(path: Path) -> dict[str, Any]:
