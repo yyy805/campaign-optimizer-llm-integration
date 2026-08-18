@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0",
+  "collection_id": "llm-eval-deidentified-v1",
+  "datasets": [
+    {"dataset_type": "routing_safety", "file": "routing-safety.json", "case_count": 50},
+    {"dataset_type": "generation", "file": "generation.json", "case_count": 20},
+    {"dataset_type": "prompt_attacks", "file": "prompt-attacks.json", "case_count": 20}
+  ]
+}

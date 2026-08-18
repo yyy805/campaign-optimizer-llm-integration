@@ -1,0 +1,208 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://campaign-optimizer.local/schemas/llm_workflow_output.schema.json",
+  "title": "LLM Workflow Output",
+  "description": "百炼Workflow的统一输出。Python调用层错误不属于本契约。",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "workflow_version",
+    "prompt_version",
+    "knowledge_base_version",
+    "status",
+    "intent",
+    "answer",
+    "claims",
+    "facts_used",
+    "rule_ids_used",
+    "plan_item_ids_used",
+    "limitations_included",
+    "retry_count",
+    "fallback_used"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "workflow_version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "prompt_version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "knowledge_base_version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "status": {
+      "type": "string",
+      "enum": ["OK", "REFUSED", "FALLBACK"]
+    },
+    "intent": {
+      "type": "string",
+      "enum": [
+        "EXPLAIN_PLAN",
+        "EXPLAIN_REVIEW",
+        "EXPLAIN_RULE",
+        "FORBIDDEN_MODEL_INTERNAL",
+        "UNSUPPORTED_WHAT_IF",
+        "OUT_OF_SCOPE",
+        "SYSTEM_FALLBACK"
+      ]
+    },
+    "answer": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 8000
+    },
+    "claims": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/definitions/claim" }
+    },
+    "facts_used": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^(decision|review)_fact_[A-Za-z0-9_-]+$"
+      }
+    },
+    "rule_ids_used": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^R[0-9]+$"
+      }
+    },
+    "plan_item_ids_used": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^plan_item_[A-Za-z0-9_-]+$"
+      }
+    },
+    "limitations_included": { "type": "boolean" },
+    "retry_count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "fallback_used": { "type": "boolean" }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "status": { "const": "OK" } },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "intent": {
+            "enum": [
+              "EXPLAIN_PLAN",
+              "EXPLAIN_REVIEW",
+              "EXPLAIN_RULE"
+            ]
+          },
+          "claims": { "minItems": 1 },
+          "fallback_used": { "const": false }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "status": { "const": "REFUSED" } },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "intent": {
+            "enum": [
+              "FORBIDDEN_MODEL_INTERNAL",
+              "UNSUPPORTED_WHAT_IF",
+              "OUT_OF_SCOPE"
+            ]
+          },
+          "claims": { "maxItems": 0 },
+          "facts_used": { "maxItems": 0 },
+          "rule_ids_used": { "maxItems": 0 },
+          "plan_item_ids_used": { "maxItems": 0 },
+          "limitations_included": { "const": false },
+          "retry_count": { "const": 0 },
+          "fallback_used": { "const": false }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "status": { "const": "FALLBACK" } },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "intent": { "const": "SYSTEM_FALLBACK" },
+          "claims": { "maxItems": 0 },
+          "facts_used": { "maxItems": 0 },
+          "rule_ids_used": { "maxItems": 0 },
+          "plan_item_ids_used": { "maxItems": 0 },
+          "limitations_included": { "const": false },
+          "retry_count": { "const": 1 },
+          "fallback_used": { "const": true }
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "claim_value": {
+      "oneOf": [
+        { "type": "number" },
+        { "type": "string", "maxLength": 2000 },
+        { "type": "boolean" },
+        { "type": "null" }
+      ]
+    },
+    "claim": {
+      "type": "object",
+      "required": [
+        "claim_id",
+        "claim_type",
+        "source_id",
+        "field",
+        "value"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "claim_id": {
+          "type": "string",
+          "pattern": "^claim_[A-Za-z0-9_-]+$"
+        },
+        "claim_type": {
+          "type": "string",
+          "enum": [
+            "PLAN_FIELD",
+            "PLAN_PERIOD_FIELD",
+            "REVIEW_FIELD",
+            "FACT_VALUE",
+            "RULE_FIELD"
+          ]
+        },
+        "source_id": {
+          "type": "string",
+          "pattern": "^(plan_item|review_item|decision_fact|review_fact|R)[A-Za-z0-9_-]+$"
+        },
+        "field": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "value": { "$ref": "#/definitions/claim_value" }
+      }
+    }
+  }
+}

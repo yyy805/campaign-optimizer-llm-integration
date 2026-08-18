@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://campaign-optimizer.local/schemas/confidence_state.schema.json",
+  "title": "Runtime Rule Confidence State",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "rule_id", "rule_version", "base_confidence",
+    "runtime_confidence", "minimum_usable_confidence", "validation_count",
+    "rejection_count", "consecutive_bad_count", "status",
+    "processed_feedback_ids", "processed_feedback_digests", "updated_at"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "rule_id": { "type": "string", "pattern": "^R[0-9]+$" },
+    "rule_version": { "type": "string", "minLength": 1 },
+    "base_confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "runtime_confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "minimum_usable_confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "validation_count": { "type": "integer", "minimum": 0 },
+    "rejection_count": { "type": "integer", "minimum": 0 },
+    "consecutive_bad_count": { "type": "integer", "minimum": 0 },
+    "status": { "enum": ["ACTIVE", "PENDING_HUMAN_REVIEW", "SUSPENDED", "RETIRED"] },
+    "processed_feedback_ids": {
+      "type": "array", "items": { "type": "string" }, "uniqueItems": true
+    },
+    "processed_feedback_digests": {
+      "type": "object",
+      "propertyNames": { "minLength": 1 },
+      "additionalProperties": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+    },
+    "updated_at": { "type": "string", "format": "date-time" }
+  }
+}

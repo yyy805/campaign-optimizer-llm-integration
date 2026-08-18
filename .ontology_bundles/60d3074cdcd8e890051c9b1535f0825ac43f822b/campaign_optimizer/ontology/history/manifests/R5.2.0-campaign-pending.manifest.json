@@ -1,9 +1,9 @@
 {
   "manifest_version": "1.0",
-  "source_commit": "60d3074cdcd8e890051c9b1535f0825ac43f822b",
-  "ontology_version": "2.1-campaign-pending",
+  "source_commit": "a83ff2b4f63a7e24da276a034b39d3360b6fccc3",
+  "ontology_version": "2.0-campaign-pending",
   "rule_version": "R5@2.0-campaign-pending",
-  "engine_version": "2.1",
+  "engine_version": "2.0",
   "schema_version": "1.1",
   "entries": [
     {
@@ -78,8 +78,8 @@
     },
     {
       "path": "campaign_optimizer/ontology/concepts/attribution_divergence.json",
-      "sha256": "5d8e71ab4bc626bc39cfd020129d11effdce259cf76bb4006c7d9948473869c9",
-      "size": 1093
+      "sha256": "11e67175d67a8ce833fba78569d42e7a341c0fe6cc9b212f485d3e253dd3378b",
+      "size": 1201
     },
     {
       "path": "campaign_optimizer/ontology/concepts/clicks.json",
@@ -88,8 +88,8 @@
     },
     {
       "path": "campaign_optimizer/ontology/concepts/contribution_share.json",
-      "sha256": "05bcc7c0f5049d9167a05dd9f235005b7fe77410373f6e79656b3fe84b0f0db8",
-      "size": 1349
+      "sha256": "db59cdacbf5380ecad85bb00a6ed7e8431eaca272b0b7313ee48c87f68657700",
+      "size": 1165
     },
     {
       "path": "campaign_optimizer/ontology/concepts/conversions.json",
@@ -178,8 +178,8 @@
     },
     {
       "path": "campaign_optimizer/ontology/concepts/spend_share.json",
-      "sha256": "ecfa2ebe65932b7c4cda4f2f570d2a3d033364b3046d439c2228d939f6b27e1c",
-      "size": 1262
+      "sha256": "dcd0626f16723bdb145dfb88bee26370ccf887ccf94c312802d94367cdc774ad",
+      "size": 1226
     },
     {
       "path": "campaign_optimizer/ontology/concepts/total_spend.json",
@@ -472,24 +472,14 @@
       "size": 4396
     },
     {
-      "path": "campaign_optimizer/ontology/history/manifests/R5.1.3-contract-hardening.manifest.json",
-      "sha256": "2ddc7b93ea51b30331c31702fa067da25e4ea64a16fe110957d9c8cf19c772d9",
-      "size": 13444
-    },
-    {
-      "path": "campaign_optimizer/ontology/history/manifests/R5.2.0-campaign-pending.manifest.json",
-      "sha256": "e7b6b626f562435119082abf71f4da3c8b4172801e9ead3caae0c714831ecb84",
-      "size": 24912
-    },
-    {
       "path": "campaign_optimizer/ontology/history/rules/R5.touchpoint.1.3-contract-hardening.json",
       "sha256": "68f54320ba68af57f3933692e50ad5e68e79a0390e809173f2194e95155915be",
       "size": 3058
     },
     {
       "path": "campaign_optimizer/ontology/mta/field_manifest.json",
-      "sha256": "77ac7999877cf3a0d33a0953b1ea7bc1c5e16b65835a6e7c30b4682518e60abf",
-      "size": 2838
+      "sha256": "4a02ce07c3f598049ab8daefcee9cfea05d9a83c0cb40425104a483649a469d1",
+      "size": 2774
     },
     {
       "path": "campaign_optimizer/ontology/policies/feedback_policy.demo.json",
@@ -508,8 +498,8 @@
     },
     {
       "path": "campaign_optimizer/ontology/review_workflow.py",
-      "sha256": "1b6c6b94e6cd168363075fc2259667a9a114a1644a89603d338da427b041d394",
-      "size": 16508
+      "sha256": "bfd3623fde3acd9ead8c1519dbb16923eb8cc6dedf3942a8db42a5481c0cdf88",
+      "size": 16295
     },
     {
       "path": "campaign_optimizer/ontology/rules/R1.json",
@@ -607,171 +597,6 @@
       "size": 859
     },
     {
-      "path": "campaign_optimizer/schemas/reviewer_decision_v3.schema.json",
-      "sha256": "c9045853832853c130e31647cef2d37a6385bd2ffc9c47f6f04e8c52adaad9e1",
-      "size": 2157
-    },
-    {
-      "path": "campaign_optimizer/schemas/triage_decision_v2.schema.json",
-      "sha256": "a6070ff6bd9b4e466daba8b2d3263cb068430fbf823b1e34c381952bd4537460",
-      "size": 1225
-    },
-    {
-      "path": "tests/fixtures/kb_retrieval_v1/questions.json",
-      "sha256": "9a42a6ae1a25ae7e6813fa1e3cfbd6ec321784c7617f906d264f28dc8b4ba61c",
-      "size": 2087
-    },
-    {
-      "path": "tests/fixtures/llm_eval/cases.json",
-      "sha256": "17ae14285149fc6c2588bd6ca240d858e163ccef506cdf0836e1bc7ea10fe05a",
-      "size": 2827
-    },
-    {
-      "path": "tests/fixtures/llm_eval/reviewer_judgment_v1/README.md",
-      "sha256": "ef0922cf6021054487b0728fad1881576720b6910232b0f495ce00cf1e2d10bf",
-      "size": 3026
-    },
-    {
-      "path": "tests/fixtures/llm_eval/reviewer_judgment_v1/candidates/pending_pass_clean.json",
-      "sha256": "a929593b2b98570b6e047fc2aff8cfab2003d2c3feebbae4fee3fc678c884ee8",
-      "size": 1944
-    },
-    {
-      "path": "tests/fixtures/llm_eval/reviewer_judgment_v1/candidates/pending_pass_pending_explicit.json",
-      "sha256": "f17b6d817e5020d947c2339a63451a7f6be0df828cf99fed65b48c2b468227cf",
-      "size": 2037
-    },
-    {
-      "path": "tests/fixtures/llm_eval/reviewer_judgment_v1/candidates/pending_pass_plan_focused.json",
-      "sha256": "84b26ad397bfff9f999910868ff8a7bfeee0de8e887bea062106030c689cd573",
-      "size": 1854
-    },
-    {
-      "path": "tests/fixtures/llm_eval/reviewer_judgment_v1/candidates/pending_reject_injection.json",
-      "sha256": "3ae25365e42181bfa145ac0263b030bbb0540c2a25ecfadb735a1d45636b6bb2",
-      "size": 1959
-    },
-    {
-      "path": "tests/fixtures/llm_eval/reviewer_judgment_v1/candidates/pending_revise_causal_claim.json",
-      "sha256": "34a128709b057316dccb8234e7bb3b97b95770e75ccfbbcbfdef22c53c2d75c7",
-      "size": 1930
-    },
-    {
-      "path": "tests/fixtures/llm_eval/reviewer_judgment_v1/candidates/pending_revise_definitive_verdict.json",
-      "sha256": "2ab378e3fee23ad9a966b7635d7fc4fda1bacf0b867d5765448e6af0b00228cd",
-      "size": 1886
-    },
-    {
-      "path": "tests/fixtures/llm_eval/reviewer_judgment_v1/candidates/pending_revise_denies_review.json",
-      "sha256": "4fa9f88a2586f65931d085979103922dff9d4c292aef600512d6b72a7a595b93",
-      "size": 1938
-    },
-    {
-      "path": "tests/fixtures/llm_eval/reviewer_judgment_v1/candidates/pending_revise_guarantee.json",
-      "sha256": "213a79f57a00f81dd51072c65c0da09cef642a734e626fdcc00638cd93ad81cd",
-      "size": 1931
-    },
-    {
-      "path": "tests/fixtures/llm_eval/reviewer_judgment_v1/cases.json",
-      "sha256": "72854f2995554b3825ba123f31d87976c433c1aa9cfe3ca8603a20ffb455b1ab",
-      "size": 4510
-    },
-    {
-      "path": "tests/fixtures/llm_eval/reviewer_judgment_v1/dataset.schema.json",
-      "sha256": "81624c0df3924c7f41b9d062f71de694f05e44e8ce689089b35738c0d37914d9",
-      "size": 2023
-    },
-    {
-      "path": "tests/fixtures/llm_eval/reviewer_judgment_v1/index.json",
-      "sha256": "feee084186a5d4edd216a2f2cd4cccdd900a34c4a186f4e7191a154f7f86da5e",
-      "size": 282
-    },
-    {
-      "path": "tests/fixtures/llm_eval/reviewer_judgment_v1/ontology_review.pending.json",
-      "sha256": "2cbe466bcb7caed9f36f649360fbfdfd457616fec598a8bdd09829e7eafef53d",
-      "size": 1066
-    },
-    {
-      "path": "tests/fixtures/llm_eval/reviewer_judgment_v1/validate_datasets.py",
-      "sha256": "155c76760a64dab354b47bbed4710cfb619fd1354ec53d19c6a2b40e1ce155ce",
-      "size": 965
-    },
-    {
-      "path": "tests/fixtures/llm_eval/reviewer_judgment_v1/validator.py",
-      "sha256": "3b9138e9e1e37ee49e5ff754dbd2ec0f8f572589711d1c10454b7cb3845c4aed",
-      "size": 8565
-    },
-    {
-      "path": "tests/fixtures/llm_eval/runs/run-records-2026-08-06.md",
-      "sha256": "11bf9eb877a99d3893862ada16ed7fae46e7aa60daa251cc6e4643b8f81a1157",
-      "size": 2962
-    },
-    {
-      "path": "tests/fixtures/llm_eval/v1/README.md",
-      "sha256": "9de7011f6d4534edab54ba1b401780e1125a8cf18c53704e7cd04ee1cdc28b1a",
-      "size": 4873
-    },
-    {
-      "path": "tests/fixtures/llm_eval/v1/candidates/clean-plan.json",
-      "sha256": "a80355e0e7b927ae170f0e86e91da1ce866c7d37bf81d522061e3557b87e3935",
-      "size": 4884
-    },
-    {
-      "path": "tests/fixtures/llm_eval/v1/candidates/clean-review.json",
-      "sha256": "31267bd3ef86f49d433c7eb7a1a996abc4e66adeaa15f6290caa9d8a03522e33",
-      "size": 4886
-    },
-    {
-      "path": "tests/fixtures/llm_eval/v1/candidates/clean-rule.json",
-      "sha256": "ccdfb79b67add71077da82061cf0b810ff4cdff618944b0566b1c2c6060912d7",
-      "size": 4884
-    },
-    {
-      "path": "tests/fixtures/llm_eval/v1/candidates/semantic-guarantee-review.json",
-      "sha256": "8afd347499a2b6b0f692a59ca16402a9e21651b2df5365c574957aea2abefec5",
-      "size": 7582
-    },
-    {
-      "path": "tests/fixtures/llm_eval/v1/candidates/subtle-numeric-error.json",
-      "sha256": "03fcda3ee239c50a71675715d3a7a5af91a3f0fc195989b5afb386d9b167392f",
-      "size": 4886
-    },
-    {
-      "path": "tests/fixtures/llm_eval/v1/dataset.schema.json",
-      "sha256": "b2016ee9cacadcff2d58ed7474345acb90db724e36d6dab24b7565a3ee2f5a4d",
-      "size": 16371
-    },
-    {
-      "path": "tests/fixtures/llm_eval/v1/generation.json",
-      "sha256": "0224431c2137574a14d791ed225bf271ba7cf16cd3515e2c2be7bc3baa51b160",
-      "size": 32228
-    },
-    {
-      "path": "tests/fixtures/llm_eval/v1/index.json",
-      "sha256": "7c0861bcdeb4bf5c48782a05913edad7f8e4fe40b2c620faa691b41e67a670f4",
-      "size": 356
-    },
-    {
-      "path": "tests/fixtures/llm_eval/v1/prompt-attacks.json",
-      "sha256": "700de5b5b4a06c7a981d2281eabbbdd7040650ca3e2ccc1bc81867e52289cdc7",
-      "size": 19013
-    },
-    {
-      "path": "tests/fixtures/llm_eval/v1/routing-safety.json",
-      "sha256": "d7d46cb10179b57ccc0e76223fbfadaf4f487b1746ae449f5382f36cefeb0889",
-      "size": 40781
-    },
-    {
-      "path": "tests/fixtures/llm_eval/v1/validate_datasets.py",
-      "sha256": "e7cca3d10052a44b12ccc393320b52fc76473017caeeed1dd5b609c8fb08fe20",
-      "size": 211
-    },
-    {
-      "path": "tests/fixtures/llm_eval/v1/validator.py",
-      "sha256": "a9a4ff92acc8d64277f20032b2d70785e4342f65894f9afb163663ca24553b76",
-      "size": 13830
-    },
-    {
       "path": "tests/fixtures/plan_a/confidence_state.r5.demo.json",
       "sha256": "ae6e2eaf6a87b1a729bdb84bc302f20d79d40538f92453fddb12c8aecf0bb8c0",
       "size": 400
@@ -788,8 +613,8 @@
     },
     {
       "path": "tests/fixtures/plan_a/llm_context.demo.json",
-      "sha256": "23df80571a55407db8149761f5eeab666a67240eacfe99c349812078c2e486c0",
-      "size": 2685
+      "sha256": "6c6fabe33097b61f5a0c2237fa01d6c93702b514458fab8fa04d480b151067bd",
+      "size": 5045
     },
     {
       "path": "tests/fixtures/plan_a/llm_request.demo.json",
@@ -798,14 +623,14 @@
     },
     {
       "path": "tests/fixtures/plan_a/llm_workflow_output.demo.json",
-      "sha256": "7dd67a706272d32e73a1e31fa3eddff3374336a91ac375e2f5cc0ef31e632e97",
-      "size": 1126
+      "sha256": "caa43ed55a4d183b198701cb60fef0a7e2c00f5fffdd6dfe89efaf98cdfdf138",
+      "size": 4858
     },
     {
       "path": "tests/fixtures/plan_a/ontology_review.demo.json",
-      "sha256": "f4732454b85911a4149c161ca60b6a75165fe91e24296c3fa6332d1a3193912b",
-      "size": 1018
+      "sha256": "ed0de50f5cb4a7efe46dcdc1db7972791b20e1380579f345e66336dae661d21b",
+      "size": 1330
     }
   ],
-  "package_checksum": "9882e7205d7e84e556c75f782d10c24ab6badf694731e81530a692032474d82c"
+  "package_checksum": "626cfbdedc954f41c7a335cf6178886c8c5cc3c71b2c1b7400ed6f87595d3513"
 }

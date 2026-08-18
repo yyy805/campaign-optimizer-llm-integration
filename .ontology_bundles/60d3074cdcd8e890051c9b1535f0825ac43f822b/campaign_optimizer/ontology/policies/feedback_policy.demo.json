@@ -1,0 +1,15 @@
+{
+  "policy_id": "feedback-demo-v1",
+  "policy_version": "1.0",
+  "environment": "DEMO",
+  "demo_only": true,
+  "effective_from": "2026-08-03T00:00:00Z",
+  "approved_by": "ontology_team_demo",
+  "good_delta": 0.02,
+  "fine_delta": 0,
+  "bad_delta": -0.05,
+  "confidence_floor": 0.05,
+  "confidence_cap": 0.95,
+  "bad_count_review_threshold": 10,
+  "consecutive_bad_review_threshold": 3
+}

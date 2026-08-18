@@ -1,0 +1,166 @@
+{
+  "schema_version": "1.0",
+  "workflow_version": "local-python-1.0",
+  "prompt_version": "local-prompt-1.0",
+  "knowledge_base_version": "local-rules-1.0",
+  "status": "OK",
+  "intent": "EXPLAIN_PLAN",
+  "answer": "这是Demo模拟结果。系统建议在2026年8月1日至8月14日期间，将Sponsored Products预算从1000美元提高到1100美元，即增加10%。本体评价为“冲突”：R5 1.3-contract-hardening检查到贡献份额为8%，低于Demo阈值10%；花费份额为28%，高于Demo阈值20%；归因差异为3%，不超过Demo阈值5%。在这种低贡献、高花费且两种归因结果差异可接受的情况下，R5不支持继续增加预算，因此与当前增加10%的方案冲突。规则的基础和运行时置信度均为0.62。公开的预测ROAS为4.2，但现有上下文不能还原小模型内部如何确定增加10%。上述三个阈值均为Demo占位值，生产部署前必须重新标定；此外，R5使用MTA快照数据，而推荐方案面向下一14天，两者的时间粒度尚未完全对齐。",
+  "claims": [
+    {
+      "claim_id": "claim_001",
+      "claim_type": "PLAN_FIELD",
+      "source_id": "plan_item_001",
+      "field": "entity_id",
+      "value": "Sponsored Products"
+    },
+    {
+      "claim_id": "claim_002",
+      "claim_type": "PLAN_FIELD",
+      "source_id": "plan_item_001",
+      "field": "delta_pct",
+      "value": 10
+    },
+    {
+      "claim_id": "claim_003",
+      "claim_type": "PLAN_FIELD",
+      "source_id": "plan_item_001",
+      "field": "current_budget",
+      "value": 1000
+    },
+    {
+      "claim_id": "claim_004",
+      "claim_type": "PLAN_FIELD",
+      "source_id": "plan_item_001",
+      "field": "recommended_budget",
+      "value": 1100
+    },
+    {
+      "claim_id": "claim_005",
+      "claim_type": "REVIEW_FIELD",
+      "source_id": "review_item_001",
+      "field": "verdict",
+      "value": "CONFLICT"
+    },
+    {
+      "claim_id": "claim_006",
+      "claim_type": "FACT_VALUE",
+      "source_id": "decision_fact_001",
+      "field": "value",
+      "value": 4.2
+    },
+    {
+      "claim_id": "claim_007",
+      "claim_type": "RULE_FIELD",
+      "source_id": "R5",
+      "field": "status",
+      "value": "ACTIVE"
+    },
+    {
+      "claim_id": "claim_008",
+      "claim_type": "PLAN_PERIOD_FIELD",
+      "source_id": "plan_item_001",
+      "field": "start_date",
+      "value": "2026-08-01"
+    },
+    {
+      "claim_id": "claim_009",
+      "claim_type": "PLAN_PERIOD_FIELD",
+      "source_id": "plan_item_001",
+      "field": "end_date",
+      "value": "2026-08-14"
+    },
+    {
+      "claim_id": "claim_010",
+      "claim_type": "RULE_FIELD",
+      "source_id": "R5",
+      "field": "rule_version",
+      "value": "1.3-contract-hardening"
+    },
+    {
+      "claim_id": "claim_011",
+      "claim_type": "REVIEW_FIELD",
+      "source_id": "review_item_001",
+      "field": "limitations",
+      "value": "R5的10%、20%和5%均为Demo占位阈值，生产部署前必须重新标定"
+    },
+    {
+      "claim_id": "claim_012",
+      "claim_type": "REVIEW_FIELD",
+      "source_id": "review_item_001",
+      "field": "limitations",
+      "value": "R5使用MTA快照数据，而方案面向下一14天，时间粒度尚未完全对齐"
+    },
+    {
+      "claim_id": "claim_013",
+      "claim_type": "FACT_VALUE",
+      "source_id": "review_fact_001",
+      "field": "name",
+      "value": "contribution_share"
+    },
+    {
+      "claim_id": "claim_014",
+      "claim_type": "FACT_VALUE",
+      "source_id": "review_fact_002",
+      "field": "name",
+      "value": "spend_share"
+    },
+    {
+      "claim_id": "claim_015",
+      "claim_type": "FACT_VALUE",
+      "source_id": "review_fact_003",
+      "field": "name",
+      "value": "attribution_divergence"
+    },
+    {
+      "claim_id": "claim_016",
+      "claim_type": "FACT_VALUE",
+      "source_id": "review_fact_001",
+      "field": "value",
+      "value": 0.08
+    },
+    {
+      "claim_id": "claim_017",
+      "claim_type": "FACT_VALUE",
+      "source_id": "review_fact_002",
+      "field": "value",
+      "value": 0.28
+    },
+    {
+      "claim_id": "claim_018",
+      "claim_type": "FACT_VALUE",
+      "source_id": "review_fact_003",
+      "field": "value",
+      "value": 0.03
+    },
+    {
+      "claim_id": "claim_019",
+      "claim_type": "REVIEW_FIELD",
+      "source_id": "review_item_001",
+      "field": "base_confidence",
+      "value": 0.62
+    },
+    {
+      "claim_id": "claim_020",
+      "claim_type": "REVIEW_FIELD",
+      "source_id": "review_item_001",
+      "field": "runtime_confidence",
+      "value": 0.62
+    }
+  ],
+  "facts_used": [
+    "decision_fact_001",
+    "review_fact_001",
+    "review_fact_002",
+    "review_fact_003"
+  ],
+  "rule_ids_used": [
+    "R5"
+  ],
+  "plan_item_ids_used": [
+    "plan_item_001"
+  ],
+  "limitations_included": true,
+  "retry_count": 0,
+  "fallback_used": false
+}

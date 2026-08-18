@@ -1,0 +1,48 @@
+{
+  "rule_id": "R5",
+  "name": "Campaign budget review pending evidence contract",
+  "evaluation_grain": { "time": "snapshot", "entity": "campaign" },
+  "attribution_model": null,
+  "trigger_condition": { "all": [] },
+  "diagnosis": "Campaign-level review is not activated until the final-plan evidence contract is approved.",
+  "match_inputs": [],
+  "reference_action": {
+    "type": "none_until_evidence_contract",
+    "param": {}
+  },
+  "confidence_model": {
+    "source": ["human_expert"],
+    "thresholds": { "high": 0.8, "minimum_usable": 0.6 }
+  },
+  "review_policy": {
+    "mode": "review_only",
+    "supported_plan_actions": [],
+    "conflicting_plan_actions": [],
+    "otherwise": "NOT_APPLICABLE"
+  },
+  "confidence": null,
+  "risk_level": "MEDIUM",
+  "evidence_type": "human_expert",
+  "validation_count": 0,
+  "rejection_count": 0,
+  "version_history": [
+    {
+      "version": "1.3-contract-hardening",
+      "date": "2026-08-03",
+      "author": "ontology_team",
+      "change": "Historical channel/touchpoint implementation retained in migration inventory."
+    },
+    {
+      "version": "2.0-campaign-pending",
+      "date": "2026-08-05",
+      "author": "ontology_team",
+      "change": "Changed product grain to campaign and disabled decisive review pending an approved final-plan evidence contract."
+    }
+  ],
+  "causal_annotation": "No campaign-level causal claim is approved.",
+  "status": "PENDING_HUMAN_REVIEW",
+  "known_limitations": [
+    "No final-plan campaign evidence fields, units, provenance formulas, or boundary fixtures have been approved.",
+    "This card cannot issue SUPPORT, CONFLICT, or NOT_APPLICABLE."
+  ]
+}

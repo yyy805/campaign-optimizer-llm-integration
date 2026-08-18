@@ -1,0 +1,28 @@
+{
+  "concept_id": "revenue",
+  "name_cn": "收入",
+  "name_en": "Revenue",
+  "layer": "L4",
+  "tier": "base",
+  "caliber": "platform",
+  "definition": "广告带来的销售收入，通常来自平台报表中的 sales 字段，是计算 ROAS 和 ACoS 的基础数据。",
+  "formula": null,
+  "unit": "currency",
+  "source": "Amazon Ads spend report / 平台广告收入数据",
+  "source_field": "sales",
+  "value_type": "number",
+  "value_range": [0, null],
+  "baseline": { "type": "account_mean", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "daily",
+    "entity": "campaign",
+    "aggregation": "sum",
+    "requires_full_batch": false
+  },
+  "dimensions": ["campaign"],
+  "related_concepts": [
+    { "target": "roas", "relation": "input_to", "strength": "strong" },
+    { "target": "acos", "relation": "input_to", "strength": "strong" }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "manifest_version": "1.0",
+  "concepts": [
+    "acos", "attributed_revenue", "attribution_divergence", "clicks",
+    "contribution_share", "conversions", "ctr", "cvr", "impressions",
+    "impressions_growth", "impressions_last_period", "max_cpc", "min_cpc",
+    "mta_roas", "predicted_roas", "prediction_confidence",
+    "recommended_budget_allocation", "revenue", "roas", "roas_decline_alert",
+    "spend", "spend_share", "sp_min_daily_budget", "total_spend"
+  ],
+  "rules": ["R1", "R2", "R3", "R4", "R5", "R6", "R7"]
+}

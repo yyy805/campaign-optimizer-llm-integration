@@ -1,0 +1,28 @@
+{
+  "concept_id": "roas_decline_alert",
+  "name_cn": "ROAS 下滑预警",
+  "name_en": "ROAS Decline Alert",
+  "layer": "L5",
+  "tier": "mock",
+  "caliber": "mock",
+  "definition": "由预测模型或外部预警系统给出的成型预警信号，用于本体层判断是否需要提前复核预算分配。",
+  "formula": null,
+  "unit": "boolean",
+  "source": "预测模型/预警系统",
+  "source_field": "roas_decline_alert",
+  "value_range": [false, true],
+  "baseline": { "type": "none", "value": null },
+  "threshold": null,
+  "granularity": {
+    "time": "mock",
+    "entity": "campaign",
+    "aggregation": "none",
+    "requires_full_batch": false
+  },
+  "dimensions": ["campaign"],
+  "expected_input_role": "trigger_signal",
+  "value_type": "boolean",
+  "related_concepts": [
+    { "target": "predicted_roas", "relation": "derived_from", "strength": "strong" }
+  ]
+}
