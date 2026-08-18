@@ -1,3 +1,9 @@
+from contextlib import nullcontext
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
@@ -19,8 +25,13 @@ def run_migrations_offline() -> None:
 
 
 def run_migrations_online() -> None:
-    connectable = engine_from_config(config.get_section(config.config_ini_section), prefix="sqlalchemy.", poolclass=pool.NullPool)
-    with connectable.connect() as connection:
+    supplied_connection = config.attributes.get("connection")
+    if supplied_connection is None:
+        connectable = engine_from_config(config.get_section(config.config_ini_section), prefix="sqlalchemy.", poolclass=pool.NullPool)
+        connection_context = connectable.connect()
+    else:
+        connection_context = nullcontext(supplied_connection)
+    with connection_context as connection:
         context.configure(
             connection=connection,
             target_metadata=target_metadata,

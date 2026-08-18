@@ -61,7 +61,9 @@ def test_formal_adoption_locks_then_reaudits_unchanged_counts(monkeypatch):
         ([], {"api_ledger": None, "row_counts": {"reviews": 7}}),
         ([], {"api_ledger": ["head"], "row_counts": {"reviews": 7}}),
     ])
-    monkeypatch.setattr(reconcile, "audit", lambda connection, formal: next(reports))
+    monkeypatch.setattr(
+        reconcile, "audit", lambda connection, formal, **kwargs: next(reports)
+    )
     assert reconcile.adopt_verified_ledger(
         connection, formal=True, expected_head="head"
     ) is True
@@ -76,6 +78,92 @@ def test_formal_adoption_raises_on_business_count_change(monkeypatch):
         ([], {"api_ledger": [], "row_counts": {"reviews": 7}}),
         ([], {"api_ledger": ["head"], "row_counts": {"reviews": 8}}),
     ])
-    monkeypatch.setattr(reconcile, "audit", lambda connection, formal: next(reports))
+    monkeypatch.setattr(
+        reconcile, "audit", lambda connection, formal, **kwargs: next(reports)
+    )
     with pytest.raises(RuntimeError, match="row counts changed"):
         reconcile.adopt_verified_ledger(connection, formal=True, expected_head="head")
+
+
+def test_formal_cutover_locks_repairs_known_ancestor_and_runs_api_migrations(monkeypatch):
+    connection = FakeConnection()
+    before = {
+        "api_state": "absent",
+        "api_ledger": None,
+        "legacy_ledger": sorted([reconcile.ROOT_HEAD, reconcile.ROOT_ANCESTOR]),
+        "all_tables": ["clients", "algorithm_table", "alembic_version"],
+        "row_counts": {"clients": 2, "algorithm_table": 9},
+    }
+    after = {
+        "api_state": "complete",
+        "api_ledger": ["head"],
+        "legacy_ledger": [reconcile.ROOT_HEAD],
+        "all_tables": [
+            "clients", "algorithm_table", "alembic_version",
+            "reviews", "idempotency_records", "plan_reviews", "api_alembic_version",
+        ],
+        "row_counts": {
+            "clients": 2, "algorithm_table": 9,
+            "reviews": 0, "idempotency_records": 0, "plan_reviews": 0,
+        },
+    }
+    reports = iter([( [], before), ([], after)])
+    monkeypatch.setattr(
+        reconcile, "audit", lambda connection, formal, **kwargs: next(reports)
+    )
+    migrated = []
+    monkeypatch.setattr(reconcile, "api_config", lambda connection: "config")
+    monkeypatch.setattr(
+        reconcile.command, "upgrade", lambda config, head: migrated.append((config, head))
+    )
+
+    reconcile.complete_formal_cutover(connection, expected_head="head")
+
+    assert "pg_advisory_xact_lock" in connection.statements[0]
+    assert "DELETE FROM alembic_version" in connection.statements[1]
+    assert migrated == [("config", "head")]
+
+
+def test_formal_cutover_refuses_partial_api_schema_before_any_write(monkeypatch):
+    connection = FakeConnection()
+    monkeypatch.setattr(
+        reconcile,
+        "audit",
+        lambda connection, formal, **kwargs: (
+            ["partial API schema: found reviews"],
+            {"api_state": "partial", "api_ledger": None},
+        ),
+    )
+    with pytest.raises(RuntimeError, match="locked pre-migration audit failed"):
+        reconcile.complete_formal_cutover(connection, expected_head="head")
+    assert len(connection.statements) == 1
+    assert "pg_advisory_xact_lock" in connection.statements[0]
+
+
+def test_formal_cutover_refuses_preexisting_count_change(monkeypatch):
+    connection = FakeConnection()
+    before = {
+        "api_state": "absent", "api_ledger": None,
+        "legacy_ledger": [reconcile.ROOT_HEAD],
+        "all_tables": ["clients", "alembic_version"],
+        "row_counts": {"clients": 2},
+    }
+    after = {
+        "api_state": "complete", "api_ledger": ["head"],
+        "legacy_ledger": [reconcile.ROOT_HEAD],
+        "all_tables": [
+            "clients", "alembic_version", "reviews", "idempotency_records",
+            "plan_reviews", "api_alembic_version",
+        ],
+        "row_counts": {
+            "clients": 3, "reviews": 0, "idempotency_records": 0, "plan_reviews": 0,
+        },
+    }
+    reports = iter([([], before), ([], after)])
+    monkeypatch.setattr(
+        reconcile, "audit", lambda connection, formal, **kwargs: next(reports)
+    )
+    monkeypatch.setattr(reconcile, "api_config", lambda connection: "config")
+    monkeypatch.setattr(reconcile.command, "upgrade", lambda config, head: None)
+    with pytest.raises(RuntimeError, match="preexisting-table row counts changed"):
+        reconcile.complete_formal_cutover(connection, expected_head="head")
