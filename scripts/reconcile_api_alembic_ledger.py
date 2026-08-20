@@ -13,7 +13,11 @@ tables and never modifies the legacy ``alembic_version`` table.
 from __future__ import annotations
 
 import argparse
+import hashlib
+import importlib.util
+import json
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -22,6 +26,7 @@ from alembic.config import Config
 from alembic.script import ScriptDirectory
 from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.engine import Connection, make_url
+from sqlalchemy.sql.schema import CheckConstraint, ForeignKeyConstraint, UniqueConstraint
 
 from campaign_optimizer.ontology.db import Base as RootBase
 
@@ -32,6 +37,8 @@ API_LEDGER = "api_alembic_version"
 LEGACY_LEDGER = "alembic_version"
 LOCK_ID = 6_038_024_217_952_623_953
 FORMAL_DATABASE = "mta_data"
+FORMAL_HOST = "pgm-uf6hl30c1vr9v8zr3o.pg.rds.aliyuncs.com"
+FORMAL_PORT = 5432
 ROOT_HEAD = "7b8f3d1a2c4e"
 ROOT_ANCESTOR = "da19a197a9f7"
 ROOT_TABLES = {
@@ -45,6 +52,21 @@ ROOT_HEAD_COLUMNS = {
     "schema_version", "source_commit", "package_checksum",
     "confidence_state_version",
 }
+
+
+def _load_api_metadata():
+    """Load API SQLAlchemy metadata without colliding with the root app.py."""
+    path = API_ROOT / "app/db/models.py"
+    spec = importlib.util.spec_from_file_location("_formal_cutover_api_models", path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"cannot load API models from {path}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module.Base.metadata
+
+
+API_METADATA = _load_api_metadata()
 ROOT_EXPECTED_COLUMNS = {
     table_name: {column.name for column in RootBase.metadata.tables[table_name].columns}
     for table_name in ROOT_TABLES
@@ -110,6 +132,321 @@ EXPECTED_INDEXES = {
     "idempotency_records": {"ix_idempotency_created"},
     "plan_reviews": {"ix_plan_reviews_plan_id", "ix_plan_reviews_tenant_created"},
 }
+HEAD_SERVER_DEFAULTS = {
+    ("ontology_reviews", "revision"): "0",
+    ("ontology_reviews", "rule_version"): "legacy",
+    ("ontology_reviews", "engine_version"): "legacy",
+    ("ontology_reviews", "schema_version"): "legacy",
+    ("ontology_reviews", "source_commit"): "0000000000000000000000000000000000000000",
+    ("ontology_reviews", "package_checksum"): "0000000000000000000000000000000000000000000000000000000000000000",
+    ("ontology_reviews", "confidence_state_version"): "legacy",
+    ("plan_reviews", "normalized_request_json"): "{}",
+}
+EXPECTED_METADATA_BASELINE_SHA256 = "0b43bf84130cf9ad629701de43f83f86b5039be332360c9be831b170249c4905"
+
+
+def _type_signature(type_, dialect) -> str:
+    compiled = str(type_.dialect_impl(dialect)).lower()
+    return re.sub(r"\s+", " ", compiled).replace("character varying", "varchar")
+
+
+def _default_signature(value: object) -> str | None:
+    if value is None:
+        return None
+    text_value = str(value).strip().lower()
+    text_value = re.sub(
+        r"::(?:character varying|double precision|text|integer|bigint|numeric|real)(?:\[\])?",
+        "", text_value,
+    )
+    while text_value.startswith("(") and text_value.endswith(")"):
+        text_value = text_value[1:-1].strip()
+    if len(text_value) >= 2 and text_value[0] == text_value[-1] == "'":
+        text_value = text_value[1:-1]
+    return re.sub(r"\s+", " ", text_value)
+
+
+def _check_signature(value: object, column_names: set[str]) -> object:
+    """Parse the approved CHECK-expression subset into a semantic AST."""
+    text_value = str(value).lower()
+    text_value = re.sub(
+        r"::(?:character varying|double precision|text|integer|bigint|numeric|real)(?:\[\])?",
+        "", text_value,
+    )
+    text_value = re.sub(
+        r"([a-z_][a-z0-9_]*)\s*=\s*any\s*\(\s*\(*\s*array\[(.*?)\]\s*\)*\s*\)",
+        r"\1 in (\2)", text_value,
+    )
+    tokens = re.findall(
+        r"'(?:[^']|'')*'|>=|<=|<>|!=|=|>|<|\(|\)|,|"
+        r"[a-z_][a-z0-9_]*|\d+(?:\.\d+)?",
+        text_value,
+    )
+    position = 0
+
+    def peek() -> str | None:
+        return tokens[position] if position < len(tokens) else None
+
+    def take(expected: str | None = None) -> str:
+        nonlocal position
+        token = peek()
+        if token is None or (expected is not None and token != expected):
+            raise ValueError(f"invalid CHECK expression near {token!r}, expected {expected!r}")
+        position += 1
+        return token
+
+    def primary() -> object:
+        token = take()
+        if token == "(":
+            node = expression()
+            take(")")
+            return node
+        if re.fullmatch(r"[a-z_][a-z0-9_]*", token) and peek() == "(":
+            take("(")
+            arguments: list[object] = []
+            if peek() != ")":
+                while True:
+                    arguments.append(expression())
+                    if peek() != ",":
+                        break
+                    take(",")
+            take(")")
+            return ("call", token, tuple(arguments))
+        if token in column_names:
+            return ("column", token)
+        if token == "null":
+            return ("null",)
+        if token.startswith("'"):
+            return ("literal", token[1:-1].replace("''", "'"))
+        if token[0].isdigit():
+            return ("number", token)
+        return ("identifier", token)
+
+    def predicate() -> object:
+        left = primary()
+        token = peek()
+        if token == "is":
+            take("is")
+            negated = peek() == "not"
+            if negated:
+                take("not")
+            return ("is_not" if negated else "is", left, primary())
+        negated = token == "not"
+        if negated:
+            take("not")
+            token = peek()
+        if token == "in":
+            take("in")
+            take("(")
+            values: list[object] = []
+            while peek() != ")":
+                values.append(expression())
+                if peek() != ",":
+                    break
+                take(",")
+            take(")")
+            return ("not_in" if negated else "in", left, tuple(values))
+        if token in {">=", "<=", "<>", "!=", "=", ">", "<"}:
+            operator = take()
+            return (operator, left, primary())
+        if negated:
+            return ("not", left)
+        return left
+
+    def conjunction() -> object:
+        node = predicate()
+        while peek() == "and":
+            take("and")
+            node = ("and", node, predicate())
+        return node
+
+    def expression() -> object:
+        node = conjunction()
+        while peek() == "or":
+            take("or")
+            node = ("or", node, conjunction())
+        return node
+
+    result = expression()
+    if position != len(tokens):
+        raise ValueError(f"unparsed CHECK expression tokens: {tokens[position:]}")
+    return result
+
+
+def _expected_schema(table) -> dict[str, object]:
+    return {
+        "columns": {
+            column.name: {
+                "type": column.type,
+                "nullable": bool(column.nullable),
+                "primary_key": bool(column.primary_key),
+                "autoincrement": column.autoincrement,
+                "default": HEAD_SERVER_DEFAULTS.get(
+                    (table.name, column.name),
+                    _default_signature(column.server_default.arg)
+                    if column.server_default is not None else None,
+                ),
+            }
+            for column in table.columns
+        },
+        "pk": tuple(column.name for column in table.primary_key.columns),
+        "unique": {
+            (constraint.name, tuple(column.name for column in constraint.columns))
+            for constraint in table.constraints
+            if isinstance(constraint, UniqueConstraint)
+        },
+        "foreign_keys": {
+            (
+                tuple(element.parent.name for element in constraint.elements),
+                next(iter(constraint.elements)).column.table.schema,
+                next(iter(constraint.elements)).column.table.name,
+                tuple(element.column.name for element in constraint.elements),
+                constraint.ondelete,
+                constraint.onupdate,
+                constraint.deferrable,
+                constraint.initially,
+                constraint.match,
+            )
+            for constraint in table.constraints
+            if isinstance(constraint, ForeignKeyConstraint)
+        },
+        "checks": {
+            (constraint.name, _check_signature(constraint.sqltext, {column.name for column in table.columns}))
+            for constraint in table.constraints
+            if isinstance(constraint, CheckConstraint)
+        },
+        "indexes": {
+            (index.name, tuple(column.name for column in index.columns), bool(index.unique))
+            for index in table.indexes
+        },
+    }
+
+
+def metadata_baseline_sha256() -> str:
+    """Pin current metadata expectations to the approved migration heads."""
+    payload: dict[str, object] = {}
+    for table_name, table in sorted({
+        **{name: RootBase.metadata.tables[name] for name in ROOT_TABLES},
+        **{name: API_METADATA.tables[name] for name in EXPECTED_COLUMNS},
+    }.items()):
+        expected = _expected_schema(table)
+        payload[table_name] = {
+            "columns": {
+                name: {
+                    "type": str(column["type"]),
+                    "nullable": column["nullable"],
+                    "primary_key": column["primary_key"],
+                    "autoincrement": str(column["autoincrement"]),
+                    "default": column["default"],
+                }
+                for name, column in sorted(expected["columns"].items())
+            },
+            "pk": expected["pk"],
+            "unique": sorted(repr(item) for item in expected["unique"]),
+            "foreign_keys": sorted(repr(item) for item in expected["foreign_keys"]),
+            "checks": sorted(repr(item) for item in expected["checks"]),
+            "indexes": sorted(repr(item) for item in expected["indexes"]),
+        }
+    encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def validate_metadata_baseline() -> None:
+    actual = metadata_baseline_sha256()
+    if actual != EXPECTED_METADATA_BASELINE_SHA256:
+        raise RuntimeError(
+            "formal schema expectation code drifted from the approved migration-head baseline: "
+            f"expected {EXPECTED_METADATA_BASELINE_SHA256}, found {actual}"
+        )
+
+
+def _independent_indexes(items: list[dict[str, object]]) -> list[dict[str, object]]:
+    """Exclude PostgreSQL indexes already represented as unique constraints."""
+    return [item for item in items if not item.get("duplicates_constraint")]
+
+
+def schema_fingerprint_errors(connection: Connection, table_name: str, expected_table) -> list[str]:
+    """Compare all durable relational properties for one existing table."""
+    inspector = inspect(connection)
+    dialect = connection.dialect
+    expected = _expected_schema(expected_table)
+    errors: list[str] = []
+    actual_columns = {item["name"]: item for item in inspector.get_columns(table_name)}
+    if set(actual_columns) != set(expected["columns"]):
+        return [
+            f"{table_name} column set mismatch: expected {sorted(expected['columns'])}, "
+            f"found {sorted(actual_columns)}"
+        ]
+    for name, expected_column in expected["columns"].items():
+        actual = actual_columns[name]
+        actual_type = _type_signature(actual["type"], dialect)
+        expected_type = _type_signature(expected_column["type"], dialect)
+        if actual_type != expected_type:
+            errors.append(f"{table_name}.{name} type expected {expected_type}, found {actual_type}")
+        if bool(actual.get("nullable")) != expected_column["nullable"]:
+            errors.append(
+                f"{table_name}.{name} nullable expected {expected_column['nullable']}, "
+                f"found {bool(actual.get('nullable'))}"
+            )
+        actual_default = _default_signature(actual.get("default"))
+        implicit_sequence = (
+            expected_column["primary_key"]
+            and expected_column["autoincrement"] in (True, "auto")
+            and actual_default is not None
+            and "nextval(" in actual_default
+        )
+        if not implicit_sequence and actual_default != expected_column["default"]:
+            errors.append(
+                f"{table_name}.{name} server default expected {expected_column['default']!r}, "
+                f"found {actual_default!r}"
+            )
+
+    actual_pk = tuple(inspector.get_pk_constraint(table_name).get("constrained_columns") or ())
+    if actual_pk != expected["pk"]:
+        errors.append(f"{table_name} primary key expected {expected['pk']}, found {actual_pk}")
+    actual_unique = {
+        (item.get("name"), tuple(item.get("column_names") or ()))
+        for item in inspector.get_unique_constraints(table_name)
+    }
+    expected_named_unique = {item for item in expected["unique"] if item[0] is not None}
+    expected_unnamed_columns = {item[1] for item in expected["unique"] if item[0] is None}
+    actual_named_unique = {item for item in actual_unique if item[0] in {value[0] for value in expected_named_unique}}
+    actual_unnamed_columns = {
+        columns for name, columns in actual_unique
+        if name not in {value[0] for value in expected_named_unique}
+    }
+    if (
+        actual_named_unique != expected_named_unique
+        or actual_unnamed_columns != expected_unnamed_columns
+    ):
+        errors.append(f"{table_name} unique constraints expected {expected['unique']}, found {actual_unique}")
+    actual_fks = {
+        (
+            tuple(item.get("constrained_columns") or ()),
+            item.get("referred_schema"), item.get("referred_table"),
+            tuple(item.get("referred_columns") or ()),
+            (item.get("options") or {}).get("ondelete"),
+            (item.get("options") or {}).get("onupdate"),
+            (item.get("options") or {}).get("deferrable"),
+            (item.get("options") or {}).get("initially"),
+            (item.get("options") or {}).get("match"),
+        )
+        for item in inspector.get_foreign_keys(table_name)
+    }
+    if actual_fks != expected["foreign_keys"]:
+        errors.append(f"{table_name} foreign keys expected {expected['foreign_keys']}, found {actual_fks}")
+    actual_checks = {
+        (item.get("name"), _check_signature(item.get("sqltext", ""), set(expected["columns"])))
+        for item in inspector.get_check_constraints(table_name)
+    }
+    if actual_checks != expected["checks"]:
+        errors.append(f"{table_name} checks expected {expected['checks']}, found {actual_checks}")
+    actual_indexes = {
+        (item.get("name"), tuple(item.get("column_names") or ()), bool(item.get("unique")))
+        for item in _independent_indexes(inspector.get_indexes(table_name))
+    }
+    if actual_indexes != expected["indexes"]:
+        errors.append(f"{table_name} indexes expected {expected['indexes']}, found {actual_indexes}")
+    return errors
 
 
 def api_head() -> str:
@@ -131,6 +468,8 @@ def ledger_values(connection: Connection, table: str, tables: set[str]) -> list[
 def audit(
     connection: Connection, *, formal: bool = False, allow_repairable: bool = False
 ) -> tuple[list[str], dict[str, object]]:
+    if formal:
+        validate_metadata_baseline()
     inspector = inspect(connection)
     tables = set(inspector.get_table_names())
     errors: list[str] = []
@@ -159,6 +498,12 @@ def audit(
                 errors.append(
                     f"{table_name} unexpected root columns: "
                     + ", ".join(sorted(unexpected_columns))
+                )
+            if not missing_columns and not unexpected_columns:
+                errors.extend(
+                    schema_fingerprint_errors(
+                        connection, table_name, RootBase.metadata.tables[table_name]
+                    )
                 )
         if "ontology_reviews" in tables:
             root_columns = {
@@ -195,6 +540,12 @@ def audit(
                 errors.append(
                     f"{table} unexpected columns: {', '.join(sorted(unexpected_columns))}"
                 )
+            if not missing and not unexpected_columns:
+                errors.extend(
+                    schema_fingerprint_errors(
+                        connection, table, API_METADATA.tables[table]
+                    )
+                )
 
     if "idempotency_records" in tables:
         columns = {item["name"]: item for item in inspector.get_columns("idempotency_records")}
@@ -220,7 +571,10 @@ def audit(
     for table, expected in EXPECTED_INDEXES.items():
         if table not in tables:
             continue
-        actual = {item["name"] for item in inspector.get_indexes(table)}
+        actual = {
+            item["name"]
+            for item in _independent_indexes(inspector.get_indexes(table))
+        }
         missing = expected - actual
         if missing:
             errors.append(f"{table} missing indexes: {', '.join(sorted(missing))}")
@@ -299,6 +653,11 @@ def validate_target_url(raw_url: str, *, variable: str, formal: bool) -> None:
             raise ValueError(
                 f"{variable} must name the formal database {FORMAL_DATABASE}"
             )
+        if parsed.host != FORMAL_HOST or (parsed.port or FORMAL_PORT) != FORMAL_PORT:
+            raise ValueError(
+                f"{variable} must target approved formal host "
+                f"{FORMAL_HOST}:{FORMAL_PORT}"
+            )
     elif not parsed.database or not parsed.database.endswith("_test"):
         raise ValueError(f"{variable} database name must end with _test")
 
@@ -318,6 +677,9 @@ def validate_apply_environment(*, formal: bool) -> None:
             "formal --apply requires MTA_DATA_BACKUP_CONFIRMED=1 and "
             "a non-empty MTA_DATA_BACKUP_REFERENCE"
         )
+    lowered = backup_reference.lower()
+    if any(token in lowered for token in ("<", ">", "placeholder", "example", "todo", "snapshot-reference")):
+        raise RuntimeError("MTA_DATA_BACKUP_REFERENCE must be a real backup identifier, not a placeholder")
 
 
 def adopt_verified_ledger(
