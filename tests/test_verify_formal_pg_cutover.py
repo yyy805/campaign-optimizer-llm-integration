@@ -174,6 +174,10 @@ def test_verifier_lock_times_out_instead_of_waiting_forever(monkeypatch):
         )
 
 
+def test_verifier_lock_cannot_deadlock_application_migration_lock():
+    assert verify.VERIFIER_LOCK_ID != verify.reconcile.LOCK_ID
+
+
 def test_resource_errors_are_grouped_without_masking_primary():
     close_error = RuntimeError("close failed")
     dispose_error = RuntimeError("dispose failed")

@@ -56,6 +56,10 @@ EXPECTED_R5_STATUS = "PENDING_HUMAN_REVIEW"
 EXPECTED_R5_SHA256 = "eced62fd789b0fb903a50722fe4600ea06906a357af88c84f023122292eb7b64"
 RUN_ID_PATTERN = re.compile(r"^[a-z0-9][a-z0-9-]{7,63}$")
 FORMAL_SMOKE_CLIENT_ID = "cutover-client-001"
+# Must differ from Database.MIGRATION_LOCK_ID/reconcile.LOCK_ID. Each TestClient
+# startup takes the migration lock on its own connection; sharing that ID here
+# would deadlock the verifier against the application it is testing.
+VERIFIER_LOCK_ID = reconcile.LOCK_ID + 104_729
 
 
 def validate_smoke_environment() -> str:
@@ -278,7 +282,7 @@ def _acquire_verifier_lock(connection, *, context: str, timeout_seconds: float =
     while True:
         acquired = bool(connection.execute(
             text("SELECT pg_try_advisory_lock(:lock_id)"),
-            {"lock_id": reconcile.LOCK_ID},
+            {"lock_id": VERIFIER_LOCK_ID},
         ).scalar_one())
         connection.commit()
         if acquired:
@@ -293,7 +297,7 @@ def _acquire_verifier_lock(connection, *, context: str, timeout_seconds: float =
 
 def _release_verifier_lock(connection) -> None:
     connection.execute(
-        text("SELECT pg_advisory_unlock(:lock_id)"), {"lock_id": reconcile.LOCK_ID}
+        text("SELECT pg_advisory_unlock(:lock_id)"), {"lock_id": VERIFIER_LOCK_ID}
     )
     connection.commit()
 
