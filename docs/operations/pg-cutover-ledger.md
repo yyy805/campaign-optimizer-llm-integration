@@ -34,3 +34,33 @@ audit. In one transaction it removes only the known stale root ancestor when
 present, runs API migrations through independent `api_alembic_version`, and
 re-audits every protected object. Any mismatch raises and rolls back the whole
 transaction. It never drops, truncates, or rebuilds an existing table.
+
+## Completion gates
+
+Do not declare the cutover complete from a successful migration command alone.
+Run the post-cutover verifier first without `--smoke`. It requires the exact
+root and API heads, the complete API schema, the immutable 2.1 release bundle,
+and pending R5 identity. This mode is read-only:
+
+```powershell
+& ".\ontology review api\.venv\Scripts\python.exe" `
+  -m scripts.verify_formal_pg_cutover
+```
+
+The repository contains no real SQLite business data to import. Concepts and
+rules remain authoritative in the verified Git bundle; zero rows in the legacy
+`concepts` and `rules` tables are therefore not a migration failure.
+
+The final create/replay/read/restart smoke is separately guarded because it
+writes uniquely identified rows to the formal database. It removes only those
+rows and then requires every table count to equal its pre-smoke value:
+
+```powershell
+$env:ALLOW_FORMAL_POSTGRES_SMOKE = "mta_data"
+$env:MTA_DATA_BACKUP_REFERENCE = "<snapshot-reference>"
+& ".\ontology review api\.venv\Scripts\python.exe" `
+  -m scripts.verify_formal_pg_cutover --smoke
+```
+
+Completion requires `release audit: PASS`, `schema audit: PASS`, and
+`formal smoke: PASS (... cleanup=exact)`. Record all three in the ledger row.
