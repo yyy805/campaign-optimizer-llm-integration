@@ -55,6 +55,7 @@ MAINTENANCE_CONFIRMATION = "mta_data"
 EXPECTED_R5_STATUS = "PENDING_HUMAN_REVIEW"
 EXPECTED_R5_SHA256 = "eced62fd789b0fb903a50722fe4600ea06906a357af88c84f023122292eb7b64"
 RUN_ID_PATTERN = re.compile(r"^[a-z0-9][a-z0-9-]{7,63}$")
+FORMAL_SMOKE_CLIENT_ID = "cutover-client-001"
 
 
 def validate_smoke_environment() -> str:
@@ -95,7 +96,7 @@ def smoke_identity(run_id: str) -> dict[str, str]:
         "api_key": f"formal-smoke-key-{run_id}",
         "principal_id": f"formal-smoke-{run_id}",
         "idempotency_key": f"formal-cutover-{run_id}",
-        "client_id": "demo_client_001",
+        "client_id": FORMAL_SMOKE_CLIENT_ID,
         "plan_id": f"plan_formal_cutover_{run_id}",
     }
 

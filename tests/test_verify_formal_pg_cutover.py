@@ -131,7 +131,7 @@ def test_smoke_cleanup_deletes_only_unique_scoped_rows():
     }
     assert connection.calls[2][1] == {"plan_id": "plan_formal_cutover_unique-1234"}
     assert all(
-        params == {"client": "demo_client_001", "plan": "plan_formal_cutover_unique-1234"}
+        params == {"client": "cutover-client-001", "plan": "plan_formal_cutover_unique-1234"}
         for _, params in connection.calls[3:]
     )
 
