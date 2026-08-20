@@ -172,8 +172,15 @@ def _check_signature(value: object, column_names: set[str]) -> object:
         r"::(?:character varying|double precision|text|integer|bigint|numeric|real)(?:\[\])?",
         "", text_value,
     )
+    # PostgreSQL reflects IN lists as either ANY (ARRAY[...]) or
+    # ANY ((ARRAY[...])::type[]). Handle the exact balanced forms so a
+    # surrounding application parenthesis is never consumed accidentally.
     text_value = re.sub(
-        r"([a-z_][a-z0-9_]*)\s*=\s*any\s*\(\s*\(*\s*array\[(.*?)\]\s*\)*\s*\)",
+        r"([a-z_][a-z0-9_]*)\s*=\s*any\s*\(\s*\(\s*array\[(.*?)\]\s*\)\s*\)",
+        r"\1 in (\2)", text_value,
+    )
+    text_value = re.sub(
+        r"([a-z_][a-z0-9_]*)\s*=\s*any\s*\(\s*array\[(.*?)\]\s*\)",
         r"\1 in (\2)", text_value,
     )
     tokens = re.findall(
@@ -644,6 +651,17 @@ def print_report(errors: list[str], details: dict[str, object]) -> None:
         print("schema audit: PASS")
 
 
+def dump_check_constraints(connection: Connection) -> None:
+    """Print reflected CHECK definitions without running the strict parser."""
+    inspector = inspect(connection)
+    for table_name in sorted(inspector.get_table_names()):
+        for constraint in inspector.get_check_constraints(table_name):
+            print(
+                f"{table_name} | {constraint.get('name')} | "
+                f"{constraint.get('sqltext')}"
+            )
+
+
 def validate_target_url(raw_url: str, *, variable: str, formal: bool) -> None:
     parsed = make_url(raw_url)
     if parsed.get_backend_name() != "postgresql" or parsed.get_driver_name() != "psycopg":
@@ -782,6 +800,10 @@ def main() -> int:
         "--formal", action="store_true",
         help="audit the formal mta_data database (reads FORMAL_POSTGRES_URL)",
     )
+    parser.add_argument(
+        "--dump-checks", action="store_true",
+        help="print reflected CHECK constraints only; never writes",
+    )
     args = parser.parse_args()
 
     url_variable = "FORMAL_POSTGRES_URL" if args.formal else "TEST_POSTGRES_URL"
@@ -797,6 +819,11 @@ def main() -> int:
 
     engine = create_engine(raw_url, pool_pre_ping=True)
     try:
+        if args.dump_checks:
+            with engine.connect() as connection:
+                dump_check_constraints(connection)
+            print("CHECK constraint dump complete. No changes made.")
+            return 0
         if args.apply:
             try:
                 validate_apply_environment(formal=args.formal)

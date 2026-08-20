@@ -68,6 +68,21 @@ class FakeConnection:
         return object()
 
 
+def test_check_dump_does_not_invoke_strict_parser(monkeypatch, capsys):
+    class FakeInspector:
+        def get_table_names(self):
+            return ["sample"]
+
+        def get_check_constraints(self, table_name):
+            return [{"name": "ck_sample", "sqltext": "strange_pg_syntax(value)"}]
+
+    monkeypatch.setattr(reconcile, "inspect", lambda connection: FakeInspector())
+    reconcile.dump_check_constraints(object())
+    assert capsys.readouterr().out.strip() == (
+        "sample | ck_sample | strange_pg_syntax(value)"
+    )
+
+
 def test_formal_adoption_locks_then_reaudits_unchanged_counts(monkeypatch):
     connection = FakeConnection()
     reports = iter([
@@ -245,6 +260,21 @@ def test_postgres_any_array_check_normalizes_to_in():
     reflected = reconcile._check_signature(
         "status = ANY ((ARRAY['ACTIVE'::character varying, "
         "'SUSPENDED'::character varying, 'RETIRED'::character varying])::text[])",
+        columns,
+    )
+    assert reflected == expected
+
+
+def test_postgres_any_array_does_not_consume_surrounding_parenthesis():
+    columns = {"action"}
+    expected = reconcile._check_signature(
+        "action IS NULL OR action IN ('increase_budget', 'decrease_budget', 'keep_budget')",
+        columns,
+    )
+    reflected = reconcile._check_signature(
+        "action IS NULL OR (action::text = ANY (ARRAY["
+        "'increase_budget'::character varying, 'decrease_budget'::character varying, "
+        "'keep_budget'::character varying]::text[]))",
         columns,
     )
     assert reflected == expected
